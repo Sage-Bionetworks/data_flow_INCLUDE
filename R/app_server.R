@@ -6,7 +6,6 @@
 #' @noRd
 app_server <- function( input, output, session ) {
   # Your application server logic 
-  mod_dataset_selection_server("dataset_selection_ui_1")
-  
-  mod_file_selection_server("file_selection_ui_1")
+  ds <- mod_dataset_selection_server("dataset_selection_ui_1")
+  mod_file_selection_server("file_selection_ui_1", ds)
 }
