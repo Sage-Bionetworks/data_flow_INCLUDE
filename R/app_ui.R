@@ -15,18 +15,29 @@ app_ui <- function(request) {
       shinydashboard::dashboardHeader(
         title = "Release Administrator"
       ),
-      shinydashboard::dashboardSidebar(),
+      shinydashboard::dashboardSidebar(
+        shinydashboard::sidebarMenu(
+          shinydashboard::menuItem("Administrative", 
+                                   tabName = "administrate",
+                                   icon = icon("cog")),
+          shinydashboard::menuItem("Dashboard", 
+                                   tabName = "dashboard",
+                                   icon = icon("dashboard"))
+        )
+      ),
       shinydashboard::dashboardBody(
-        fluidPage(
-          fluidRow(
-            mod_dataset_selection_ui("dataset_selection_ui_1"),
-            mod_file_selection_ui("file_selection_ui_1")
+        shinydashboard::tabItems(
+          shinydashboard::tabItem(tabName = "administrate",
+                                  fluidPage(
+                                    mod_dataset_selection_ui("dataset_selection_ui_1"),
+                                    mod_file_selection_ui("file_selection_ui_1"))
+                                  ),
+          shinydashboard::tabItem(tabName = "dashboard",
+                                  h2("Coming Soon: Dashbaord!"))
           )
         )
-      )
-    )
-  )
-}
+    ))
+  }
 
 #' Add external Resources to the Application
 #' 
