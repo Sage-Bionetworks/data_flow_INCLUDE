@@ -5,17 +5,26 @@
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
+  
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     
     # Your application UI logic
+    
+    # dashboardPage
     shinydashboard::dashboardPage(
       skin = "purple",
+      
+      # dashboardHeader
       shinydashboard::dashboardHeader(
         title = "Release Administrator"
       ),
+      
+      # dashboardSidebar
       shinydashboard::dashboardSidebar(
+        
+        #sidebarMenu
         shinydashboard::sidebarMenu(
           shinydashboard::menuItem("Administrative", 
                                    tabName = "administrate",
@@ -25,7 +34,14 @@ app_ui <- function(request) {
                                    icon = icon("dashboard"))
         )
       ),
+      
+      #dashboardBody
       shinydashboard::dashboardBody(
+        
+        # initialize shinyjs
+        shinyjs::useShinyjs(),
+        
+        # dashboardTabItems
         shinydashboard::tabItems(
           shinydashboard::tabItem(tabName = "administrate",
                                   fluidPage(
@@ -63,4 +79,3 @@ golem_add_external_resources <- function(){
     # for example, you can add shinyalert::useShinyalert() 
   )
 }
-

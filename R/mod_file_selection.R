@@ -10,21 +10,29 @@
 mod_file_selection_ui <- function(id){
   ns <- NS(id)
   tagList(
-    shinydashboard::box(
-      title = "Select Files",
-      width = 6,
-      DT::DTOutput(ns("tbl")),
-      
-      verbatimTextOutput(ns("dataset_selection")),
-      
-      # verbatimTextOutput(ns("dataset_selection")),
-      verbatimTextOutput(ns("file_selection")),
-      
-      br(),
-      
-      # action button to select files
-      actionButton(ns("button"), "Select file(s)"))
-  )
+    # open up file level view?
+    # TODO: eventually this will become a toggle similar to data_curator dashboard
+    actionButton(ns("file_button"), "Turn on File Level View"),
+    
+    shinyjs::hidden(
+      div(id = ns("wrapper"),
+          shinydashboard::box(
+            id = ns("box"),
+            title = "Select Files",
+            width = 6,
+            DT::DTOutput(ns("tbl")),
+            
+            verbatimTextOutput(ns("dataset_selection")),
+            
+            # verbatimTextOutput(ns("dataset_selection")),
+            verbatimTextOutput(ns("file_selection")),
+            
+            br(),
+            
+            # action button to select files
+            actionButton(ns("button"), "Select file(s)"))
+      ))
+    )
 }
     
 #' file_selection Server Functions
@@ -68,16 +76,10 @@ mod_file_selection_server <- function(id, dataset){
       dataset()
     })
     
-
-    ## observe the button being pressed
-    # observeEvent(input$button, {
-    #   
-    #   if(input$button %% 2 == 1){
-    #     shinyjs::hide(id = "myBox")
-    #   }else{
-    #     shinyjs::show(id = "myBox")
-    #   }
-    # })
+    observeEvent(input$file_button, {
+      shinyjs::toggle("wrapper")
+    })
+    
     
   })
 }
