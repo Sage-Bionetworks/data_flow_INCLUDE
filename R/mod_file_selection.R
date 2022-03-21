@@ -10,21 +10,28 @@
 mod_file_selection_ui <- function(id){
   ns <- NS(id)
   tagList(
-    # open up file level view?
+    
+    # Action button that opens file selector
     # TODO: eventually this will become a toggle similar to data_curator dashboard
     actionButton(ns("file_button"), "Turn on File Level View"),
     
+    # hide shinydashboard::box on app load
     shinyjs::hidden(
+      
       div(id = ns("wrapper"),
+          
           shinydashboard::box(
             id = ns("box"),
             title = "Select Files",
             width = 6,
+            
+            # table
             DT::DTOutput(ns("tbl")),
             
+            # selected datasets from mod_dataset_selection as text
             verbatimTextOutput(ns("dataset_selection")),
             
-            # verbatimTextOutput(ns("dataset_selection")),
+            # selected files
             verbatimTextOutput(ns("file_selection")),
             
             br(),
@@ -41,6 +48,14 @@ mod_file_selection_ui <- function(id){
 mod_file_selection_server <- function(id, dataset){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    # hide/show toggle for wrapper
+    observeEvent(input$file_button, {
+      shinyjs::toggle("wrapper")
+    })
+    
+    # TODO: similar to data curator will want to initiate file selector data pull
+    #       after the toggle is selected
     
     # output datatable
     output$tbl <- DT::renderDT({
@@ -75,11 +90,6 @@ mod_file_selection_server <- function(id, dataset){
     output$dataset_selection <- renderPrint({
       dataset()
     })
-    
-    observeEvent(input$file_button, {
-      shinyjs::toggle("wrapper")
-    })
-    
     
   })
 }
