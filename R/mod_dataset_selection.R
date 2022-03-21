@@ -25,8 +25,10 @@ mod_dataset_selection_ui <- function(id){
       br(),
       
       # selection action button
-      actionButton(ns("button"), "Select Dataset(s)"))
-  )
+      actionButton(ns("button"), "Select Dataset(s)"),
+      br()
+      )
+    )
 }
     
 #' dataset_selection Server Functions
@@ -67,10 +69,6 @@ mod_dataset_selection_server <- function(id) {
       } else
         return(input$tbl_rows_selected)
     })
-    
-    
-    # this returns tbl click immediately. Need to create a way to pause this until button clicked
-    #return(reactive({input$tbl_rows_selected}))
     
   })
 }
