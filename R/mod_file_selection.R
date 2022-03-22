@@ -20,25 +20,36 @@ mod_file_selection_ui <- function(id){
       
       div(id = ns("wrapper"),
           
-          shinydashboard::box(
-            id = ns("box"),
-            title = "Select Files",
-            width = 6,
-            
-            # table
-            DT::DTOutput(ns("tbl")),
-            
-            # selected datasets from mod_dataset_selection as text
-            verbatimTextOutput(ns("dataset_selection")),
-            
-            # selected files
-            verbatimTextOutput(ns("file_selection")),
-            
-            br(),
-            
-            # action button to select files
-            actionButton(ns("button"), "Select file(s)"))
-      ))
+          # shinydashboard::box(
+          #   id = ns("box"),
+          #   title = "Select Files",
+          #   width = 6,
+          #   
+          #   # table
+          #   DT::DTOutput(ns("tbl")),
+          #   
+          #   # selected datasets from mod_dataset_selection as text
+          #   verbatimTextOutput(ns("dataset_selection")),
+          #   
+          #   # selected files
+          #   verbatimTextOutput(ns("file_selection")),
+          #   
+          #   br(),
+          #   
+          #   # action button to select files
+          #   actionButton(ns("button"), "Select file(s)")
+          #   )
+          
+          # shinydashboard::tabBox(
+          #   title = "File Selector",
+          #   # The id lets us use input$tabset1 on the server to find the current tab
+          #   id = "tabset", height = "500px",
+          #   tabPanel("No Datasets Selected", "No Data set selected"))
+          
+          uiOutput(ns('tabs'))  
+
+          )
+      )
     )
 }
     
@@ -57,22 +68,7 @@ mod_file_selection_server <- function(id, dataset){
     # TODO: similar to data curator will want to initiate file selector data pull
     #       after the toggle is selected
     
-    # output datatable
-    output$tbl <- DT::renderDT({
-      
-      # create tst data
-      datasets_col <- paste0(rep("file", 100), "_", seq(1:100))
-      status_col <- sample(c("Quarantine", "Release 1"), 100, replace = TRUE)
-      df <- data.frame(Dataset = datasets_col, Status = as.factor(status_col))
-      
-      # create DT with y scroll bar, no pagination, no search bar, top filter
-      DT::datatable(df, 
-                    option = list(scrollY = 500,
-                                  scrollCollapse = TRUE,
-                                  bPaginate = FALSE,
-                                  dom = "t"),
-                    filter = list(position = 'top', clear = TRUE))
-    })
+    
     
     # on button click display text
     observeEvent(input$button, {
@@ -87,8 +83,24 @@ mod_file_selection_server <- function(id, dataset){
       }
     })
     
-    output$dataset_selection <- renderPrint({
-      dataset()
+    # output$dataset_selection <- renderPrint({
+    #   dataset()
+    # })
+    
+    # render tabbox dynamically
+    # create a tab for each dataset selected in mod_dataset_selection
+    output$tabs <- renderUI({
+      nTabs <- length(dataset())
+      ds <- dataset()
+      myTabs <- lapply(1:nTabs, function(x) {
+        tabPanel(title = paste0("Dataset: ", ds[x]),
+                 output$dataset_selection <- renderPrint({
+                      dataset()[x]
+                    }))
+        
+        
+      })
+      do.call(shinydashboard::tabBox, myTabs)
     })
     
   })
