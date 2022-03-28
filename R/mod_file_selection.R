@@ -90,12 +90,12 @@ mod_file_selection_server <- function(id, dataset){
     # render tabbox dynamically
     # create a tab for each dataset selected in mod_dataset_selection
     output$tabs <- renderUI({
-      nTabs <- length(dataset())
       ds <- dataset()
+      nTabs <- nrow(ds)
       myTabs <- lapply(1:nTabs, function(x) {
-        tabPanel(title = paste0("Dataset: ", ds[x]),
-                 output$dataset_selection <- renderPrint({
-                      dataset()[x]
+        tabPanel(title = paste0("Dataset: ", ds[x, "Dataset"]),
+                 output$dataset_selection <- DT::renderDT({
+                      ds[x,]
                     }))
         
         
