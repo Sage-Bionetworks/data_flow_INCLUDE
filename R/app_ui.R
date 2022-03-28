@@ -43,16 +43,35 @@ app_ui <- function(request) {
         
         # dashboardTabItems
         shinydashboard::tabItems(
+          
+          # administrate tab
           shinydashboard::tabItem(tabName = "administrate",
+                                  # dataset and file selection
                                   fluidPage(
                                     mod_dataset_selection_ui("dataset_selection_ui_1"),
-                                    mod_file_selection_ui("file_selection_ui_1"))
+                                    mod_file_selection_ui("file_selection_ui_1")),
+                                  
+                                  #set status
+                                  wellPanel(
+                                    h3("Select Status"),
+                                    fluidPage(
+                                      radioButtons("select_status",
+                                                   label = "Select status",
+                                                   choices = c("Quarantine", "Upcoming Release")
+                                                   ),
+                                      actionButton("status_btn",
+                                                   label = "Submit")
+                                      )
+                                    )
                                   ),
+          
+          # dashboard tab
           shinydashboard::tabItem(tabName = "dashboard",
                                   h2("Coming Soon: Dashbaord!"))
           )
         )
-    ))
+      )
+    )
   }
 
 #' Add external Resources to the Application
