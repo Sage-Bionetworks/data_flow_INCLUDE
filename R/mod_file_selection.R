@@ -93,7 +93,7 @@ mod_file_selection_server <- function(id, dataset){
       ds <- dataset()
       nTabs <- nrow(ds)
       myTabs <- lapply(1:nTabs, function(x) {
-        tabPanel(title = paste0("Dataset: ", ds[x, "Dataset"]),
+        tabPanel(title = ds[x, "Dataset"],
                  output$dataset_selection <- DT::renderDT({
                       ds[x,]
                     }))
