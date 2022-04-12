@@ -19,36 +19,7 @@ mod_file_selection_ui <- function(id){
     shinyjs::hidden(
       
       div(id = ns("wrapper"),
-          
-          # shinydashboard::box(
-          #   id = ns("box"),
-          #   title = "Select Files",
-          #   width = 6,
-          #   
-          #   # table
-          #   DT::DTOutput(ns("tbl")),
-          #   
-          #   # selected datasets from mod_dataset_selection as text
-          #   verbatimTextOutput(ns("dataset_selection")),
-          #   
-          #   # selected files
-          #   verbatimTextOutput(ns("file_selection")),
-          #   
-          #   br(),
-          #   
-          #   # action button to select files
-          #   actionButton(ns("button"), "Select file(s)")
-          #   )
-          
-          # shinydashboard::tabBox(
-          #   title = "File Selector",
-          #   # The id lets us use input$tabset1 on the server to find the current tab
-          #   id = "tabset", height = "500px",
-          #   tabPanel("No Datasets Selected", "No Data set selected"))
-          
-          uiOutput(ns('tabs'))  
-
-          )
+          uiOutput(ns('tabs')))
       )
     )
 }
