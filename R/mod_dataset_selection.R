@@ -19,14 +19,12 @@ mod_dataset_selection_ui <- function(id){
       # output table
       DT::DTOutput(ns("tbl")),
       
-      # show table selection text
-      verbatimTextOutput(ns("tbl_selection")),
-      
       br(),
       
       # selection action button
       actionButton(ns("button"), "Select Dataset(s)"),
-      br()
+      
+      br(),
       )
     )
 }
@@ -40,23 +38,23 @@ mod_dataset_selection_server <- function(id) {
     
     ns <- session$ns
     
-    # render dataset datatable
+    # create dataset datatable
+    # create dummy table
+    # this will be a call to synapse to get datasets in a specified fileview
+    datasets_col <- paste0(rep("dataset", 200), "_", seq(1:200))
+    status_col <- sample(c("Quarantine", "Release 1"), 200, replace = TRUE)
+    dummy_data <- data.frame(Dataset = datasets_col, Status = as.factor(status_col))
+    
+    # render data table with scroll bar, no pagination, and filtering
     output$tbl <- DT::renderDT({
-      
-      # create dummy table
-      # this will be a call to synapse to get datasets in a specified fileview
-      datasets_col <- paste0(rep("dataset", 200), "_", seq(1:200))
-      status_col <- sample(c("Quarantine", "Release 1"), 200, replace = TRUE)
-      df <- data.frame(Dataset = datasets_col, Status = as.factor(status_col))
-      
-      # create DT with y scroll bar, no pagination, no search bar, top filter
-      DT::datatable(df, 
-                    option = list(scrollY = 500, 
+      DT::datatable(dummy_data,
+                    option = list(scrollY = 500,
                                   scrollCollapse = TRUE,
                                   bPaginate = FALSE,
                                   dom = "t"),
                     filter = list(position = 'top', clear = TRUE))
     })
+      
     
     # when button is pushed
     # if no rows selected: show no dataset selected
@@ -66,9 +64,10 @@ mod_dataset_selection_server <- function(id) {
       if (length(s) == 0) {
         showNotification("No Dataset Selected")
         return(NULL)
-      } else
-        return(input$tbl_rows_selected)
+      } else{
+        return(dummy_data[s,])
+        }
+      })
     })
-    
-  })
-}
+  }
+  
