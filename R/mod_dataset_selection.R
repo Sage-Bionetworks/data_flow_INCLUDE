@@ -93,6 +93,8 @@ mod_dataset_selection_server <- function(id){
     # on button click call storage_project_datasets using selected project ID
     
     observeEvent(input$select_project_btn, {
+      
+      req(input$selected_projects)
 
       # subset storage project df by selected project
       # TODO: allow multiple project selection?
@@ -110,7 +112,7 @@ mod_dataset_selection_server <- function(id){
 
       dataset_df <- data.frame(do.call(rbind, dataset_list))
       names(dataset_df) <- c("ids", "name")
-      dataset_df <- dplyr::select(dataset_df, name, ids)
+      dataset_df <<- dplyr::select(dataset_df, name, ids)
       
 
       # render data table with scroll bar, no pagination, and filtering
@@ -131,12 +133,12 @@ mod_dataset_selection_server <- function(id){
     # if no rows selected: show no dataset selected
     # if rows selected return the selection
     eventReactive(input$select_dataset_btn, {
-      s <- input$dataset_tbl_rows_selected
-      if (length(s) == 0) {
+      selected <- input$dataset_tbl_rows_selected
+      if (length(selected) == 0) {
         showNotification("No Dataset Selected")
         return(NULL)
       } else{
-        return(dataset_df[s,])
+        return(dataset_df[selected,])
         }
       })
  
