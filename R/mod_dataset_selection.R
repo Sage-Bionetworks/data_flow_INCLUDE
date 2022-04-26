@@ -110,10 +110,16 @@ mod_dataset_selection_server <- function(id){
       dataset_df <- data.frame(do.call(rbind, dataset_list))
       names(dataset_df) <- c("ids", "name")
       dataset_df <- dplyr::select(dataset_df, name, ids)
+      
 
       # render data table with scroll bar, no pagination, and filtering
       output$dataset_tbl <- DT::renderDataTable({
-        DT::datatable(dataset_df)
+        DT::datatable(dataset_df,
+                      option = list(scrollY = 500,
+                                    scrollCollapse = TRUE,
+                                    bPaginate = FALSE,
+                                    dom = "t"),
+                      filter = list(position = 'top', clear = TRUE))
       })
     })
 
