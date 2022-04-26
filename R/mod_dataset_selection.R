@@ -70,6 +70,7 @@ mod_dataset_selection_server <- function(id){
     asset_view <- "syn20446927"
     
     # API CALL : GET STORAGE PROJECTS #######################################################################
+    
     storage_projects_list <- storage_projects(asset_view = asset_view,
                                               input_token = schematic_token)
     
@@ -115,6 +116,7 @@ mod_dataset_selection_server <- function(id){
       # render data table with scroll bar, no pagination, and filtering
       output$dataset_tbl <- DT::renderDataTable({
         DT::datatable(dataset_df,
+                      selection = "single",
                       option = list(scrollY = 500,
                                     scrollCollapse = TRUE,
                                     bPaginate = FALSE,
@@ -123,20 +125,20 @@ mod_dataset_selection_server <- function(id){
       })
     })
 
-    # ## ON BUTTON CLICK SUBMIT DATASET SELECTION #############################################################
-    # 
-    # # when button is pushed
-    # # if no rows selected: show no dataset selected
-    # # if rows selected return the selection
-    # eventReactive(input$select_dataset_btn, {
-    #   s <- input$dataset_tbl_rows_selected
-    #   if (length(s) == 0) {
-    #     showNotification("No Dataset Selected")
-    #     return(NULL)
-    #   } else{
-    #     return(dataset_df[s,])
-    #     }
-    #   })
+    ## ON BUTTON CLICK SUBMIT DATASET SELECTION #############################################################
+
+    # when button is pushed
+    # if no rows selected: show no dataset selected
+    # if rows selected return the selection
+    eventReactive(input$select_dataset_btn, {
+      s <- input$dataset_tbl_rows_selected
+      if (length(s) == 0) {
+        showNotification("No Dataset Selected")
+        return(NULL)
+      } else{
+        return(dataset_df[s,])
+        }
+      })
  
   })
 }
