@@ -74,7 +74,7 @@ manifest_generate <- function(url="http://localhost:3001/v1/manifest/generate",
 #' @param data_type Type of dataset
 #' @param title Title of csv
 #' @param csv_file Filepath of csv to validate
-#' @expor
+#' @export
 
 manifest_populate <- function(url="http://localhost:3001/v1/manifest/populate",
                               schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld", #notlint
