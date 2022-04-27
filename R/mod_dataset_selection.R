@@ -13,39 +13,45 @@ mod_dataset_selection_ui <- function(id){
     
     ## SELECT PROJECT BOX  ####################################################
     
-    shinydashboard::box(
-      title = "Select Project",
-      width = 6,
-      
-      # Project dropdown
-      uiOutput(ns("project_selector")),
-      
-      # Button to initiate project selection
-      actionButton(ns("select_project_btn"),
-                   "Submit"),
-      br(),
-      
-    ),
+    fluidRow(
+      column(width = 12,
+             shinydashboard::box(
+               title = "Select Project",
+               width = 6,
+               
+               # Project dropdown
+               uiOutput(ns("project_selector")),
+               
+               # Button to initiate project selection
+               actionButton(ns("select_project_btn"),
+                            "Submit"),
+               br()
+               )
+             )
+      ),
     
     ## SELECT DATASET BOX  ####################################################
     
-    shinydashboard::box(
-      title = "Select Dataset",
-      width = 6,
-      
-      # Table of storage project datasets 
-      DT::DTOutput(ns("dataset_tbl")),
-      
-      br(),
-      
-      # Button to initiate dataset selection
-      actionButton(ns("select_dataset_btn"), "Select Dataset(s)"),
-      
-      br()
+    fluidRow(
+      column(width = 12,
+             shinydashboard::box(
+               title = "Select Dataset",
+               width = 6,
+               
+               # Table of storage project datasets 
+               DT::DTOutput(ns("dataset_tbl")),
+               
+               br(),
+               
+               # Button to initiate dataset selection
+               actionButton(ns("select_dataset_btn"), "Select Dataset(s)"),
+               
+               br()
+               )
+             )
+      )
     )
- 
-  )
-}
+  }
     
 #' dataset_selection2 Server Functions
 #'
