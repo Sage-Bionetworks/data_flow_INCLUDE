@@ -5,22 +5,20 @@
 \title{Gets all datasets in folder under a given storage project that the current user has access to.}
 \usage{
 storage_project_datasets(
-  url = "http://localhost:3001/v1/storage/project/datasets",
   asset_view,
   project_id,
-  input_token
+  input_token,
+  url = "http://localhost:3001/v1/storage/project/datasets"
 )
 }
 \arguments{
-\item{url}{URL to schematic API endpoint}
+\item{asset_view}{synapse ID of master file view.}
 
 \item{project_id}{synapse ID of a storage project.}
 
 \item{input_token}{synapse PAT}
 
-\item{syn_master_file_view}{synapse ID of master file view.}
-
-\item{syn_master_file_name}{Synapse storage manifest file name.}
+\item{url}{URL to schematic API endpoint}
 }
 \description{
 Gets all datasets in folder under a given storage project that the current user has access to.

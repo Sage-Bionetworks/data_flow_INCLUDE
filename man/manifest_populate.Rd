@@ -5,24 +5,24 @@
 \title{Populate a manifest sheet}
 \usage{
 manifest_populate(
-  url = "http://localhost:3001/v1/manifest/populate",
- 
-    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld",
   data_type,
   title,
-  csv_file
+  csv_file,
+  url = "http://localhost:3001/v1/manifest/populate",
+ 
+    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
 )
 }
 \arguments{
-\item{url}{URL to schematic API endpoint}
-
-\item{schema_url}{URL to a schema jsonld}
-
 \item{data_type}{Type of dataset}
 
 \item{title}{Title of csv}
 
 \item{csv_file}{Filepath of csv to validate}
+
+\item{url}{URL to schematic API endpoint}
+
+\item{schema_url}{URL to a schema jsonld}
 }
 \description{
 Populate a manifest sheet

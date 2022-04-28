@@ -5,28 +5,26 @@
 \title{/storage/dataset/files}
 \usage{
 storage_dataset_files(
-  url = "http://localhost:3001/v1/storage/dataset/files",
   asset_view,
   dataset_id,
+  input_token,
   file_names = list(),
   full_path = FALSE,
-  input_token
+  url = "http://localhost:3001/v1/storage/dataset/files"
 )
 }
 \arguments{
-\item{url}{URL to schematic API endpoint}
+\item{asset_view}{synapse ID of master file view.}
 
 \item{dataset_id}{synapse ID of a storage dataset.}
+
+\item{input_token}{synapse PAT}
 
 \item{file_names}{a list of files with particular names (i.e. Sample_A.txt). If you leave it empty, it will return all dataset files under the dataset ID.}
 
 \item{full_path}{Boolean. If True return the full path as part of this filename; otherwise return just base filename}
 
-\item{input_token}{synapse PAT}
-
-\item{syn_master_file_view}{synapse ID of master file view.}
-
-\item{syn_master_file_name}{Synapse storage manifest file name.}
+\item{url}{URL to schematic API endpoint}
 }
 \description{
 /storage/dataset/files

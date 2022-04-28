@@ -5,20 +5,16 @@
 \title{schematic rest api to submit metadata}
 \usage{
 model_submit(
-  url = "http://localhost:3001/v1/model/submit",
- 
-    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld",
   data_type,
   dataset_id,
   input_token,
-  csv_file
+  csv_file,
+  url = "http://localhost:3001/v1/model/submit",
+ 
+    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
 )
 }
 \arguments{
-\item{url}{URL to schematic API endpoint}
-
-\item{schema_url}{URL to a schema jsonld}
-
 \item{data_type}{Type of dataset}
 
 \item{dataset_id}{Synapse ID of existing manifest}
@@ -26,6 +22,10 @@ model_submit(
 \item{input_token}{Synapse login cookie, PAT, or API key.}
 
 \item{csv_file}{Filepath of csv to validate}
+
+\item{url}{URL to schematic API endpoint}
+
+\item{schema_url}{URL to a schema jsonld}
 }
 \value{
 TRUE if successful upload or validate errors if not.

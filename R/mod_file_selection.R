@@ -11,18 +11,26 @@ mod_file_selection_ui <- function(id){
   ns <- NS(id)
   tagList(
     
-    # Action button that opens file selector
-    # TODO: eventually this will become a toggle similar to data_curator dashboard
-    actionButton(ns("file_button"), "Turn on File Level View"),
-    
-    # hide shinydashboard::box on app load
-    shinyjs::hidden(
-      
-      div(id = ns("wrapper"),
-          uiOutput(ns('tabs')))
-      )
+    fluidRow(
+      column(width = 12,
+             # Action button that opens file selector
+             # TODO: eventually this will become a toggle similar to data_curator dashboard
+             
+             shinydashboard::box(
+               title = "Select Files",
+               actionButton(ns("file_button"), "Turn on File Level View"),
+               
+               # hide shinydashboard::box on app load
+               shinyjs::hidden(
+                 
+                 div(id = ns("wrapper"),
+                     uiOutput(ns('tabs')))
+                 
+                 )
+               )
+             ))
     )
-}
+  }
     
 #' file_selection Server Functions
 #'
@@ -35,7 +43,7 @@ mod_file_selection_server <- function(id, dataset){
     observeEvent(input$file_button, {
       shinyjs::toggle("wrapper")
     })
-    
+
     # TODO: similar to data curator will want to initiate file selector data pull
     #       after the toggle is selected
     
@@ -53,10 +61,6 @@ mod_file_selection_server <- function(id, dataset){
         })
       }
     })
-    
-    # output$dataset_selection <- renderPrint({
-    #   dataset()
-    # })
     
     # render tabbox dynamically
     # create a tab for each dataset selected in mod_dataset_selection

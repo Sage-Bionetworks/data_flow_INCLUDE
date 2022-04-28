@@ -5,20 +5,23 @@
 \title{Download a manifest}
 \usage{
 manifest_download(
-  url = "http://localhost:3001/v1/manifest/download",
   asset_view,
   dataset_id,
-  input_token
+  input_token,
+  as_json,
+  url = "http://localhost:3001/v1/manifest/download"
 )
 }
 \arguments{
-\item{url}{URL to schematic API endpoint}
-
 \item{asset_view}{ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)}
 
 \item{dataset_id}{Synapse ID of existing manifest}
 
 \item{input_token}{Synapse login cookie, PAT, or API key.}
+
+\item{as_json}{Synapse login cookie, PAT, or API key.}
+
+\item{url}{URL to schematic API endpoint}
 }
 \value{
 a URL to a google sheet

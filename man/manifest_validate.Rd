@@ -5,24 +5,24 @@
 \title{schematic rest api to validate metadata}
 \usage{
 manifest_validate(
+  data_type,
+  csv_file,
   url = "http://localhost:3001/v1/model/validate",
  
-    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld",
-  data_type,
-  csv_file
+    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
 )
 }
 \arguments{
-\item{url}{URL to schematic API endpoint}
-
-\item{schema_url}{URL to a schema jsonld}
-
 \item{data_type}{Type of dataset}
 
 \item{csv_file}{Filepath of csv to validate}
+
+\item{url}{URL to schematic API endpoint}
+
+\item{schema_url}{URL to a schema jsonld}
 }
 \value{
-An empty list() if sucessfully validated. Or a list of errors.
+An empty list() if successfully validated. Or a list of errors.
 }
 \description{
 schematic rest api to validate metadata

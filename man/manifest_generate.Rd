@@ -5,14 +5,14 @@
 \title{schematic rest api to generate manifest}
 \usage{
 manifest_generate(
+  title,
+  data_type,
+  dataset_id,
   url = "http://localhost:3001/v1/manifest/generate",
  
     schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld",
-  title,
-  data_type,
   oauth = "true",
-  use_annotations = "false",
-  dataset_id
+  use_annotations = "false"
 )
 }
 \arguments{
@@ -20,11 +20,15 @@ manifest_generate(
 
 \item{data_type}{Type of dataset}
 
+\item{dataset_id}{Synapse ID of existing manifest}
+
+\item{url}{URL to schematic API endpoint}
+
+\item{schema_url}{URL to a schema jsonld}
+
 \item{oauth}{true or false STRING passed to python}
 
 \item{use_annotations}{true or false STRING passed to python}
-
-\item{dataset_id}{Synapse ID of existing manifest}
 }
 \value{
 a URL to a google sheet
