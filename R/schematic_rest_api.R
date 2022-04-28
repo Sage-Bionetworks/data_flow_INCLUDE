@@ -1,4 +1,8 @@
-### FUNCTIONS MOSTLY FROM DATA_CURATOR/R/SCHEMATIC_REST_API.R by @AFWILLIA
+#############################
+## Schematic API Functions ##
+#############################
+
+# NOTE: functions mostly copied from data_curator/r/schematic_rest_api.R by @afwillia
 
 ## MANIFEST OPERATIONS #########################################################
 
@@ -18,10 +22,8 @@ manifest_download <- function(asset_view,
                               input_token,
                               as_json,
                               url="http://localhost:3001/v1/manifest/download") {
-  headers = c(
-    `accept` = 'application/json'
-  )
   
+  # set up parameters for httr::get call
   params = list(
     `input_token` = input_token,
     `asset_view` = asset_view,
@@ -29,7 +31,16 @@ manifest_download <- function(asset_view,
     `as_json` = as_json
   )
   
-  res <- httr::GET(url = url, httr::add_headers(.headers=headers), query = params)
+  # run GET
+  res <- httr::GET(url = url, query = params)
+  
+  # if as_json is TRUE, update type to match
+  type <- ifelse(as_json, "application/json", "text/csv")
+  
+  # pull out content from request
+  manifest <- httr::content(res, as = "text", type = type, encoding = "UTF-8")
+  
+  return(manifest)
 }
 
 #' schematic rest api to generate manifest
@@ -37,8 +48,8 @@ manifest_download <- function(asset_view,
 #' @param title Name of dataset 
 #' @param data_type Type of dataset 
 #' @param dataset_id Synapse ID of existing manifest
-#' @param url
-#' @param schema_url
+#' @param url URL to schematic API endpoint
+#' @param schema_url URL to a schema jsonld 
 #' @param oauth true or false STRING passed to python
 #' @param use_annotations true or false STRING passed to python 
 #' 
@@ -73,7 +84,8 @@ manifest_generate <- function(title,
 #' @param title Title of csv
 #' @param csv_file Filepath of csv to validate
 #' @param url URL to schematic API endpoint
-#' @param schema_url URL to a schema jsonld 
+#' @param schema_url URL to a schema jsonld
+#' 
 #' @export
 
 manifest_populate <- function(data_type, 
