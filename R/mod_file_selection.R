@@ -17,6 +17,7 @@ mod_file_selection_ui <- function(id){
              # TODO: eventually this will become a toggle similar to data_curator dashboard
              
              shinydashboard::box(
+               width = 12,
                title = "Select Files",
                actionButton(ns("file_button"), "Turn on File Level View"),
                
@@ -24,7 +25,8 @@ mod_file_selection_ui <- function(id){
                shinyjs::hidden(
                  
                  div(id = ns("wrapper"),
-                     uiOutput(ns('tabs')))
+                     #uiOutput(ns('tabs')))
+                     DT::DTOutput(ns("manifest_tbl")))
                  
                  )
                )
@@ -39,7 +41,21 @@ mod_file_selection_server <- function(id, dataset){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    # HARDCODED VARIABLES ###################################################################################
+    
+    # get token from renviron
+    # TODO: repetitive figure out how to store or pass as variable
+    
+    schematic_token <- Sys.getenv("schematicToken")
+    
+    # manually set asset view
+    # TODO: repetitive figure out how to store or pass asset_view
+    
+    asset_view <- "syn20446927"
+    
+    # SHINY JS TOGGLE ON BUTTON CLICK #######################################################################
     # hide/show toggle for wrapper
+    
     observeEvent(input$file_button, {
       shinyjs::toggle("wrapper")
     })
@@ -48,35 +64,42 @@ mod_file_selection_server <- function(id, dataset){
     #       after the toggle is selected
     
     
+    # ON CLICK GET MANIFEST FOR SELECTED DATASET ############################################################
     
-    # on button click display text
-    observeEvent(input$button, {
-      s <- input$tbl_rows_selected
-      if (length(s) == 0) {
-        output$file_selection <- renderPrint({
-          cat("no files selected")}) 
-      } else {
-        output$file_selection <- renderPrint({
-          s
-        })
-      }
-    })
-    
-    # render tabbox dynamically
-    # create a tab for each dataset selected in mod_dataset_selection
-    output$tabs <- renderUI({
+    manifest <- eventReactive(input$file_button, {
       ds <- dataset()
-      nTabs <- nrow(ds)
-      myTabs <- lapply(1:nTabs, function(x) {
-        tabPanel(title = ds[x, "Dataset"],
-                 output$dataset_selection <- DT::renderDT({
-                      ds[x,]
-                    }))
-        
-        
-      })
-      do.call(shinydashboard::tabBox, myTabs)
+      manifest_download_to_df(asset_view = asset_view,
+                              dataset_id = ds$id,
+                              input_token = schematic_token)
+      
     })
+    
+    # DISPLAY MANIFEST AS TABLE #############################################################################
+    
+    output$manifest_tbl <- DT::renderDataTable({
+      DT::datatable(manifest())
+    })
+    
+    # ARCHIVE ###############################################################################################
+    
+    # Right now only allowing a single selection so this is unnecessary
+    # TODO : Enable multiple datasets to be selected
+    #        Display each corresponding manifest in a tab
+    # # render tabbox dynamically
+    # # create a tab for each dataset selected in mod_dataset_selection
+    # output$tabs <- renderUI({
+    #   ds <- dataset()
+    #   nTabs <- nrow(ds)
+    #   myTabs <- lapply(1:nTabs, function(x) {
+    #     tabPanel(title = ds[x, "Dataset"],
+    #              output$dataset_selection <- DT::renderDT({
+    #                   ds[x,]
+    #                 }))
+    #     
+    #     
+    #   })
+    #   do.call(shinydashboard::tabBox, myTabs)
+    # })
     
   })
 }
