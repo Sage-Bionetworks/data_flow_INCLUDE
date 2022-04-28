@@ -14,7 +14,6 @@
 #' @param input_token Synapse login cookie, PAT, or API key.
 #' @param as_json Synapse login cookie, PAT, or API key.
 #' 
-#' @returns a URL to a google sheet
 #' @export
 
 manifest_download <- function(asset_view,
