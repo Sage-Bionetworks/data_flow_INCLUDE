@@ -65,6 +65,10 @@ mod_file_selection_server <- function(id, dataset){
     
     
     # ON CLICK GET MANIFEST FOR SELECTED DATASET ############################################################
+    # FIXME: Button click data flow is not ideal
+    # Click of show file level view must happen AFTER dataset is selected
+    # If you have clicked show file level view and displayed a dataset, but want to
+    # change that dataset you need to click "Show file level view" again
     
     manifest <- eventReactive(input$file_button, {
       ds <- dataset()
@@ -77,7 +81,13 @@ mod_file_selection_server <- function(id, dataset){
     # DISPLAY MANIFEST AS TABLE #############################################################################
     
     output$manifest_tbl <- DT::renderDataTable({
-      DT::datatable(manifest())
+      DT::datatable(manifest(),
+                    option = list(scrollY = 500,
+                                  scrollX = TRUE,
+                                  scrollCollapse = TRUE,
+                                  bPaginate = FALSE,
+                                  dom = "t"),
+                    filter = list(position = 'top', clear = TRUE))
     })
     
     # ARCHIVE ###############################################################################################
