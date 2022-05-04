@@ -24,10 +24,18 @@ manifest_download_to_df <- function(asset_view,
   
   
   # use json lite to parse into dataframe
-  content_df <- jsonlite::fromJSON(manifest_json)
+  content_df <- tryCatch({
+    jsonlite::fromJSON(manifest_json)
+  },
+  error = function(e) {
+    message("No manifest available")
+    return(NA)
+  })
   
-  # modify column names to match csv manifest download (replace " " with ".")
-  names(content_df) <- gsub(" ", ".", names(content_df))
+  # if content_df is not NA, modify column names
+  if (!is.na(content_df)) {
+    names(content_df) <- gsub(" ", ".", names(content_df))
+  }
   
   # output df
   return(content_df)
