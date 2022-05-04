@@ -29,9 +29,13 @@ app_ui <- function(request) {
           shinydashboard::menuItem("Administrative", 
                                    tabName = "administrate",
                                    icon = icon("cog")),
-          shinydashboard::menuItem("Dashboard", 
-                                   tabName = "dashboard",
+          shinydashboard::menuItem("Project Overview Dashboard", 
+                                   tabName = "overview-dashboard",
+                                   icon = icon("dashboard")),
+          shinydashboard::menuItem("Dataset Level Dashboard", 
+                                   tabName = "dataset-dashboard",
                                    icon = icon("dashboard"))
+          
         )
       ),
       
@@ -66,8 +70,13 @@ app_ui <- function(request) {
                                   ),
           
           # dashboard tab
-          shinydashboard::tabItem(tabName = "dashboard",
-                                  h2("Coming Soon: Dashbaord!"))
+          shinydashboard::tabItem(tabName = "overview-dashboard",
+                                  h2("Coming Soon: Overview Dashbaord!")
+                                  ),
+          # dashboard tab
+          shinydashboard::tabItem(tabName = "dataset-dashboard",
+                                  h2("Coming Soon: Dataset Dashbaord!")
+                                  )
           )
         )
       )
