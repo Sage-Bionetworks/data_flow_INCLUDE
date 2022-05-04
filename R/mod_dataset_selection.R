@@ -17,7 +17,7 @@ mod_dataset_selection_ui <- function(id){
       column(width = 12,
              shinydashboard::box(
                title = "Select Project",
-               width = 6,
+               width = 12,
                
                # Project dropdown
                uiOutput(ns("project_selector")),
@@ -36,7 +36,7 @@ mod_dataset_selection_ui <- function(id){
       column(width = 12,
              shinydashboard::box(
                title = "Select Dataset",
-               width = 6,
+               width = 12,
                
                # Table of storage project datasets 
                DT::DTOutput(ns("dataset_tbl")),
@@ -80,11 +80,11 @@ mod_dataset_selection_server <- function(id){
     storage_projects_list <- storage_projects(asset_view = asset_view,
                                               input_token = schematic_token)
     
-    # get names from list
-    storage_projects_names <- purrr::map_chr(storage_projects_list, purrr::pluck(2))
-    storage_projects_ids <- purrr::map_chr(storage_projects_list, purrr::pluck(1))
-    storage_projects_df <- data.frame(name = storage_projects_names, 
-                                      id = storage_projects_ids)
+    # convert to dataframe
+    storage_projects_df <- list_to_dataframe(list = storage_projects_list,
+                                             col_names = c("id", "name")) 
+    
+    storage_projects_df <- dplyr::select(storage_projects_df, name, id)
 
     
     # DROP DOWN LISTING STORAGE PROJECTS ####################################################################
@@ -115,10 +115,11 @@ mod_dataset_selection_server <- function(id){
 
       # schematic outputs a list
       # parse into a dataframe
+      
+      dataset_df <- list_to_dataframe(list = dataset_list,
+                                      col_names = c("id", "name"))
 
-      dataset_df <- data.frame(do.call(rbind, dataset_list))
-      names(dataset_df) <- c("ids", "name")
-      dataset_df <<- dplyr::select(dataset_df, name, ids)
+      dataset_df <- dplyr::select(dataset_df, name, id)
       
 
       # render data table with scroll bar, no pagination, and filtering
