@@ -17,7 +17,6 @@ mod_dataset_selection_ui <- function(id){
       column(width = 12,
              shinydashboard::box(
                title = "Select Project",
-               width = 12,
                
                # Project dropdown
                uiOutput(ns("project_selector")),
@@ -36,7 +35,7 @@ mod_dataset_selection_ui <- function(id){
       column(width = 12,
              shinydashboard::box(
                title = "Select Dataset",
-               width = 12,
+               width = NULL,
                
                # Table of storage project datasets 
                DT::DTOutput(ns("dataset_tbl")),
@@ -82,8 +81,9 @@ mod_dataset_selection_server <- function(id){
     
     # convert to dataframe
     storage_projects_df <- list_to_dataframe(list = storage_projects_list,
-                                             col_names = c("id", "name")) 
+                                             col_names = c("id", "name"))
     
+    # reorder
     storage_projects_df <- dplyr::select(storage_projects_df, name, id)
 
     
@@ -98,6 +98,9 @@ mod_dataset_selection_server <- function(id){
     ## ON CLICK DISPLAY STORAGE PROJECT DATASETS  ###########################################################
     # on button click call storage_project_datasets using selected project ID
     
+    ## Initialize dataset_df
+    rv <- reactiveValues(dataset_df = NULL)
+    
     observeEvent(input$select_project_btn, {
       
       req(input$selected_projects)
@@ -108,7 +111,7 @@ mod_dataset_selection_server <- function(id){
       selected_project_df <- storage_projects_df[grepl(input$selected_projects, storage_projects_df$name), ]
 
       # call schematic API - get datasets for selected storage project
-
+      
       dataset_list <- storage_project_datasets(asset_view = asset_view,
                                                project_id = selected_project_df$id,
                                                input_token = schematic_token)
@@ -116,15 +119,15 @@ mod_dataset_selection_server <- function(id){
       # schematic outputs a list
       # parse into a dataframe
       
-      dataset_df <- list_to_dataframe(list = dataset_list,
+      rv$dataset_df <- list_to_dataframe(list = dataset_list,
                                       col_names = c("id", "name"))
 
-      dataset_df <- dplyr::select(dataset_df, name, id)
+      rv$dataset_df <- dplyr::select(rv$dataset_df, name, id)
       
 
       # render data table with scroll bar, no pagination, and filtering
       output$dataset_tbl <- DT::renderDataTable({
-        DT::datatable(dataset_df,
+        DT::datatable(rv$dataset_df,
                       selection = "single",
                       option = list(scrollY = 500,
                                     scrollCollapse = TRUE,
@@ -132,6 +135,7 @@ mod_dataset_selection_server <- function(id){
                                     dom = "t"),
                       filter = list(position = 'top', clear = TRUE))
       })
+        
     })
 
     ## ON BUTTON CLICK SUBMIT DATASET SELECTION #############################################################
@@ -145,7 +149,7 @@ mod_dataset_selection_server <- function(id){
         showNotification("No Dataset Selected")
         return(NULL)
       } else{
-        return(dataset_df[selected,])
+        return(rv$dataset_df[selected,])
         }
       })
  

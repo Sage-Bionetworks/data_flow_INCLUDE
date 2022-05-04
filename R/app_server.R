@@ -21,8 +21,8 @@ app_server <- function( input, output, session ) {
   
   # MOD_DATASET_SELECTION
   # input: dataframe of storage projects (name, id)
-  mod_dataset_selection_server("dataset_selection_ui_1")
+  dataset_selection <- mod_dataset_selection_server("dataset_selection_ui_1")
   
   #MOD_FILE_SELECTION
-  #mod_file_selection_server("file_selection_ui_1", ds)
+  mod_file_selection_server("file_selection_ui_1", dataset_selection)
 }
