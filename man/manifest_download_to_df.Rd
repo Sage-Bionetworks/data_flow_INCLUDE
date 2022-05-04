@@ -2,7 +2,7 @@
 % Please edit documentation in R/api_wrappers.R
 \name{manifest_download_to_df}
 \alias{manifest_download_to_df}
-\title{Download a manifest into a dataframe}
+\title{Download a manifest as JSON and parse into a dataframe}
 \usage{
 manifest_download_to_df(asset_view, dataset_id, input_token)
 }
@@ -12,11 +12,7 @@ manifest_download_to_df(asset_view, dataset_id, input_token)
 \item{dataset_id}{Synapse ID of existing manifest}
 
 \item{input_token}{Synapse login cookie, PAT, or API key.}
-
-\item{url}{URL to schematic API endpoint}
-
-\item{as_json}{Synapse login cookie, PAT, or API key.}
 }
 \description{
-Download a manifest into a dataframe
+Download a manifest as JSON and parse into a dataframe
 }
