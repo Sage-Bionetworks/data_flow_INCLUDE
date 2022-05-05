@@ -11,7 +11,13 @@
 ##    - Date/time of modification
 ##    - Who made the modification
 
-modifyManifest <- function(manifest) {
+#' Modify manifest
+#'
+#' @param manifest A manifest
+#' 
+#' @export
+
+modify_manifest <- function(manifest) {
   manifest$modified <- replicate(nrow(manifest, TRUE))
   return(manifest)
 }
