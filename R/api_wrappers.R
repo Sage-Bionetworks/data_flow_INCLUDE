@@ -29,11 +29,11 @@ manifest_download_to_df <- function(asset_view,
   },
   error = function(e) {
     message("No manifest available")
-    return(NA)
+    return(NULL)
   })
   
   # if content_df is not NA, modify column names
-  if (!is.na(content_df)) {
+  if (!is.null(content_df)) {
     names(content_df) <- gsub(" ", ".", names(content_df))
   }
   
