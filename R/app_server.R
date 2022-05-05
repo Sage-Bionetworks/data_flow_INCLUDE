@@ -16,13 +16,23 @@ app_server <- function( input, output, session ) {
   syntab <- reticulate::import("synapseclient.table")
   syn <- synapseclient$Synapse()
   syn$login()
-
+  
+  # CREDENTIALS REACTIVE VAL #######################################################
+  # these will likely come from a config eventually
+  
+  creds <- reactiveValues(asset_view = "syn20446927",
+                          schematic_token = Sys.getenv("schematicToken"))
+  
   # APP SERVER LOGIC  ##############################################################
   
   # MOD_DATASET_SELECTION
   # input: dataframe of storage projects (name, id)
   dataset_selection <- mod_dataset_selection_server("dataset_selection_ui_1")
   
-  #MOD_FILE_SELECTION
-  mod_file_selection_server("file_selection_ui_1", dataset_selection)
+  # MOD_FILE_SELECTION
+  file_selection <- mod_file_selection_server("file_selection_ui_1",
+                                                  dataset_selection)
+
+  # MOD_SET_STATUS
+  release_status_selection <- mod_set_release_status_server("set_release_status_ui_1")
 }
