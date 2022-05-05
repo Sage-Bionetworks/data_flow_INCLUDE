@@ -55,7 +55,8 @@ app_ui <- function(request) {
                                     mod_dataset_selection_ui("dataset_selection_ui_1"),
                                     mod_file_selection_ui("file_selection_ui_1"),
                                     br(),
-                                    mod_set_release_status_ui("set_release_status_ui_1"))
+                                    mod_set_release_status_ui("set_release_status_ui_1"),
+                                    DT::DTOutput("modified_manifest"))
                                   ),
           
           # dashboard tab

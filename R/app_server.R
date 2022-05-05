@@ -35,4 +35,19 @@ app_server <- function( input, output, session ) {
 
   # MOD_SET_STATUS
   release_status_selection <- mod_set_release_status_server("set_release_status_ui_1")
+  
+  manifest_mod <- reactive({
+    manifest <- file_selection$manifest()
+    manifest[file_selection$selected_rows(), ]
+  })
+  
+  output$modified_manifest <- DT::renderDataTable({
+    DT::datatable(manifest_mod())
+                  # option = list(scrollY = 500,
+                  #               scrollX = TRUE,
+                  #               scrollCollapse = TRUE,
+                  #               bPaginate = FALSE,
+                  #               dom = "t"),
+                  # filter = list(position = 'top', clear = TRUE))
+    })
 }
