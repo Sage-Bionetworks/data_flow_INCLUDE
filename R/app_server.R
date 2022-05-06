@@ -60,14 +60,19 @@ app_server <- function( input, output, session ) {
 
   })
   
-  # TODO Only render table once submission button is clicked 
-  output$modified_manifest <- DT::renderDataTable({
-    DT::datatable(manifest_mod(),
-                  option = list(scrollY = 500,
-                                scrollX = TRUE,
-                                scrollCollapse = TRUE,
-                                bPaginate = FALSE,
-                                dom = "t"),
-                  filter = list(position = 'top', clear = TRUE))
+  # wait for button click to display table
+  # in place of model/submit endpoint for now
+  observeEvent(release_status_selection$btn_click(), {
+    output$modified_manifest <- DT::renderDataTable({
+      DT::datatable(manifest_mod(),
+                    option = list(scrollY = 500,
+                                  scrollX = TRUE,
+                                  scrollCollapse = TRUE,
+                                  bPaginate = FALSE,
+                                  dom = "t"),
+                    filter = list(position = 'top', clear = TRUE))
     })
+  })
+  
+  
 }
