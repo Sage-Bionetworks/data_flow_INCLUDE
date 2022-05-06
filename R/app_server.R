@@ -16,13 +16,7 @@ app_server <- function( input, output, session ) {
   syntab <- reticulate::import("synapseclient.table")
   syn <- synapseclient$Synapse()
   syn$login()
-  
-  # CREDENTIALS REACTIVE VAL #######################################################
-  # these will likely come from a config eventually
-  
-  creds <- reactiveValues(asset_view = "syn20446927",
-                          schematic_token = Sys.getenv("schematicToken"))
-  
+
   # APP SERVER LOGIC  ##############################################################
   
   # MOD_DATASET_SELECTION
