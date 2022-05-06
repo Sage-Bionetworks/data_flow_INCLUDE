@@ -17,6 +17,7 @@ mod_dataset_selection_ui <- function(id){
       column(width = 12,
              shinydashboard::box(
                title = "Select Project",
+               width = NULL,
                
                # Project dropdown
                uiOutput(ns("project_selector")),
@@ -59,6 +60,9 @@ mod_dataset_selection_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    # initialize object that contains reactive values
+    rv <- reactiveValues()
+    
     # HARDCODED VARIABLES ###################################################################################
     
     # FIXME: Need to load data before app launches (like how DCA waites for data before loading)
@@ -76,30 +80,37 @@ mod_dataset_selection_server <- function(id){
     
     # API CALL : GET STORAGE PROJECTS #######################################################################
     
+    # COMMENT OUT FOR TESTING
     storage_projects_list <- storage_projects(asset_view = asset_view,
                                               input_token = schematic_token)
-    
+
     # convert to dataframe
     storage_projects_df <- list_to_dataframe(list = storage_projects_list,
                                              col_names = c("id", "name"))
-    
-    # reorder
-    storage_projects_df <- dplyr::select(storage_projects_df, name, id)
 
-    
+    # reorder and add to reactive values
+    rv$storage_projects_df <- dplyr::select(storage_projects_df, name, id)
+
+
     # DROP DOWN LISTING STORAGE PROJECTS ####################################################################
 
     output$project_selector <- renderUI({
       selectInput(session$ns("selected_projects"),
                   label = "Select Project",
-                  choices = storage_projects_df$name)
+                  choices = rv$storage_projects_df$name)
     })
+    
+    # ## DUMMY DATA FOR TESTING
+    # rv$storage_projects_df <- data.frame(name = "lw-test", id ="syn30028964") 
+    # 
+    # output$project_selector <- renderUI({
+    #   selectInput(session$ns("selected_projects"),
+    #               label = "Select Project",
+    #               choices = rv$storage_projects_df$name)
+    # })
     
     ## ON CLICK DISPLAY STORAGE PROJECT DATASETS  ###########################################################
     # on button click call storage_project_datasets using selected project ID
-    
-    ## Initialize dataset_df
-    rv <- reactiveValues(dataset_df = NULL)
     
     observeEvent(input$select_project_btn, {
       
@@ -108,22 +119,23 @@ mod_dataset_selection_server <- function(id){
       # subset storage project df by selected project
       # TODO: allow multiple project selection?
 
-      selected_project_df <- storage_projects_df[grepl(input$selected_projects, storage_projects_df$name), ]
+      selected_project_df <- rv$storage_projects_df[grepl(input$selected_projects, rv$storage_projects_df$name), ]
 
       # call schematic API - get datasets for selected storage project
       
+      ### COMMENT OUT FOR TESTING
       dataset_list <- storage_project_datasets(asset_view = asset_view,
                                                project_id = selected_project_df$id,
                                                input_token = schematic_token)
 
       # schematic outputs a list
       # parse into a dataframe
-      
+
       rv$dataset_df <- list_to_dataframe(list = dataset_list,
                                       col_names = c("id", "name"))
 
       rv$dataset_df <- dplyr::select(rv$dataset_df, name, id)
-      
+
 
       # render data table with scroll bar, no pagination, and filtering
       output$dataset_tbl <- DT::renderDataTable({
@@ -135,6 +147,19 @@ mod_dataset_selection_server <- function(id){
                                     dom = "t"),
                       filter = list(position = 'top', clear = TRUE))
       })
+      
+      # ## TESTING DUMMY DATA TO SKIP API CALL
+      # rv$dataset_df <- data.frame(name = "HTAN_CenterA_Demographics", id = "syn30028964")
+      # 
+      # output$dataset_tbl <- DT::renderDataTable({
+      #   DT::datatable(rv$dataset_df,
+      #                 selection = "single",
+      #                 option = list(scrollY = 500,
+      #                               scrollCollapse = TRUE,
+      #                               bPaginate = FALSE,
+      #                               dom = "t"),
+      #                 filter = list(position = 'top', clear = TRUE))
+      # })
         
     })
 

@@ -17,20 +17,25 @@ mod_file_selection_ui <- function(id){
              # TODO: eventually this will become a toggle similar to data_curator dashboard
              
              shinydashboard::box(
-               width = 12,
+               width = NULL,
                title = "Select Files",
-               actionButton(ns("file_button"), "Turn on File Level View"),
                
-               # hide shinydashboard::box on app load
-               shinyjs::hidden(
-                 
-                 div(id = ns("wrapper"),
-                     #uiOutput(ns('tabs')))
-                     DT::DTOutput(ns("manifest_tbl")))
-                 
-                 )
+               actionButton(ns("getfiles_btn"), "Get Files"),
+               
+               DT::DTOutput(ns("manifest_tbl"))
+               # actionButton(ns("file_button"), "Turn on File Level View"),
+               # 
+               # # hide shinydashboard::box on app load
+               # shinyjs::hidden(
+               #   
+               #   div(id = ns("wrapper"),
+               #       #uiOutput(ns('tabs')))
+               #       DT::DTOutput(ns("manifest_tbl")))
+               #   
+               #   )
                )
-             ))
+             )
+      )
     )
   }
     
@@ -56,9 +61,9 @@ mod_file_selection_server <- function(id, dataset){
     # SHINY JS TOGGLE ON BUTTON CLICK #######################################################################
     # hide/show toggle for wrapper
     
-    observeEvent(input$file_button, {
-      shinyjs::toggle("wrapper")
-    })
+    # observeEvent(input$file_button, {
+    #   shinyjs::toggle("wrapper")
+    # })
 
     # TODO: similar to data curator will want to initiate file selector data pull
     #       after the toggle is selected
@@ -70,7 +75,7 @@ mod_file_selection_server <- function(id, dataset){
     # If you have clicked show file level view and displayed a dataset, but want to
     # change that dataset you need to click "Show file level view" again
     
-    manifest <- eventReactive(input$file_button, {
+    manifest <- eventReactive(input$getfiles_btn, {
       ds <- dataset()
       manifest_download_to_df(asset_view = asset_view,
                               dataset_id = ds$id,
@@ -89,6 +94,13 @@ mod_file_selection_server <- function(id, dataset){
                                   dom = "t"),
                     filter = list(position = 'top', clear = TRUE))
     })
+    
+    # return a list containing the downloaded manifest and rows selected
+    
+    return(list(
+      manifest = reactive({ manifest() }),
+      selected_rows = reactive({ input$manifest_tbl_rows_selected })
+    ))
     
     # ARCHIVE ###############################################################################################
     
