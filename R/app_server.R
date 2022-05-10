@@ -7,7 +7,7 @@
 app_server <- function( input, output, session ) {
   # Your application server logic
   
-  # DEV STUFF #########################################################################
+  # DEV STUFF ###########################################################################
   
   # SYNAPSE LOGIN
   # TODO: log in will eventually live in global.R/rely on config info
@@ -17,7 +17,7 @@ app_server <- function( input, output, session ) {
   syn <- synapseclient$Synapse()
   syn$login()
 
-  # APP SERVER LOGIC  ##############################################################
+  # ADMINISTRATE  #######################################################################
   
   # MOD_DATASET_SELECTION
   dataset_selection <- mod_dataset_selection_server("dataset_selection_ui_1")
@@ -29,6 +29,7 @@ app_server <- function( input, output, session ) {
   # MOD_SET_STATUS
   release_status_selection <- mod_set_release_status_server("set_release_status_ui_1")
   
+  # UPDATE MANIFEST WITH STATUS SELECTION
   manifest_mod <- reactive({
     
     mani <- file_selection$manifest()
@@ -54,6 +55,8 @@ app_server <- function( input, output, session ) {
 
   })
   
+  # SUBMIT MANIFEST
+  
   # wait for button click to display table
   # in place of model/submit endpoint for now
   observeEvent(release_status_selection$btn_click(), {
@@ -67,6 +70,56 @@ app_server <- function( input, output, session ) {
                     filter = list(position = 'top', clear = TRUE))
     })
   })
+  
+  # DATASET DASH  #######################################################################
+  
+  # dummy data
+  dataset_dash_data <- reactive({
+    
+    contributor <- sample(c("HTAN BU", "HTAN OHSU", "HTAN CHOP"), 50, replace = TRUE)
+    dataset <- sample(c("BiospecimanBatch1", "PatientTrial1", "scATAC-seq", "FamilyHistory"), 50, replace = TRUE)
+    num <- as.integer(runif(50, min = 5, max = 500))
+    release_scheduled <- sample(c("Not scheduled", "Jun 2022", "May 2022", "Sept 2022"), 50, replace = TRUE)
+    embargo <- sample(c("No embargo", "Jun 2022", "May 2022", "Sept 2022"), 50, replace = TRUE)
+    standard_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
+    qc_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
+    phi_detection_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
+    access_controls_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
+    data_portal <- sample(c(TRUE, FALSE), 50, replace = TRUE)
+
+        
+    df <- data.frame(Contributor = contributor,
+                     Dataset = dataset,
+                     Num_Items = num,
+                     Release_Scheduled = release_scheduled,
+                     Embargo = embargo,
+                     Standard_Compliance = standard_compliance,
+                     QC_Compliance = qc_compliance,
+                     PHI_Detection_Compliance = phi_detection_compliance,
+                     Access_Controls_Compliance = access_controls_compliance,
+                     Data_Portal = data_portal)
+    
+    return(df)
+  })
+  
+  # prepare data to be displayed by mod_datatable
+  dataset_dash_data_prepped <- reactive({
+    df <- dataset_dash_data()
+    
+    # convert TRUE/FALSE to icons for qc columns
+    qc_cols <- c("Standard_Compliance", "QC_Compliance", "PHI_Detection_Compliance", 
+                 "Access_Controls_Compliance", "Data_Portal")
+    
+    df[qc_cols] <- lapply(df[qc_cols], true_false_icon)
+    
+    # convert specified columns to factors 
+    factor_cols <- c("Contributor")
+    df[factor_cols] <- as.factor(df[,factor_cols])
+    
+    return(df)
+  })
+
+  mod_datatable_server("datatable_1", dataset_dash_data_prepped)
   
   
 }
