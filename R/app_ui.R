@@ -26,15 +26,15 @@ app_ui <- function(request) {
         
         #sidebarMenu
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("Administrative", 
-                                   tabName = "administrate",
-                                   icon = icon("cog")),
           shinydashboard::menuItem("Project Overview Dashboard", 
                                    tabName = "overview-dashboard",
                                    icon = icon("dashboard")),
           shinydashboard::menuItem("Dataset Level Dashboard", 
                                    tabName = "dataset-dashboard",
-                                   icon = icon("dashboard"))
+                                   icon = icon("dashboard")),
+          shinydashboard::menuItem("Administrative", 
+                                   tabName = "administrate",
+                                   icon = icon("cog"))
           
         )
       ),
@@ -48,25 +48,39 @@ app_ui <- function(request) {
         # dashboardTabItems
         shinydashboard::tabItems(
           
-          # administrate tab
-          shinydashboard::tabItem(tabName = "administrate",
-                                  # dataset and file selection
-                                  fluidPage(
-                                    mod_dataset_selection_ui("dataset_selection_ui_1"),
-                                    mod_file_selection_ui("file_selection_ui_1"),
-                                    br(),
-                                    mod_set_release_status_ui("set_release_status_ui_1"),
-                                    DT::DTOutput("modified_manifest"))
-                                  ),
-          
-          # dashboard tab
+          # overview dashboard tab
           shinydashboard::tabItem(tabName = "overview-dashboard",
                                   h2("Coming Soon: Overview Dashbaord!")
                                   ),
-          # dashboard tab
+          
+          # dataset view dashboard tab
           shinydashboard::tabItem(tabName = "dataset-dashboard",
-                                  h2("Coming Soon: Dataset Dashbaord!")
-                                  )
+                                  fluidPage(
+                                    h2("In Dev: Dataset Dashbaord!"),
+                                    
+                                    mod_datatable_ui("datatable_1")
+                                    )
+                                  ),
+          
+          # administrate tab
+          shinydashboard::tabItem(tabName = "administrate",
+                                  
+                                  fluidPage(
+                                    
+                                    # dataset_selection module
+                                    mod_dataset_selection_ui("dataset_selection_ui_1"),
+                                    
+                                    # file_selection module
+                                    mod_file_selection_ui("file_selection_ui_1"),
+                                    
+                                    br(),
+                                    
+                                    # set release status module
+                                    mod_set_release_status_ui("set_release_status_ui_1"),
+                                    
+                                    # for testing purposes: output modified manifest
+                                    DT::DTOutput("modified_manifest"))
+          )
           )
         )
       )
