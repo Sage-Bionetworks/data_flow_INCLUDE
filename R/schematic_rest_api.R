@@ -135,10 +135,12 @@ manifest_validate <- function(data_type,
 
 #' schematic rest api to submit metadata
 #' 
-#' @param data_type Type of dataset
+#' @param data_type Type of dataset. Set to None for no validation check.
 #' @param dataset_id Synapse ID of existing manifest
-#' @param input_token Synapse login cookie, PAT, or API key.
+#' @param restrict_rules If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.
+#' @param manifest_record_type Manifest storage type. Options: "--", "table" (default), "entity", "both".
 #' @param csv_file Filepath of csv to validate
+#' @param input_token Synapse login cookie, PAT, or API key
 #' @param url URL to schematic API endpoint
 #' @param schema_url URL to a schema jsonld 
 #' 
@@ -146,20 +148,33 @@ manifest_validate <- function(data_type,
 #' @export
 
 model_submit <- function(data_type, 
-                         dataset_id, 
-                         input_token, 
+                         dataset_id,
+                         restrict_rules,
                          csv_file,
+                         input_token,
+                         manifest_record_type = "table",
                          url="http://localhost:3001/v1/model/submit",
                          schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld") {
-  req <- httr::POST(url,
-                    #add_headers(Authorization=paste0("Bearer ", pat)),
-                    query=list(
-                      schema_url=schema_url,
-                      data_type=data_type,
-                      dataset_id=dataset_id,
-                      input_token=input_token),
-                    body=list(csv_file=httr::upload_file(csv_file))
+
+  headers = c(
+    `accept` = 'application/json',
+    `Content-Type` = 'multipart/form-data'
   )
+  
+  params = list(
+    `schema_url` = schema_url,
+    `data_type` = data_type,
+    `dataset_id` = dataset_id,
+    `manifest_record_type` = manifest_record_type,
+    `restrict_rules` = restrict_rules,
+    `input_token` = input_token
+  )
+  
+  files = list(
+    `csv_file` = httr::upload_file(csv_file)
+  )
+  
+  req <- httr::POST(url = 'http://localhost:3001/v1/model/submit', httr::add_headers(.headers=headers), query = params, body = files, encode = 'multipart')
   
   manifest_id <- httr::content(req)
   manifest_id
