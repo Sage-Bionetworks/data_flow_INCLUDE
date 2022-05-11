@@ -5,14 +5,10 @@
 \title{Convert a vector of TRUE/FALSE to icon html}
 \usage{
 true_false_icon(vec)
-
-true_false_icon(vec)
 }
 \arguments{
 \item{vec}{A vector of TRUE/FALSE}
 }
 \description{
-Convert a vector of TRUE/FALSE to icon html
-
 Convert a vector of TRUE/FALSE to icon html
 }

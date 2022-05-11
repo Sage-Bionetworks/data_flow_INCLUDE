@@ -143,3 +143,11 @@ dataset_id <- "syn24181573"
 tst<-manifest_download_to_df(asset_view = asset_view,
                         dataset_id = dataset_id,
                         input_token = input_token)
+
+
+
+# CREDENTIALS REACTIVE VAL #######################################################
+# these will likely come from a config eventually
+
+creds <- reactiveValues(asset_view = "syn20446927",
+                        schematic_token = Sys.getenv("schematicToken"))
