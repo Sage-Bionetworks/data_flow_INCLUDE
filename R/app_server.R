@@ -71,7 +71,7 @@ app_server <- function( input, output, session ) {
     model_submit(data_type = "None", 
                  dataset_id = dataset_selection()$id,
                  restrict_rules = FALSE,
-                 csv_file = "~/Desktop/synapse_storage_manifest.csv",
+                 csv_file = "./manifest/synapse_storage_manifest.csv",
                  input_token = schematic_token,
                  manifest_record_type = "table",
                  url="http://localhost:3001/v1/model/submit",
