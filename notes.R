@@ -105,34 +105,30 @@ tst_mani <- manifest_download(asset_view = asset_view,
 
 tst_mani_df <- jsonlite::fromJSON(tst_mani)
 
+names(tst_mani_df)[10] <- "HTAN Participant ID"
+tst_mani_df$`Age Is Obfuscated` <- c("False", "False")
+tst_mani_df[1, "Race"] <- "Not Reported"
+
 # tst manifest df
 manifest_download_to_df(asset_view = asset_view,
                         dataset_id = lw_tsting_dataset,
                         input_token = input_token)
 
-# modify manifest
-tst_mani_df$modified <- c(TRUE, TRUE)
+# Fix colNames
+
 
 # save to csv
-write.table(tst_mani_df, "./dev/manifest.csv")
 
-# submit manifest
-model_submit(data_type = "demographics",
-             dataset_id = lw_tsting_dataset,
+# WORKING SUBMIT MANIFEST CALL
+
+model_submit(data_type = "None", 
+             dataset_id = "syn30028964",
+             restrict_rules = FALSE,
+             csv_file = "~/Desktop/tsting_manifests/unmodified_manifest/synapse_storage_manifest.csv",
              input_token = input_token,
-             csv_file)
-
-# FIXME: attempted to run through swagger ui and get error 
-#        submit_metadata_manifest() missing 1 required positional argument: 'manifest_record_type
-
-# TODO: message lingling about this?
-
-# TODO:
-#   Figure out how to get working submit manifest
-#   create submit manifest module?
-#   on button click, modify manifest and submit to synapse
-#   maybe send notification when upload is complete or explaining error
-#   To start do not incorporate radio button selection
+             manifest_record_type = "table",
+             url="http://localhost:3001/v1/model/submit",
+             schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld")
 
 
 ## TESTING
@@ -141,5 +137,6 @@ asset_view <- "syn20446927"
 dataset_id <- "syn24181573"
 
 tst<-manifest_download_to_df(asset_view = asset_view,
-                        dataset_id = dataset_id,
-                        input_token = input_token)
+                             dataset_id = dataset_id,
+                             input_token = input_token)
+
