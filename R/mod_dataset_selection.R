@@ -79,7 +79,7 @@ mod_dataset_selection_server <- function(id){
     asset_view <- "syn20446927"
     
     # API CALL : GET STORAGE PROJECTS #######################################################################
-    
+
     # COMMENT OUT FOR TESTING
     storage_projects_list <- storage_projects(asset_view = asset_view,
                                               input_token = schematic_token)
@@ -99,9 +99,9 @@ mod_dataset_selection_server <- function(id){
                   label = "Select Project",
                   choices = rv$storage_projects_df$name)
     })
-    
+    # 
     # ## DUMMY DATA FOR TESTING
-    # rv$storage_projects_df <- data.frame(name = "lw-test", id ="syn30028964") 
+    # rv$storage_projects_df <- data.frame(name = "lw-test", id ="syn30028964")
     # 
     # output$project_selector <- renderUI({
     #   selectInput(session$ns("selected_projects"),
