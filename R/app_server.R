@@ -76,16 +76,19 @@ app_server <- function( input, output, session ) {
   # dummy data
   dataset_dash_data <- reactive({
     
-    contributor <- sample(c("HTAN BU", "HTAN OHSU", "HTAN CHOP"), 50, replace = TRUE)
-    dataset <- sample(c("BiospecimanBatch1", "PatientTrial1", "scATAC-seq", "FamilyHistory"), 50, replace = TRUE)
-    num <- as.integer(runif(50, min = 5, max = 500))
-    release_scheduled <- sample(c("Not scheduled", "Jun 2022", "May 2022", "Sept 2022"), 50, replace = TRUE)
-    embargo <- sample(c("No embargo", "Jun 2022", "May 2022", "Sept 2022"), 50, replace = TRUE)
-    standard_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
-    qc_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
-    phi_detection_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
-    access_controls_compliance <- sample(c(TRUE, FALSE), 50, replace = TRUE)
-    data_portal <- sample(c(TRUE, FALSE), 50, replace = TRUE)
+    n <- 10
+    
+    contributor <- sample(c("HTAN BU", "HTAN OHSU", "HTAN CHOP"), n, replace = TRUE)
+    dataset <- sample(c("BiospecimanBatch1", "PatientTrial1", "scATAC-seq", "FamilyHistory"), n, replace = TRUE)
+    num <- as.integer(runif(n, min = 5, max = 500))
+    dates<- lubridate::ymd(paste0("2022-", seq(1:10), "-01"))
+    release_scheduled <- sample(c(dates, NA), n, replace = TRUE)
+    embargo <- sample(c("No embargo", "Jun 2022", "May 2022", "Sept 2022"), n, replace = TRUE)
+    standard_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
+    qc_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
+    phi_detection_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
+    access_controls_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
+    data_portal <- sample(c(TRUE, FALSE), n, replace = TRUE)
 
         
     df <- data.frame(Contributor = contributor,
