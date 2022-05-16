@@ -13,8 +13,9 @@ mod_datatable_ui <- function(id){
   tagList(
     
     # define colors for icons in datatable
-    # emerald green check
+    # green check
     tags$style(".fa-check {color:#50C878}"),
+    # red x
     tags$style(".fa-times {color:#E74C3C}"),
     
     
@@ -42,12 +43,11 @@ mod_datatable_server <- function(id, df){
                           filter = "top",
                           options = list(scrollX = TRUE,
                                          scrollY = 800,
-                                         scrollCollapse = TRUE,
                                          bPaginate = FALSE,
                                          columnDefs = list(list(className = 'dt-center', targets = 6:10),
                                                            list(targets = 4, render = DT::JS(
                                                              "function(data, type, row, meta) {",
-                                                             "return data === null ? 'Not Scheduled' : data;",
+                                                             "return data === null ? 'Not Scheduled' : data;", 
                                                              "}"
                                                            )))
                     ))
