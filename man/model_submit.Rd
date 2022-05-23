@@ -7,21 +7,27 @@
 model_submit(
   data_type,
   dataset_id,
-  input_token,
+  restrict_rules,
   csv_file,
+  input_token,
+  manifest_record_type = "table",
   url = "http://localhost:3001/v1/model/submit",
  
     schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
 )
 }
 \arguments{
-\item{data_type}{Type of dataset}
+\item{data_type}{Type of dataset. Set to None for no validation check.}
 
 \item{dataset_id}{Synapse ID of existing manifest}
 
-\item{input_token}{Synapse login cookie, PAT, or API key.}
+\item{restrict_rules}{If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.}
 
 \item{csv_file}{Filepath of csv to validate}
+
+\item{input_token}{Synapse login cookie, PAT, or API key}
+
+\item{manifest_record_type}{Manifest storage type. Options: "--", "table" (default), "entity", "both".}
 
 \item{url}{URL to schematic API endpoint}
 
