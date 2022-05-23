@@ -78,12 +78,22 @@ app_server <- function( input, output, session ) {
     
     n <- 10
     
-    contributor <- sample(c("HTAN BU", "HTAN OHSU", "HTAN CHOP"), n, replace = TRUE)
-    dataset <- sample(c("BiospecimanBatch1", "PatientTrial1", "scATAC-seq", "FamilyHistory"), n, replace = TRUE)
-    num <- as.integer(runif(n, min = 5, max = 500))
     dates<- lubridate::ymd(paste0("2022-", seq(1:10), "-01"))
+    
+    ds_names <- paste0(
+      sample(LETTERS, n, replace = TRUE),
+      sample(LETTERS, n, replace = TRUE),
+      "-unique-dataset-name")
+    
+    contributor <- sample(c("HTAN BU", "HTAN OHSU", "HTAN CHOP"), n, replace = TRUE)
+    dataset_type <- sample(c("BiospecimanBatch1", "PatientTrial1", "scATAC-seq", "FamilyHistory"), n, replace = TRUE)
+    dataset_name <- paste0(
+      sample(LETTERS, n, replace = TRUE),
+      sample(LETTERS, n, replace = TRUE),
+      "-unique-dataset-name")
+    num <- as.integer(runif(n, min = 5, max = 500))
     release_scheduled <- sample(c(dates, NA), n, replace = TRUE)
-    embargo <- sample(c("No embargo", "Jun 2022", "May 2022", "Sept 2022"), n, replace = TRUE)
+    embargo <- sample(c(dates, NA), n, replace = TRUE)
     standard_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
     qc_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
     phi_detection_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
@@ -92,7 +102,8 @@ app_server <- function( input, output, session ) {
 
         
     df <- data.frame(Contributor = contributor,
-                     Dataset = dataset,
+                     Dataset_Name = dataset_name,
+                     Dataset_Type = dataset_type,
                      Num_Items = num,
                      Release_Scheduled = release_scheduled,
                      Embargo = embargo,
@@ -115,9 +126,10 @@ app_server <- function( input, output, session ) {
     
     df[qc_cols] <- lapply(df[qc_cols], true_false_icon)
     
-    # convert specified columns to factors 
-    factor_cols <- c("Contributor")
-    df[factor_cols] <- as.factor(df[,factor_cols])
+    # convert certain columns to factors 
+    factor_cols <- c("Contributor", "Dataset_Type")
+    df[factor_cols] <- lapply(df[factor_cols], factor)  
+    
     
     return(df)
   })

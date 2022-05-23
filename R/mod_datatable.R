@@ -44,10 +44,15 @@ mod_datatable_server <- function(id, df){
                           options = list(scrollX = TRUE,
                                          scrollY = 800,
                                          bPaginate = FALSE,
-                                         columnDefs = list(list(className = 'dt-center', targets = 6:10),
-                                                           list(targets = 4, render = DT::JS(
+                                         columnDefs = list(list(className = 'dt-center', targets = 7:11),
+                                                           list(targets = 5, render = DT::JS(
                                                              "function(data, type, row, meta) {",
                                                              "return data === null ? 'Not Scheduled' : data;", 
+                                                             "}"
+                                                           )),
+                                                           list(targets = 6, render = DT::JS(
+                                                             "function(data, type, row, meta) {",
+                                                             "return data === null ? 'No Embargo' : data;", 
                                                              "}"
                                                            )))
                     ))
