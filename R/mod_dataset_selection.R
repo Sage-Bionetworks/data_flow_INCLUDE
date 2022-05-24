@@ -80,36 +80,36 @@ mod_dataset_selection_server <- function(id){
     
 
     # API CALL : GET STORAGE PROJECTS #######################################################################
+# 
+#     # COMMENT OUT FOR TESTING
+#     storage_projects_list <- storage_projects(asset_view = asset_view,
+#                                               input_token = schematic_token)
+# 
+#     # convert to dataframe
+#     storage_projects_df <- list_to_dataframe(list = storage_projects_list,
+#                                              col_names = c("id", "name"))
+# 
+#     # reorder and add to reactive values
+#     rv$storage_projects_df <- dplyr::select(storage_projects_df, name, id)
+# 
+# 
+#     # DROP DOWN LISTING STORAGE PROJECTS ####################################################################
+# 
+#     output$project_selector <- renderUI({
+#       selectInput(session$ns("selected_projects"),
+#                   label = "Select Project",
+#                   choices = rv$storage_projects_df$name)
+#     })
 
-    # COMMENT OUT FOR TESTING
-    storage_projects_list <- storage_projects(asset_view = asset_view,
-                                              input_token = schematic_token)
-
-    # convert to dataframe
-    storage_projects_df <- list_to_dataframe(list = storage_projects_list,
-                                             col_names = c("id", "name"))
-
-    # reorder and add to reactive values
-    rv$storage_projects_df <- dplyr::select(storage_projects_df, name, id)
-
-
-    # DROP DOWN LISTING STORAGE PROJECTS ####################################################################
+    # 
+    ## DUMMY DATA FOR TESTING
+    rv$storage_projects_df <- data.frame(name = "lw-test", id ="syn30028964")
 
     output$project_selector <- renderUI({
       selectInput(session$ns("selected_projects"),
                   label = "Select Project",
                   choices = rv$storage_projects_df$name)
     })
-
-    # 
-    # ## DUMMY DATA FOR TESTING
-    # rv$storage_projects_df <- data.frame(name = "lw-test", id ="syn30028964")
-    # 
-    # output$project_selector <- renderUI({
-    #   selectInput(session$ns("selected_projects"),
-    #               label = "Select Project",
-    #               choices = rv$storage_projects_df$name)
-    # })
     
     ## ON CLICK DISPLAY STORAGE PROJECT DATASETS  ###########################################################
     # on button click call storage_project_datasets using selected project ID
