@@ -35,13 +35,17 @@ mod_dataset_selection_ui <- function(id){
     fluidRow(
       waiter::useWaiter(),
       column(width = 12,
-             div(id = ns("exdiv"),
+             div(
+               id = ns("select_dataset_wrapper"),
+               
                shinydashboard::box(
                  title = "Select Dataset",
                  width = NULL,
                  
-                 # Table of storage project datasets 
-                 DT::DTOutput(ns("dataset_tbl")),
+                 # Table of storage project datasets
+                 div(id = ns("exdiv"),
+                     DT::DTOutput(ns("dataset_tbl"))
+                 ),
                  
                  br(),
                  
@@ -67,7 +71,7 @@ mod_dataset_selection_server <- function(id){
     rv <- reactiveValues()
     
     # initialize waiter
-    w <- Waiter$new(id = "exdiv")
+    w <- Waiter$new(id = ns("select_dataset_wrapper"))
     
     # HARDCODED VARIABLES ###################################################################################
     
