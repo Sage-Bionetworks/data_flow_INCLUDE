@@ -10,7 +10,7 @@
 mod_dataset_selection_ui <- function(id){
   ns <- NS(id)
   tagList(
-    
+  
     ## SELECT PROJECT BOX  ####################################################
     
     fluidRow(
@@ -33,20 +33,23 @@ mod_dataset_selection_ui <- function(id){
     ## SELECT DATASET BOX  ####################################################
     
     fluidRow(
+      waiter::useWaiter(),
       column(width = 12,
-             shinydashboard::box(
-               title = "Select Dataset",
-               width = NULL,
-               
-               # Table of storage project datasets 
-               DT::DTOutput(ns("dataset_tbl")),
-               
-               br(),
-               
-               # Button to initiate dataset selection
-               actionButton(ns("select_dataset_btn"), "Select Dataset(s)"),
-               
-               br()
+             div(id = ns("exdiv"),
+               shinydashboard::box(
+                 title = "Select Dataset",
+                 width = NULL,
+                 
+                 # Table of storage project datasets 
+                 DT::DTOutput(ns("dataset_tbl")),
+                 
+                 br(),
+                 
+                 # Button to initiate dataset selection
+                 actionButton(ns("select_dataset_btn"), "Select Dataset(s)"),
+                 
+                 br()
+                 )
                )
              )
       )
@@ -62,6 +65,9 @@ mod_dataset_selection_server <- function(id){
     
     # initialize object that contains reactive values
     rv <- reactiveValues()
+    
+    # initialize waiter
+    w <- Waiter$new(id = "exdiv")
     
     # HARDCODED VARIABLES ###################################################################################
     
@@ -115,6 +121,13 @@ mod_dataset_selection_server <- function(id){
     observeEvent(input$select_project_btn, {
       
       req(input$selected_projects)
+      
+      w$show()
+      
+      on.exit({
+        w$hide()
+      })
+      
 
       # subset storage project df by selected project
       # TODO: allow multiple project selection?
