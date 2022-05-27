@@ -43,9 +43,7 @@ mod_dataset_selection_ui <- function(id){
                  width = NULL,
                  
                  # Table of storage project datasets
-                 div(id = ns("exdiv"),
-                     DT::DTOutput(ns("dataset_tbl"))
-                 ),
+                     DT::DTOutput(ns("dataset_tbl")),
                  
                  br(),
                  
@@ -109,15 +107,6 @@ mod_dataset_selection_server <- function(id){
                   label = "Select Project",
                   choices = rv$storage_projects_df$name)
     })
-    # 
-    # ## DUMMY DATA FOR TESTING
-    # rv$storage_projects_df <- data.frame(name = "lw-test", id ="syn30028964")
-    # 
-    # output$project_selector <- renderUI({
-    #   selectInput(session$ns("selected_projects"),
-    #               label = "Select Project",
-    #               choices = rv$storage_projects_df$name)
-    # })
     
     ## ON CLICK DISPLAY STORAGE PROJECT DATASETS  ###########################################################
     # on button click call storage_project_datasets using selected project ID
@@ -126,8 +115,10 @@ mod_dataset_selection_server <- function(id){
       
       req(input$selected_projects)
       
+      # show waiter
       w$show()
       
+      # on exit - hide waiter
       on.exit({
         w$hide()
       })
@@ -139,8 +130,6 @@ mod_dataset_selection_server <- function(id){
       selected_project_df <- rv$storage_projects_df[grepl(input$selected_projects, rv$storage_projects_df$name), ]
 
       # call schematic API - get datasets for selected storage project
-      
-      ### COMMENT OUT FOR TESTING
       dataset_list <- storage_project_datasets(asset_view = asset_view,
                                                project_id = selected_project_df$id,
                                                input_token = schematic_token)
@@ -164,20 +153,7 @@ mod_dataset_selection_server <- function(id){
                                     dom = "t"),
                       filter = list(position = 'top', clear = TRUE))
       })
-      
-      # ## TESTING DUMMY DATA TO SKIP API CALL
-      # rv$dataset_df <- data.frame(name = "HTAN_CenterA_Demographics", id = "syn30028964")
-      # 
-      # output$dataset_tbl <- DT::renderDataTable({
-      #   DT::datatable(rv$dataset_df,
-      #                 selection = "single",
-      #                 option = list(scrollY = 500,
-      #                               scrollCollapse = TRUE,
-      #                               bPaginate = FALSE,
-      #                               dom = "t"),
-      #                 filter = list(position = 'top', clear = TRUE))
-      # })
-        
+
     })
 
     ## ON BUTTON CLICK SUBMIT DATASET SELECTION #############################################################
