@@ -60,9 +60,9 @@ app_ui <- function(request) {
                                     mod_dataset_selection_ui("dataset_selection_ui_1"),
                                     mod_file_selection_ui("file_selection_ui_1"),
                                     br(),
-                                    mod_set_release_status_ui("set_release_status_ui_1"),
-                                    DT::DTOutput("modified_manifest"))
-                                  ),
+                                    div(id = "release_status_wrapper",
+                                        mod_set_release_status_ui("set_release_status_ui_1"))
+                                  )),
           
           # dashboard tab
           shinydashboard::tabItem(tabName = "overview-dashboard",
