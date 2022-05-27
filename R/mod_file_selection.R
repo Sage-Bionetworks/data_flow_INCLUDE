@@ -100,26 +100,5 @@ mod_file_selection_server <- function(id, dataset){
       selected_rows = reactive({ input$manifest_tbl_rows_selected })
     ))
     
-    # ARCHIVE ###############################################################################################
-    
-    # Right now only allowing a single selection so this is unnecessary
-    # TODO : Enable multiple datasets to be selected
-    #        Display each corresponding manifest in a tab
-    # # render tabbox dynamically
-    # # create a tab for each dataset selected in mod_dataset_selection
-    # output$tabs <- renderUI({
-    #   ds <- dataset()
-    #   nTabs <- nrow(ds)
-    #   myTabs <- lapply(1:nTabs, function(x) {
-    #     tabPanel(title = ds[x, "Dataset"],
-    #              output$dataset_selection <- DT::renderDT({
-    #                   ds[x,]
-    #                 }))
-    #     
-    #     
-    #   })
-    #   do.call(shinydashboard::tabBox, myTabs)
-    # })
-    
   })
 }
