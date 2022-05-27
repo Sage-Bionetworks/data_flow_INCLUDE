@@ -1,4 +1,4 @@
-Package: release_administratorUI
+Package: data_flow
 Title: PKG_TITLE
 Version: 0.0.0.9000
 Authors@R: person('L', 'Wolfe', email = 'lauren.wolfe@sagebase.org', role = c('cre', 'aut'))
