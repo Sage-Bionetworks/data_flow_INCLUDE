@@ -7,7 +7,13 @@
 app_server <- function( input, output, session ) {
   # Your application server logic
   
-  w <- Waiter$new(id = "release_status_wrapper")
+  # initialize waiter
+  w <- Waiter$new(id = "release_status_wrapper",
+                  html = div(
+                    style="color:#424874;",
+                    waiter::spin_3(),
+                    h4("Submitting updated manifest to Synapse...")),
+                  color = transparent(.8))
   
   # DEV STUFF #########################################################################
   

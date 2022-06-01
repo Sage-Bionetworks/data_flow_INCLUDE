@@ -69,7 +69,12 @@ mod_dataset_selection_server <- function(id){
     rv <- reactiveValues()
     
     # initialize waiter
-    w <- Waiter$new(id = ns("select_dataset_wrapper"))
+    w <- Waiter$new(id = ns("select_dataset_wrapper"),
+                    html = div(
+                      style="color:#424874;",
+                      waiter::spin_3(),
+                      h4("Retrieving datasets...")),
+                    color = transparent(.8))
     
     # HARDCODED VARIABLES ###################################################################################
     

@@ -55,7 +55,10 @@ app_ui <- function(request) {
                                     
                                     # initialize waiter + use preloader
                                     waiter::use_waiter(),
-                                    waiter::waiter_preloader(),
+                                    waiter::waiter_preloader(html = tagList(
+                                      img(src = "www/loading.gif"),
+                                      h4("Retrieving Synapse information...")),
+                                      color = "#424874"),
                                     
                                     mod_dataset_selection_ui("dataset_selection_ui_1"),
                                     mod_file_selection_ui("file_selection_ui_1"),

@@ -39,7 +39,12 @@ mod_file_selection_server <- function(id, dataset){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    w <- Waiter$new(id = ns("select_files_wrapper"))
+    w <- Waiter$new(id = ns("select_files_wrapper"),
+                    html = div(
+                      style="color:#424874;",
+                      waiter::spin_3(),
+                      h4("Retrieving manifest...")),
+                    color = transparent(.8))
     
     # HARDCODED VARIABLES ###################################################################################
     
