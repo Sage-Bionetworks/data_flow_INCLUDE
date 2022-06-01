@@ -12,27 +12,20 @@ mod_file_selection_ui <- function(id){
   tagList(
     
     fluidRow(
+      waiter::use_waiter(),
       column(width = 12,
              # Action button that opens file selector
              # TODO: eventually this will become a toggle similar to data_curator dashboard
-             
-             shinydashboard::box(
-               width = NULL,
-               title = "Select Files",
-               
-               actionButton(ns("getfiles_btn"), "Get Files"),
-               
-               DT::DTOutput(ns("manifest_tbl"))
-               # actionButton(ns("file_button"), "Turn on File Level View"),
-               # 
-               # # hide shinydashboard::box on app load
-               # shinyjs::hidden(
-               #   
-               #   div(id = ns("wrapper"),
-               #       #uiOutput(ns('tabs')))
-               #       DT::DTOutput(ns("manifest_tbl")))
-               #   
-               #   )
+             div(
+               id = ns("select_files_wrapper"),
+               shinydashboard::box(
+                 width = NULL,
+                 title = "Select Files",
+                 
+                 actionButton(ns("getfiles_btn"), "Get Files"),
+                 
+                 DT::DTOutput(ns("manifest_tbl"))
+                 )
                )
              )
       )
@@ -46,6 +39,13 @@ mod_file_selection_server <- function(id, dataset){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    w <- Waiter$new(id = ns("select_files_wrapper"),
+                    html = div(
+                      style="color:#424874;",
+                      waiter::spin_3(),
+                      h4("Retrieving manifest...")),
+                    color = transparent(.8))
+    
     # HARDCODED VARIABLES ###################################################################################
     
     # get token from renviron
@@ -57,13 +57,7 @@ mod_file_selection_server <- function(id, dataset){
     # TODO: repetitive figure out how to store or pass asset_view
     
     asset_view <- "syn20446927"
-    
-    # SHINY JS TOGGLE ON BUTTON CLICK #######################################################################
-    # hide/show toggle for wrapper
-    
-    # observeEvent(input$file_button, {
-    #   shinyjs::toggle("wrapper")
-    # })
+
 
     # TODO: similar to data curator will want to initiate file selector data pull
     #       after the toggle is selected
@@ -76,6 +70,15 @@ mod_file_selection_server <- function(id, dataset){
     # change that dataset you need to click "Show file level view" again
     
     manifest <- eventReactive(input$getfiles_btn, {
+      
+      # show waiter
+      w$show()
+      
+      # on exit - hide waiter
+      on.exit({
+        w$hide()
+      })
+      
       ds <- dataset()
       manifest_download_to_df(asset_view = asset_view,
                               dataset_id = ds$id,
@@ -101,27 +104,6 @@ mod_file_selection_server <- function(id, dataset){
       manifest = reactive({ manifest() }),
       selected_rows = reactive({ input$manifest_tbl_rows_selected })
     ))
-    
-    # ARCHIVE ###############################################################################################
-    
-    # Right now only allowing a single selection so this is unnecessary
-    # TODO : Enable multiple datasets to be selected
-    #        Display each corresponding manifest in a tab
-    # # render tabbox dynamically
-    # # create a tab for each dataset selected in mod_dataset_selection
-    # output$tabs <- renderUI({
-    #   ds <- dataset()
-    #   nTabs <- nrow(ds)
-    #   myTabs <- lapply(1:nTabs, function(x) {
-    #     tabPanel(title = ds[x, "Dataset"],
-    #              output$dataset_selection <- DT::renderDT({
-    #                   ds[x,]
-    #                 }))
-    #     
-    #     
-    #   })
-    #   do.call(shinydashboard::tabBox, myTabs)
-    # })
     
   })
 }
