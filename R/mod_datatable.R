@@ -14,9 +14,9 @@ mod_datatable_ui <- function(id){
     
     # define colors for icons in datatable
     # green check
-    tags$style(".fa-check {color:#50C878}"),
+    tags$style(".fa-check {color:#58A158}"),
     # red x
-    tags$style(".fa-times {color:#E74C3C}"),
+    tags$style(".fa-times {color:#B2242A}"),
     
     
     shinydashboard::box(
@@ -36,36 +36,52 @@ mod_datatable_server <- function(id, df){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    # get todays date
+    today <- Sys.Date()
+    
+    # floor date (only care about month/year)
+    today <- lubridate::floor_date(today, unit = "month")
+    
+    # add a column to df of TRUE/FALSE date is past due
+    df_modified <- reactive({
+      data <- df()
+      dates <- lubridate::floor_date(data$Release_Scheduled, unit = "month")
+      data$past_due <- ifelse(dates < today, "pd", 
+                              ifelse(dates == today, "t", NA))
+      return(data)
+    })
+    
+    
     output$dashboard_tbl <- DT::renderDataTable({
-      dt <- DT::datatable(df(),
+      
+      # define column styling
+      defs <- list(list(className = 'dt-center', targets = 7:11),# center icon columns
+                   list(targets = 5, render = DT::JS( # modify NA return_scheduled
+                     "function(data, type, row, meta) {",
+                     "return data === null ? 'Not Scheduled' : data;", 
+                     "}"
+                   )),
+                   list(targets = 6, render = DT::JS( # modify NA embargo
+                     "function(data, type, row, meta) {",
+                     "return data === null ? 'No Embargo' : data;", 
+                     "}"
+                   )),
+                   list(targets = 12, visible = FALSE)) # hide past_due column
+      
+      # create datatable
+      dt <- DT::datatable(df_modified(),
                           escape = FALSE, 
                           selection = "none",
                           filter = "top",
                           options = list(scrollX = TRUE,
                                          scrollY = 800,
                                          bPaginate = FALSE,
-                                         columnDefs = list(list(className = 'dt-center', targets = 7:11),
-                                                           list(targets = 5, render = DT::JS(
-                                                             "function(data, type, row, meta) {",
-                                                             "return data === null ? 'Not Scheduled' : data;", 
-                                                             "}"
-                                                           )),
-                                                           list(targets = 6, render = DT::JS(
-                                                             "function(data, type, row, meta) {",
-                                                             "return data === null ? 'No Embargo' : data;", 
-                                                             "}"
-                                                           )))
-                    ))
+                                         columnDefs = defs))
       
-      # format date to get month year info only
-      today <- Sys.Date()
-      
-      # floor date
-      today <- lubridate::floor_date(today, unit = "month")
-      
+      # conditional formatting
       DT::formatStyle(table = dt,
-                      columns = "Release_Scheduled",
-                      backgroundColor = DT::styleEqual(c(today, NA), c("#90EE90", "#ffffdc")))
+                      "Release_Scheduled", "past_due",
+                      backgroundColor = DT::styleEqual(c("t", "pd"), c("#C0EBC0", "#FF9CA0")))
       })
   
     
