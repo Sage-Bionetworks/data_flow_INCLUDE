@@ -100,7 +100,7 @@ app_server <- function( input, output, session ) {
     
     n <- 10
     
-    dates<- lubridate::ymd(paste0("2022-", seq(1:10), "-01"))
+    dates<- lubridate::ymd(paste0("2022-", seq(3:12), "-01"))
     
     ds_names <- paste0(
       sample(LETTERS, n, replace = TRUE),
