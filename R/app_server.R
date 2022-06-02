@@ -121,7 +121,7 @@ app_server <- function( input, output, session ) {
     phi_detection_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
     access_controls_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
     data_portal <- sample(c(TRUE, FALSE), n, replace = TRUE)
-
+    released <- sample(c(TRUE, FALSE), n, replace = TRUE)
         
     df <- data.frame(Contributor = contributor,
                      Dataset_Name = dataset_name,
@@ -133,7 +133,8 @@ app_server <- function( input, output, session ) {
                      QC_Compliance = qc_compliance,
                      PHI_Detection_Compliance = phi_detection_compliance,
                      Access_Controls_Compliance = access_controls_compliance,
-                     Data_Portal = data_portal)
+                     Data_Portal = data_portal,
+                     Released = released)
     
     return(df)
   })
