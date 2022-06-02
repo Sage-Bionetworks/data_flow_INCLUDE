@@ -10,6 +10,12 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     
+    # define colors for icons in datatable
+    # green check
+    tags$style(".fa-check {color:#58A158}"),
+    # red x
+    tags$style(".fa-times {color:#B2242A}"),
+    
     # Your application UI logic
     
     # dashboardPage
