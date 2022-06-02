@@ -12,13 +12,6 @@ mod_datatable_ui <- function(id){
   ns <- NS(id)
   tagList(
     
-    # define colors for icons in datatable
-    # green check
-    tags$style(".fa-check {color:#58A158}"),
-    # red x
-    tags$style(".fa-times {color:#B2242A}"),
-    
-    
     shinydashboard::box(
       title = "Dashboard",
       width = NULL,
