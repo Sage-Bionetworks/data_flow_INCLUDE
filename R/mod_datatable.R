@@ -21,12 +21,8 @@ mod_datatable_ui <- function(id){
       # show different views of dataset on different tab panels
       
       # all unreleased data
-      tabPanel("All unreleased datasets", 
+      tabPanel("Unreleased", 
                DT::DTOutput(ns("unreleased_dash"))),
-      
-      # all
-      tabPanel("All datasets", 
-               DT::DTOutput(ns("all_dash"))),
       
       # unreleased, no embargo, passing all checks
       # aka ready for release
@@ -34,11 +30,15 @@ mod_datatable_ui <- function(id){
                DT::DTOutput(ns("all_checks_passed_dash"))),
       
       # released_scheduled = NA
-      tabPanel("Not scheduled for release", 
+      tabPanel("Not scheduled", 
                DT::DTOutput(ns("not_scheduled_dash"))),
       
+      # all
+      tabPanel("All", 
+               DT::DTOutput(ns("all_dash"))),
+      
       # released = TRUE
-      tabPanel("Previously released datasets", 
+      tabPanel("Previously released", 
                DT::DTOutput(ns("released_dash")))
     )
  
@@ -129,7 +129,6 @@ mod_datatable_server <- function(id, df){
         prep_df_for_dash(unreleased_datasets())
       )
     })
-    
     
     output$released_dash <- DT::renderDataTable({
       create_dashboard(
