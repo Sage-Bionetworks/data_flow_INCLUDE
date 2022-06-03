@@ -10,6 +10,12 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     
+    # define colors for icons in datatable
+    # green check
+    tags$style(".fa-check {color:#58A158}"),
+    # red x
+    tags$style(".fa-times {color:#B2242A}"),
+    
     # Your application UI logic
     
     # dashboardPage
@@ -26,15 +32,15 @@ app_ui <- function(request) {
         
         #sidebarMenu
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("Administrative", 
-                                   tabName = "administrate",
-                                   icon = icon("cog")),
           shinydashboard::menuItem("Project Overview Dashboard", 
                                    tabName = "overview-dashboard",
                                    icon = icon("dashboard")),
           shinydashboard::menuItem("Dataset Level Dashboard", 
                                    tabName = "dataset-dashboard",
-                                   icon = icon("dashboard"))
+                                   icon = icon("dashboard")),
+          shinydashboard::menuItem("Administrative", 
+                                   tabName = "administrate",
+                                   icon = icon("cog"))
           
         )
       ),
@@ -48,11 +54,24 @@ app_ui <- function(request) {
         # dashboardTabItems
         shinydashboard::tabItems(
           
+          # overview dashboard tab
+          shinydashboard::tabItem(tabName = "overview-dashboard",
+                                  h2("Coming Soon: Overview Dashbaord!")
+                                  ),
+          
+          # dataset view dashboard tab
+          shinydashboard::tabItem(tabName = "dataset-dashboard",
+                                  fluidPage(
+                                    mod_datatable_ui("datatable_1")
+                                    )
+                                  ),
+          
           # administrate tab
           shinydashboard::tabItem(tabName = "administrate",
-                                  # dataset and file selection
+                                  
                                   fluidPage(
                                     
+
                                     # initialize waiter + use preloader
                                     waiter::use_waiter(),
                                     waiter::waiter_preloader(html = tagList(
@@ -61,20 +80,19 @@ app_ui <- function(request) {
                                       color = "#424874"),
                                     
                                     mod_dataset_selection_ui("dataset_selection_ui_1"),
+                                    
+                                    # file_selection module
                                     mod_file_selection_ui("file_selection_ui_1"),
+                                    
                                     br(),
-                                    div(id = "release_status_wrapper",
-                                        mod_set_release_status_ui("set_release_status_ui_1"))
-                                  )),
-          
-          # dashboard tab
-          shinydashboard::tabItem(tabName = "overview-dashboard",
-                                  h2("Coming Soon: Overview Dashbaord!")
-                                  ),
-          # dashboard tab
-          shinydashboard::tabItem(tabName = "dataset-dashboard",
-                                  h2("Coming Soon: Dataset Dashbaord!")
-                                  )
+                                    
+                                    # set release status module
+                                    mod_set_release_status_ui("set_release_status_ui_1"),
+                                    
+                                    # for testing purposes: output modified manifest
+                                    DT::DTOutput("modified_manifest"))
+          )
+
           )
         )
       )
