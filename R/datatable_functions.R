@@ -16,7 +16,7 @@ create_dashboard <- function(prepped_dataframe) {
   defs <- list(
     
     # center icon columns
-    list(className = 'dt-center', targets = 7:11),
+    list(className = 'dt-center', targets = 7:12),
     
     # modify NA return_scheduled
     list(targets = 5, render = DT::JS(
@@ -63,7 +63,7 @@ prep_df_for_dash <- function(dataframe) {
   
   # convert TRUE/FALSE to icons for qc columns
   qc_cols <- c("Standard_Compliance", "QC_Compliance", "PHI_Detection_Compliance", 
-               "Access_Controls_Compliance", "Data_Portal")
+               "Access_Controls_Compliance", "Data_Portal", "Released")
   
   dataframe[qc_cols] <- lapply(dataframe[qc_cols], true_false_icon)
   
