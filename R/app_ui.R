@@ -32,9 +32,6 @@ app_ui <- function(request) {
         
         #sidebarMenu
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("Project Overview Dashboard", 
-                                   tabName = "overview-dashboard",
-                                   icon = icon("dashboard")),
           shinydashboard::menuItem("Dataset Level Dashboard", 
                                    tabName = "dataset-dashboard",
                                    icon = icon("dashboard")),
@@ -53,11 +50,6 @@ app_ui <- function(request) {
         
         # dashboardTabItems
         shinydashboard::tabItems(
-          
-          # overview dashboard tab
-          shinydashboard::tabItem(tabName = "overview-dashboard",
-                                  h2("Coming Soon: Overview Dashbaord!")
-                                  ),
           
           # dataset view dashboard tab
           shinydashboard::tabItem(tabName = "dataset-dashboard",
