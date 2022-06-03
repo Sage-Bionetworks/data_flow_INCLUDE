@@ -71,7 +71,14 @@ app_ui <- function(request) {
                                   
                                   fluidPage(
                                     
-                                    # dataset_selection module
+
+                                    # initialize waiter + use preloader
+                                    waiter::use_waiter(),
+                                    waiter::waiter_preloader(html = tagList(
+                                      img(src = "www/loading.gif"),
+                                      h4("Retrieving Synapse information...")),
+                                      color = "#424874"),
+                                    
                                     mod_dataset_selection_ui("dataset_selection_ui_1"),
                                     
                                     # file_selection module
@@ -85,6 +92,7 @@ app_ui <- function(request) {
                                     # for testing purposes: output modified manifest
                                     DT::DTOutput("modified_manifest"))
           )
+
           )
         )
       )

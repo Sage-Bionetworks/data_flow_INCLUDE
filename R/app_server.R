@@ -8,6 +8,16 @@ app_server <- function( input, output, session ) {
   # Your application server logic
   
   # DEV STUFF ###########################################################################
+
+  # initialize waiter
+  w <- Waiter$new(id = "release_status_wrapper",
+                  html = div(
+                    style="color:#424874;",
+                    waiter::spin_3(),
+                    h4("Submitting updated manifest to Synapse...")),
+                  color = transparent(.8))
+  
+
   
   # SYNAPSE LOGIN
   # TODO: log in will eventually live in global.R/rely on config info
@@ -61,6 +71,14 @@ app_server <- function( input, output, session ) {
   # in place of model/submit endpoint for now
   observeEvent(release_status_selection$btn_click(), {
     
+    # show waiter
+    w$show()
+    
+    # on exit - hide waiter
+    on.exit({
+      w$hide()
+    })
+    
     # create manifest dir
     suppressWarnings(dir.create("./manifest"))
     
@@ -79,17 +97,6 @@ app_server <- function( input, output, session ) {
                  manifest_record_type = "table",
                  url="http://localhost:3001/v1/model/submit",
                  schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld")
-    
-    # for testing manifest modification
-    # output$modified_manifest <- DT::renderDataTable({
-    #   DT::datatable(manifest_mod(),
-    #                 option = list(scrollY = 500,
-    #                               scrollX = TRUE,
-    #                               scrollCollapse = TRUE,
-    #                               bPaginate = FALSE,
-    #                               dom = "t"),
-    #                 filter = list(position = 'top', clear = TRUE))
-    # })
     
   })
   
