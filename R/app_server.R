@@ -121,6 +121,20 @@ app_server <- function( input, output, session ) {
     phi_detection_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
     access_controls_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
     data_portal <- sample(c(TRUE, FALSE), n, replace = TRUE)
+    released <- sample(c(TRUE, FALSE), n, replace = TRUE)
+    
+    all_check_passing_row <- data.frame(Contributor = "HTAN_OHSU",
+                                    Dataset_Name = "TF-unique-dataset-name",
+                                    Dataset_Type = "PatientTrial1",
+                                    Num_Items = 1,
+                                    Release_Scheduled = lubridate::floor_date(Sys.Date(), unit = "month"),
+                                    Embargo = NA,
+                                    Standard_Compliance = TRUE,
+                                    QC_Compliance = TRUE,
+                                    PHI_Detection_Compliance = TRUE,
+                                    Access_Controls_Compliance = TRUE,
+                                    Data_Portal = TRUE,
+                                    Released = FALSE)
 
         
     df <- data.frame(Contributor = contributor,
@@ -133,30 +147,17 @@ app_server <- function( input, output, session ) {
                      QC_Compliance = qc_compliance,
                      PHI_Detection_Compliance = phi_detection_compliance,
                      Access_Controls_Compliance = access_controls_compliance,
-                     Data_Portal = data_portal)
+                     Data_Portal = data_portal,
+                     Released = released)
+    
+    df <- rbind(df, all_check_passing_row)
     
     return(df)
   })
   
   # prepare data to be displayed by mod_datatable
-  dataset_dash_data_prepped <- reactive({
-    df <- dataset_dash_data()
-    
-    # convert TRUE/FALSE to icons for qc columns
-    qc_cols <- c("Standard_Compliance", "QC_Compliance", "PHI_Detection_Compliance", 
-                 "Access_Controls_Compliance", "Data_Portal")
-    
-    df[qc_cols] <- lapply(df[qc_cols], true_false_icon)
-    
-    # convert certain columns to factors 
-    factor_cols <- c("Contributor", "Dataset_Type")
-    df[factor_cols] <- lapply(df[factor_cols], factor)  
-    
-    
-    return(df)
-  })
 
-  mod_datatable_server("datatable_1", dataset_dash_data_prepped)
+  mod_datatable_server("datatable_1", dataset_dash_data)
   
   
 }

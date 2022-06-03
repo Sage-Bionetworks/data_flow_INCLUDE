@@ -12,18 +12,34 @@ mod_datatable_ui <- function(id){
   ns <- NS(id)
   tagList(
     
-    # define colors for icons in datatable
-    # green check
-    tags$style(".fa-check {color:#58A158}"),
-    # red x
-    tags$style(".fa-times {color:#B2242A}"),
-    
-    
-    shinydashboard::box(
-      title = "Dashboard",
+    # tabbox
+    shinydashboard::tabBox(
+      title = "Dataset Dashboard",
       width = NULL,
+      side = "right",
       
-      DT::DTOutput(ns("dashboard_tbl"))
+      # show different views of dataset on different tab panels
+      
+      # all unreleased data
+      tabPanel("All unreleased datasets", 
+               DT::DTOutput(ns("unreleased_dash"))),
+      
+      # all
+      tabPanel("All datasets", 
+               DT::DTOutput(ns("all_dash"))),
+      
+      # unreleased, no embargo, passing all checks
+      # aka ready for release
+      tabPanel("Ready for release", 
+               DT::DTOutput(ns("all_checks_passed_dash"))),
+      
+      # released_scheduled = NA
+      tabPanel("Not scheduled for release", 
+               DT::DTOutput(ns("not_scheduled_dash"))),
+      
+      # released = TRUE
+      tabPanel("Previously released datasets", 
+               DT::DTOutput(ns("released_dash")))
     )
  
   )
@@ -42,8 +58,12 @@ mod_datatable_server <- function(id, df){
     # floor date (only care about month/year)
     today <- lubridate::floor_date(today, unit = "month")
     
+    # qc_columns
+    qc_cols <- c("Standard_Compliance", "QC_Compliance", "PHI_Detection_Compliance", 
+                 "Access_Controls_Compliance", "Data_Portal")
+    
     # add a column to df of TRUE/FALSE date is past due
-    df_modified <- reactive({
+    all_datasets <- reactive({
       data <- df()
       dates <- lubridate::floor_date(data$Release_Scheduled, unit = "month")
       data$past_due <- ifelse(dates < today, "pd", 
@@ -51,38 +71,74 @@ mod_datatable_server <- function(id, df){
       return(data)
     })
     
+    # subset dataframe into various views
+    unreleased_datasets <- reactive({
+      data <- all_datasets()
+      data[ data$Released == FALSE, ]
+    })
     
-    output$dashboard_tbl <- DT::renderDataTable({
+    # not scheduled
+    not_scheduled_datasets <- reactive({
+      data <- all_datasets()
+      data[ is.na(data$Release_Scheduled), ]
+    })
+    
+    # all checks passing / no embargo / unreleased (i.e. ready for release)
+    all_checks_passed_datasets <- reactive({
+      data <- all_datasets()
       
-      # define column styling
-      defs <- list(list(className = 'dt-center', targets = 7:11),# center icon columns
-                   list(targets = 5, render = DT::JS( # modify NA return_scheduled
-                     "function(data, type, row, meta) {",
-                     "return data === null ? 'Not Scheduled' : data;", 
-                     "}"
-                   )),
-                   list(targets = 6, render = DT::JS( # modify NA embargo
-                     "function(data, type, row, meta) {",
-                     "return data === null ? 'No Embargo' : data;", 
-                     "}"
-                   )),
-                   list(targets = 12, visible = FALSE)) # hide past_due column
+      # which rows have all qc_cols == TRUE
+      passing <- apply(data[ , qc_cols ], 1, all)
       
-      # create datatable
-      dt <- DT::datatable(df_modified(),
-                          escape = FALSE, 
-                          selection = "none",
-                          filter = "top",
-                          options = list(scrollX = TRUE,
-                                         scrollY = 800,
-                                         bPaginate = FALSE,
-                                         columnDefs = defs))
+      # which rows have passed their embargo date or are NA
+      no_embargo <- data$Embargo <= today | is.na(data$Embargo)
       
-      # conditional formatting
-      DT::formatStyle(table = dt,
-                      "Release_Scheduled", "past_due",
-                      backgroundColor = DT::styleEqual(c("t", "pd"), c("#C0EBC0", "#FF9CA0")))
+      # which rows are unreleased
+      unreleased <- data$Released == FALSE
+      
+      # which rows are passing qc, past/have no embargo, and are unreleased
+      ready <- passing & no_embargo
+      
+      
+      # subset
+      data[ ready, ]
+    })
+    
+    # previously released
+    released_datasets <- reactive({
+      data <- all_datasets()
+      data[ data$Released == TRUE, ]
+    })
+    
+    # render datatables
+    
+    output$all_dash <- DT::renderDataTable({
+      create_dashboard(
+        prep_df_for_dash(all_datasets())
+        )
       })
+    
+    output$not_scheduled_dash <- DT::renderDataTable({
+      create_dashboard(
+        prep_df_for_dash(not_scheduled_datasets())
+        )
+    })
+    
+    output$unreleased_dash <- DT::renderDataTable({
+      create_dashboard(
+        prep_df_for_dash(unreleased_datasets())
+      )
+    })
+    
+    
+    output$released_dash <- DT::renderDataTable({
+      create_dashboard(
+        prep_df_for_dash(released_datasets()))
+    })
+    
+    output$all_checks_passed_dash <- DT::renderDataTable({
+      create_dashboard(prep_df_for_dash(all_checks_passed_datasets()))
+    })
   
     
   })
