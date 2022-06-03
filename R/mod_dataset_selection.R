@@ -93,30 +93,20 @@ mod_dataset_selection_server <- function(id){
     
 
     # API CALL : GET STORAGE PROJECTS #######################################################################
-# 
-#     # COMMENT OUT FOR TESTING
-#     storage_projects_list <- storage_projects(asset_view = asset_view,
-#                                               input_token = schematic_token)
-# 
-#     # convert to dataframe
-#     storage_projects_df <- list_to_dataframe(list = storage_projects_list,
-#                                              col_names = c("id", "name"))
-# 
-#     # reorder and add to reactive values
-#     rv$storage_projects_df <- dplyr::select(storage_projects_df, name, id)
-# 
-# 
-#     # DROP DOWN LISTING STORAGE PROJECTS ####################################################################
-# 
-#     output$project_selector <- renderUI({
-#       selectInput(session$ns("selected_projects"),
-#                   label = "Select Project",
-#                   choices = rv$storage_projects_df$name)
-#     })
 
-    # 
-    ## DUMMY DATA FOR TESTING
-    rv$storage_projects_df <- data.frame(name = "lw-test", id ="syn30028964")
+    # COMMENT OUT FOR TESTING
+    storage_projects_list <- storage_projects(asset_view = asset_view,
+                                              input_token = schematic_token)
+
+    # convert to dataframe
+    storage_projects_df <- list_to_dataframe(list = storage_projects_list,
+                                             col_names = c("id", "name"))
+
+    # reorder and add to reactive values
+    rv$storage_projects_df <- dplyr::select(storage_projects_df, name, id)
+
+
+    # DROP DOWN LISTING STORAGE PROJECTS ####################################################################
 
     output$project_selector <- renderUI({
       selectInput(session$ns("selected_projects"),
@@ -147,35 +137,21 @@ mod_dataset_selection_server <- function(id){
 
       # call schematic API - get datasets for selected storage project
       
-      # ### COMMENT OUT FOR TESTING
-      # dataset_list <- storage_project_datasets(asset_view = asset_view,
-      #                                          project_id = selected_project_df$id,
-      #                                          input_token = schematic_token)
-      # 
-      # # schematic outputs a list
-      # # parse into a dataframe
-      # 
-      # rv$dataset_df <- list_to_dataframe(list = dataset_list,
-      #                                 col_names = c("id", "name"))
-      # 
-      # rv$dataset_df <- dplyr::select(rv$dataset_df, name, id)
-      # 
-      # 
-      # # render data table with scroll bar, no pagination, and filtering
-      # output$dataset_tbl <- DT::renderDataTable({
-      #   DT::datatable(rv$dataset_df,
-      #                 selection = "single",
-      #                 option = list(scrollY = 500,
-      #                               scrollCollapse = TRUE,
-      #                               bPaginate = FALSE,
-      #                               dom = "t"),
-      #                 filter = list(position = 'top', clear = TRUE))
-      # })
-      
-      ## TESTING DUMMY DATA TO SKIP API CALL
-      rv$dataset_df <- data.frame(name = "HTAN_CenterA_Demographics", id = "syn30028964")
+      ### COMMENT OUT FOR TESTING
+      dataset_list <- storage_project_datasets(asset_view = asset_view,
+                                               project_id = selected_project_df$id,
+                                               input_token = schematic_token)
+
+      # schematic outputs a list
+      # parse into a dataframe
+
+      rv$dataset_df <- list_to_dataframe(list = dataset_list,
+                                      col_names = c("id", "name"))
+
+      rv$dataset_df <- dplyr::select(rv$dataset_df, name, id)
 
 
+      # render data table with scroll bar, no pagination, and filtering
       output$dataset_tbl <- DT::renderDataTable({
         DT::datatable(rv$dataset_df,
                       selection = "single",
@@ -185,7 +161,6 @@ mod_dataset_selection_server <- function(id){
                                     dom = "t"),
                       filter = list(position = 'top', clear = TRUE))
       })
-        
 
     })
 
