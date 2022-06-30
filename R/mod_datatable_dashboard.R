@@ -1,4 +1,4 @@
-#' datatable UI Function
+#' datatable_dashboard UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -6,22 +6,22 @@
 #'
 #' @noRd 
 #'
-#' @importFrom shiny NS tagList
-
-mod_datatable_ui <- function(id){
+#' @importFrom shiny NS tagList 
+mod_datatable_dashboard_ui <- function(id){
   ns <- NS(id)
   tagList(
+    DT::DTOutput(ns("datatable_out"))
+  )
+}
     
-    DT::DTOutput(ns("datatable_out")))
- }
-    
-#' datatable Server Functions
+#' datatable_dashboard Server Functions
 #'
 #' @noRd 
-mod_datatable_server <- function(id, df){
+mod_datatable_dashboard_server <- function(id, df){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    ## FIXME : move this outside of datatable function
     # get todays date
     today <- Sys.Date()
     
@@ -36,20 +36,20 @@ mod_datatable_server <- function(id, df){
                               ifelse(dates == today, "t", NA))
       return(data)
     })
-
+    
     # render datatable
     
     output$datatable_out <- DT::renderDataTable({
       create_dashboard(
         prep_df_for_dash(all_datasets())
-        )
-      })
-
+      )
+    })
+ 
   })
 }
     
 ## To be copied in the UI
-# mod_datatable_ui("datatable_1")
+# mod_datatable_dashboard_ui("datatable_dashboard_1")
     
 ## To be copied in the server
-# mod_datatable_server("datatable_1")
+# mod_datatable_dashboard_server("datatable_dashboard_1")
