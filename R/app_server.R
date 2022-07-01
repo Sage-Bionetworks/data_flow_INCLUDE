@@ -164,7 +164,7 @@ app_server <- function( input, output, session ) {
   
   # prepare data to be displayed by mod_datatable
 
-  mod_datatable_dashboard_server("datatable_dashboard_1", dataset_dash_data)
+  mod_tabbed_dashboard_server("tabbed_dashboard_1", dataset_dash_data)
   
   
 }
