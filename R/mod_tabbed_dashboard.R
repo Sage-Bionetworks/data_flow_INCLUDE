@@ -1,4 +1,4 @@
-#' datatable UI Function
+#' tabbed_dashboard UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -6,9 +6,8 @@
 #'
 #' @noRd 
 #'
-#' @importFrom shiny NS tagList
-
-mod_datatable_ui <- function(id){
+#' @importFrom shiny NS tagList 
+mod_tabbed_dashboard_ui <- function(id){
   ns <- NS(id)
   tagList(
     
@@ -22,45 +21,45 @@ mod_datatable_ui <- function(id){
       
       # all unreleased data
       tabPanel("Unreleased", 
-               DT::DTOutput(ns("unreleased_dash"))),
+               mod_datatable_dashboard_ui(ns("datatable_dashboard_unreleased"))),
       
       # unreleased, no embargo, passing all checks
       # aka ready for release
-      tabPanel("Ready for release", 
-               DT::DTOutput(ns("all_checks_passed_dash"))),
-      
+      tabPanel("Ready for release",
+               mod_datatable_dashboard_ui(ns("datatable_dashboard_ready"))),
+
       # released_scheduled = NA
-      tabPanel("Not scheduled", 
-               DT::DTOutput(ns("not_scheduled_dash"))),
-      
+      tabPanel("Not scheduled",
+               mod_datatable_dashboard_ui(ns("datatable_dashboard_not_scheduled"))),
+
       # all
-      tabPanel("All", 
-               DT::DTOutput(ns("all_dash"))),
-      
+      tabPanel("All",
+               mod_datatable_dashboard_ui(ns("datatable_dashboard_all"))),
+
       # released = TRUE
-      tabPanel("Previously released", 
-               DT::DTOutput(ns("released_dash")))
+      tabPanel("Previously released",
+               mod_datatable_dashboard_ui(ns("datatable_dashboard_archive")))
     )
- 
   )
 }
     
-#' datatable Server Functions
+#' tabbed_dashboard Server Functions
 #'
 #' @noRd 
-mod_datatable_server <- function(id, df){
+mod_tabbed_dashboard_server <- function(id, df){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    # qc_columns
+    qc_cols <- c("Standard_Compliance", "QC_Compliance", "PHI_Detection_Compliance", 
+                 "Access_Controls_Compliance", "Data_Portal")
+    
+    ## FIXME : move this outside of datatable function
     # get todays date
     today <- Sys.Date()
     
     # floor date (only care about month/year)
     today <- lubridate::floor_date(today, unit = "month")
-    
-    # qc_columns
-    qc_cols <- c("Standard_Compliance", "QC_Compliance", "PHI_Detection_Compliance", 
-                 "Access_Controls_Compliance", "Data_Portal")
     
     # add a column to df of TRUE/FALSE date is past due
     all_datasets <- reactive({
@@ -76,34 +75,34 @@ mod_datatable_server <- function(id, df){
       data <- all_datasets()
       data[ data$Released == FALSE, ]
     })
-    
+
     # not scheduled
     not_scheduled_datasets <- reactive({
       data <- all_datasets()
       data[ is.na(data$Release_Scheduled), ]
     })
-    
+
     # all checks passing / no embargo / unreleased (i.e. ready for release)
     all_checks_passed_datasets <- reactive({
       data <- all_datasets()
-      
+
       # which rows have all qc_cols == TRUE
       passing <- apply(data[ , qc_cols ], 1, all)
-      
+
       # which rows have passed their embargo date or are NA
       no_embargo <- data$Embargo <= today | is.na(data$Embargo)
-      
+
       # which rows are unreleased
       unreleased <- data$Released == FALSE
-      
+
       # which rows are passing qc, past/have no embargo, and are unreleased
       ready <- passing & no_embargo
-      
-      
+
+
       # subset
       data[ ready, ]
     })
-    
+
     # previously released
     released_datasets <- reactive({
       data <- all_datasets()
@@ -112,39 +111,25 @@ mod_datatable_server <- function(id, df){
     
     # render datatables
     
-    output$all_dash <- DT::renderDataTable({
-      create_dashboard(
-        prep_df_for_dash(all_datasets())
-        )
-      })
+    mod_datatable_dashboard_server("datatable_dashboard_all",
+                                   all_datasets)
     
-    output$not_scheduled_dash <- DT::renderDataTable({
-      create_dashboard(
-        prep_df_for_dash(not_scheduled_datasets())
-        )
-    })
+    mod_datatable_dashboard_server("datatable_dashboard_unreleased",
+                                   unreleased_datasets)
     
-    output$unreleased_dash <- DT::renderDataTable({
-      create_dashboard(
-        prep_df_for_dash(unreleased_datasets())
-      )
-    })
+    mod_datatable_dashboard_server("datatable_dashboard_not_scheduled",
+                                   not_scheduled_datasets)
     
-    output$released_dash <- DT::renderDataTable({
-      create_dashboard(
-        prep_df_for_dash(released_datasets()))
-    })
+    mod_datatable_dashboard_server("datatable_dashboard_ready",
+                                   all_checks_passed_datasets)
     
-    output$all_checks_passed_dash <- DT::renderDataTable({
-      create_dashboard(prep_df_for_dash(all_checks_passed_datasets()))
-    })
-  
-    
+    mod_datatable_dashboard_server("datatable_dashboard_archive",
+                                   released_datasets)
   })
 }
     
 ## To be copied in the UI
-# mod_datatable_ui("datatable_1")
+# mod_tabbed_dashboard_ui("tabbed_dashboard_1")
     
 ## To be copied in the server
-# mod_datatable_server("datatable_1")
+# mod_tabbed_dashboard_server("tabbed_dashboard_1")
