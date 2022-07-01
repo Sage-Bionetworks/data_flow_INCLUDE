@@ -21,27 +21,11 @@ mod_datatable_dashboard_server <- function(id, df){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    ## FIXME : move this outside of datatable function
-    # get todays date
-    today <- Sys.Date()
-    
-    # floor date (only care about month/year)
-    today <- lubridate::floor_date(today, unit = "month")
-    
-    # add a column to df of TRUE/FALSE date is past due
-    all_datasets <- reactive({
-      data <- df()
-      dates <- lubridate::floor_date(data$Release_Scheduled, unit = "month")
-      data$past_due <- ifelse(dates < today, "pd", 
-                              ifelse(dates == today, "t", NA))
-      return(data)
-    })
-    
     # render datatable
     
     output$datatable_out <- DT::renderDataTable({
       create_dashboard(
-        prep_df_for_dash(all_datasets())
+        prep_df_for_dash(df())
       )
     })
  
