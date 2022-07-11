@@ -27,17 +27,20 @@ app_server <- function( input, output, session ) {
   syn <- synapseclient$Synapse()
   syn$login()
   
-  schematic_token <- Sys.getenv("schematicToken")
-  
+  global_config <- jsonlite::read_json("inst/global.json")
 
   # ADMINISTRATE  #######################################################################
   
   # MOD_DATASET_SELECTION
-  dataset_selection <- mod_dataset_selection_server("dataset_selection_ui_1")
+  dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_ui_1",
+                                                    asset_view = global_config$asset_view,
+                                                    input_token = global_config$schematic_token)
   
   # MOD_FILE_SELECTION
-  file_selection <- mod_file_selection_server("file_selection_ui_1",
-                                                  dataset_selection)
+  file_selection <- mod_file_selection_server(id = "file_selection_ui_1",
+                                              dataset = dataset_selection,
+                                              asset_view = global_config$asset_view,
+                                              input_token = global_config$schematic_token)
 
   # MOD_SET_STATUS
   release_status_selection <- mod_set_release_status_server("set_release_status_ui_1")
