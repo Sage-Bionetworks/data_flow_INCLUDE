@@ -15,6 +15,9 @@ mod_datatable_dashboard_ui <- function(id){
 }
     
 #' datatable_dashboard Server Functions
+#' 
+#' @param df dataframe containing data to be displayed in dashboard
+#' @param config config in `inst/datatable_dashboard_config.json`
 #'
 #' @noRd 
 mod_datatable_dashboard_server <- function(id, df, config){
