@@ -1,0 +1,18 @@
+{
+    "release_scheduled": {
+        "col_name": "Release_Scheduled",
+        "na_replace": "Not scheduled",
+        "color_past_due": "TRUE"
+    },
+    "embargo": {
+        "col_name": "Embargo",
+        "na_replace": "No embargo"
+    },
+    "icon": {
+        "col_names": "Standard_Compliance, QC_Compliance, PHI_Detection_Compliance, Access_Controls_Compliance, Data_Portal, Released"
+    },
+    "factor": {
+        "col_names": "Contributor, Dataset_Type"
+}
+  }
+  
