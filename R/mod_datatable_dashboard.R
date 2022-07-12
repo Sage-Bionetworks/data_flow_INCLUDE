@@ -17,16 +17,15 @@ mod_datatable_dashboard_ui <- function(id){
 #' datatable_dashboard Server Functions
 #'
 #' @noRd 
-mod_datatable_dashboard_server <- function(id, df){
+mod_datatable_dashboard_server <- function(id, df, config){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
     # render datatable
     
     output$datatable_out <- DT::renderDataTable({
-      create_dashboard(
-        prep_df_for_dash(df())
-      )
+      create_dashboard(df(),
+                       config)
     })
  
   })

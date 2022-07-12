@@ -112,19 +112,24 @@ mod_tabbed_dashboard_server <- function(id, df){
     # render datatables
     
     mod_datatable_dashboard_server("datatable_dashboard_all",
-                                   all_datasets)
+                                   all_datasets,
+                                   jsonlite::read_json("inst/datatable_dashboard_config.json"))
     
     mod_datatable_dashboard_server("datatable_dashboard_unreleased",
-                                   unreleased_datasets)
+                                   unreleased_datasets,
+                                   jsonlite::read_json("inst/datatable_dashboard_config.json"))
     
     mod_datatable_dashboard_server("datatable_dashboard_not_scheduled",
-                                   not_scheduled_datasets)
+                                   not_scheduled_datasets,
+                                   jsonlite::read_json("inst/datatable_dashboard_config.json"))
     
     mod_datatable_dashboard_server("datatable_dashboard_ready",
-                                   all_checks_passed_datasets)
+                                   all_checks_passed_datasets,
+                                   jsonlite::read_json("inst/datatable_dashboard_config.json"))
     
     mod_datatable_dashboard_server("datatable_dashboard_archive",
-                                   released_datasets)
+                                   released_datasets,
+                                   jsonlite::read_json("inst/datatable_dashboard_config.json"))
   })
 }
     
