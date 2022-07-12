@@ -69,11 +69,13 @@ style_dashboard <- function(prepped_dataframe,
                                      bPaginate = FALSE,
                                      columnDefs = defs))
   
-  # conditional formatting
-  DT::formatStyle(table = dt,
-                  parsed_config$release_scheduled$col_name, "past_due",
-                  backgroundColor = DT::styleEqual(c("t", "pd"), c("#C0EBC0", "#FF9CA0")))
-
+  if (as.logical(toupper(parsed_config$release_scheduled$color_past_due))) {
+    dt <- DT::formatStyle(table = dt,
+                          parsed_config$release_scheduled$col_name, "past_due",
+                          backgroundColor = DT::styleEqual("pd", "#FF9CA0"))
+  }
+  
+  dt
 }
 
 #' Prepare a dataframe for a dashboard style datatable
