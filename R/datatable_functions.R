@@ -13,12 +13,11 @@
 create_dashboard <- function(df,
                              config) {
   
-  parsed_config <- parse_config(config,
-                                df)
-  prepped_df <- prep_df_for_dash(df,
-                                 parsed_config)
-  style_dashboard(prepped_df,
-                  parsed_config)
+  parsed_config <- parse_config(config,df) 
+  
+  prepped_df <- prep_df_for_dash(df, parsed_config)
+  
+  style_dashboard(prepped_df, parsed_config)
 }
 
 #' Add custom styling to dashboard based on contents of config
@@ -36,20 +35,12 @@ style_dashboard <- function(prepped_dataframe,
   center_list <- list(className = 'dt-center', targets = parsed_config$icon$idx)
   
   # modify NA for release_scheduled column
-  release_scheduled_list <- list(targets = parsed_config$release_scheduled$idx, 
-                                 render = DT::JS(
-                                   "function(data, type, row, meta) {",
-                                   glue::glue("return data === null ? '{parsed_config$release_scheduled$na_replace}' : data;"),
-                                   "}"
-                                 ))
+  release_scheduled_list <- dt_replace_na(parsed_config$release_scheduled$idx,
+                                          parsed_config$release_scheduled$na_replace)
   
   # modify NA for embargo column
-  embargo_list <- list(targets = parsed_config$embargo$idx, 
-                                 render = DT::JS(
-                                   "function(data, type, row, meta) {",
-                                   glue::glue("return data === null ? '{parsed_config$embargo$na_replace}' : data;"),
-                                   "}"
-                                 ))
+  embargo_list <- dt_replace_na(parsed_config$embargo$idx,
+                                parsed_config$embargo$na_replace)
 
   # capture all styling in a single variable
   defs <- list(
@@ -70,40 +61,13 @@ style_dashboard <- function(prepped_dataframe,
                                      columnDefs = defs))
   
   if (as.logical(toupper(parsed_config$release_scheduled$color_past_due))) {
+    
     dt <- DT::formatStyle(table = dt,
                           parsed_config$release_scheduled$col_name, "past_due",
                           backgroundColor = DT::styleEqual("pd", "#FF9CA0"))
   }
   
   dt
-}
-
-#' Prepare a dataframe for a dashboard style datatable
-#'
-#' @param df A dataframe with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`
-#' @param parsed_config updated config output by `parse_config()`
-#' 
-#' @export
-#' 
-
-prep_df_for_dash <- function(df,
-                             parsed_config) {
-  
-  # create past_due column
-  today <- Sys.Date()
-  today <- lubridate::floor_date(today, unit = "month")
-  dates <- lubridate::floor_date(df[,parsed_config$release_scheduled$col_name], unit = "month")
-  df$past_due <- ifelse(dates < today, "pd", 
-                          ifelse(dates == today, "t", NA))
-  
-  # convert TRUE / FALSE to icon html
-  df[parsed_config$icon$col_names] <- lapply(df[parsed_config$icon$col_names], true_false_icon)
-  
-  # convert certain columns to factors 
-  # enables drop down selection style filtering for column
-  df[parsed_config$factor$col_names] <- lapply(df[,parsed_config$factor$col_names], factor)  
-  
-  return(df)
 }
 
 
@@ -125,7 +89,7 @@ true_false_icon <- function(vec) {
   ifelse(vec == TRUE, true_icon, false_icon)
 }
 
-#' Convert a vector of TRUE/FALSE to icon html
+#' Parse datatable dashboard config
 #'
 #' @param config datatable_dashboard_config.json as a datatable (`jsonlite::read_json("inst/datatable_dashboard_config.json")`)
 #' @param df dataframe to be turned into a dashboard
@@ -157,4 +121,52 @@ parse_config <- function(config,
   config$embargo$idx <- grep(config$embargo$col_name, names(df))
   
   return(config)
+}
+
+#' Prepare a dataframe for a dashboard style datatable
+#'
+#' @param df A dataframe with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`
+#' @param parsed_config updated config output by `parse_config()`
+#' 
+#' @export
+#' 
+
+prep_df_for_dash <- function(df,
+                             parsed_config) {
+  
+  # create past_due column
+  today <- Sys.Date()
+  today <- lubridate::floor_date(today, unit = "month")
+  dates <- lubridate::floor_date(df[,parsed_config$release_scheduled$col_name], unit = "month")
+  df$past_due <- ifelse(dates < today, "pd", 
+                        ifelse(dates == today, "t", NA))
+  
+  # convert TRUE / FALSE to icon html
+  df[parsed_config$icon$col_names] <- lapply(df[parsed_config$icon$col_names], true_false_icon)
+  
+  # convert certain columns to factors 
+  # enables drop down selection style filtering for column
+  df[parsed_config$factor$col_names] <- lapply(df[,parsed_config$factor$col_names], factor)  
+  
+  return(df)
+}
+
+
+#' NA replacement - datatable custom JS
+#'
+#' @param df A dataframe with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`
+#' @param parsed_config updated config output by `parse_config()`
+#' 
+#' @export
+#' 
+
+dt_replace_na <- function(col_index,
+                          na_replacement) {
+  
+  list(targets = col_index, 
+       render = DT::JS(
+         "function(data, type, row, meta) {",
+         glue::glue("return data === null ? '{na_replacement}' : data;"),
+         "}"
+         ))
 }
