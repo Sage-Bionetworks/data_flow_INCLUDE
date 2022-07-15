@@ -167,7 +167,9 @@ app_server <- function( input, output, session ) {
   
   # prepare data to be displayed by mod_datatable
 
-  mod_tabbed_dashboard_server("tabbed_dashboard_1", dataset_dash_data)
+  mod_tabbed_dashboard_server("tabbed_dashboard_1", 
+                              dataset_dash_data,
+                              jsonlite::read_json("inst/datatable_dashboard_config.json"))
   
   
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/datatable_functions.R
 \name{parse_config}
 \alias{parse_config}
-\title{Convert a vector of TRUE/FALSE to icon html}
+\title{Parse datatable dashboard config}
 \usage{
 parse_config(config, df)
 }
@@ -12,5 +12,5 @@ parse_config(config, df)
 \item{df}{dataframe to be turned into a dashboard}
 }
 \description{
-Convert a vector of TRUE/FALSE to icon html
+Parse datatable dashboard config
 }
