@@ -29,10 +29,10 @@ create_dashboard <- function(df,
 #' 
 
 style_dashboard <- function(prepped_dataframe,
-                             parsed_config) {
+                            parsed_config) {
   
   # define center styling for icon columns
-  center_list <- list(className = 'dt-center', targets = parsed_config$icon$idx)
+  center_list <- list(className = 'dt-center', targets = parsed_config$icon_idx)
   
   # modify NA for release_scheduled column
   release_scheduled_list <- dt_replace_na(parsed_config$release_scheduled$idx,
@@ -41,6 +41,9 @@ style_dashboard <- function(prepped_dataframe,
   # modify NA for embargo column
   embargo_list <- dt_replace_na(parsed_config$embargo$idx,
                                 parsed_config$embargo$na_replace)
+  
+  # find past_due column
+  past_due_idx <- grep("past_due", names(prepped_dataframe))
 
   # capture all styling in a single variable
   defs <- list(
@@ -48,7 +51,7 @@ style_dashboard <- function(prepped_dataframe,
     release_scheduled_list,
     embargo_list,
     # hide past_due column
-    list(targets = 13, visible = FALSE))
+    list(targets = past_due_idx, visible = FALSE))
   
   # create datatable
   dt <- DT::datatable(prepped_dataframe,
@@ -98,27 +101,20 @@ true_false_icon <- function(vec) {
 
 parse_config <- function(config,
                          df) {
-  
-  # parse icon columns
-  icon_list <- list(col_names = unlist(strsplit(config$icon$col_names, ",")))
-  icon_list$col_names <- trimws(icon_list$col_names)
-  icon_list$idx <- match(icon_list$col_names, names(df))
-  
-  # replace config content
-  config$icon <- icon_list
-  
-  # parse factor columns
-  factor_list <- list(col_names = unlist(strsplit(config$factor$col_names, ",")))
-  factor_list$col_names <- trimws(factor_list$col_names)
-  
-  # replace config content
-  config$factor <- factor_list
-  
+
   # parse release scheduled columns
-  config$release_scheduled$idx <- grep(config$release_scheduled$col_name, names(df))
+  config$release_scheduled$idx <- grep("release_scheduled", names(df))
   
   # embargo
-  config$embargo$idx <- grep(config$embargo$col_name, names(df))
+  config$embargo$idx <- grep("embargo", names(df))
+  
+  # create a vector of display column names
+  col_names<- purrr::map(config, "col_name") 
+  config$col_names <- data.frame(col_names = names(df), rename = purrr::flatten_chr(col_names))
+  
+  # get icon cols idx
+  icon_cols <- c("standard_compliance", "data_portal", "released")
+  config$icon_idx <- grep(paste0(icon_cols, collapse = "|"), names(df))
   
   return(config)
 }
@@ -134,19 +130,24 @@ parse_config <- function(config,
 prep_df_for_dash <- function(df,
                              parsed_config) {
   
-  # create past_due column
+  # create past_due column for highlighting release_scheduled
   today <- Sys.Date()
   today <- lubridate::floor_date(today, unit = "month")
-  dates <- lubridate::floor_date(df[,parsed_config$release_scheduled$col_name], unit = "month")
+  dates <- lubridate::floor_date(df[,"release_scheduled"], unit = "month")
   df$past_due <- ifelse(dates < today, "pd", 
                         ifelse(dates == today, "t", NA))
   
   # convert TRUE / FALSE to icon html
-  df[parsed_config$icon$col_names] <- lapply(df[parsed_config$icon$col_names], true_false_icon)
+  icon_cols <- c("standard_compliance", "data_portal", "released")
+  df[icon_cols] <- lapply(df[,icon_cols], true_false_icon)
   
   # convert certain columns to factors 
   # enables drop down selection style filtering for column
-  df[parsed_config$factor$col_names] <- lapply(df[,parsed_config$factor$col_names], factor)  
+  factor_cols <- c("dataset_type", "contributor")
+  df[factor_cols] <- lapply(df[,factor_cols], factor)
+  
+  # rename columns
+  names(df) <- c(parsed_config$col_names$rename, "past_due")
   
   return(df)
 }
@@ -154,7 +155,7 @@ prep_df_for_dash <- function(df,
 
 #' NA replacement - datatable custom JS
 #'
-#' @param df A dataframe with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`
+#' @param df A dataframe with the columns `contributo`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`
 #' @param parsed_config updated config output by `parse_config()`
 #' 
 #' @export

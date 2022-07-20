@@ -123,7 +123,7 @@ app_server <- function( input, output, session ) {
       sample(LETTERS, n, replace = TRUE),
       sample(LETTERS, n, replace = TRUE),
       "-unique-dataset-name")
-    num <- as.integer(runif(n, min = 5, max = 500))
+    num_items <- as.integer(runif(n, min = 5, max = 500))
     release_scheduled <- sample(c(dates, NA), n, replace = TRUE)
     embargo <- sample(c(dates, NA), n, replace = TRUE)
     standard_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
@@ -133,32 +133,26 @@ app_server <- function( input, output, session ) {
     data_portal <- sample(c(TRUE, FALSE), n, replace = TRUE)
     released <- sample(c(TRUE, FALSE), n, replace = TRUE)
     
-    all_check_passing_row <- data.frame(Contributor = "HTAN_OHSU",
-                                    Dataset_Name = "TF-unique-dataset-name",
-                                    Dataset_Type = "PatientTrial1",
-                                    Num_Items = 1,
-                                    Release_Scheduled = lubridate::floor_date(Sys.Date(), unit = "month"),
-                                    Embargo = NA,
-                                    Standard_Compliance = TRUE,
-                                    QC_Compliance = TRUE,
-                                    PHI_Detection_Compliance = TRUE,
-                                    Access_Controls_Compliance = TRUE,
-                                    Data_Portal = TRUE,
-                                    Released = FALSE)
+    all_check_passing_row <- data.frame(contributor = "HTAN_OHSU",
+                                        dataset_name = "TF-unique-dataset-name",
+                                        dataset_type = "PatientTrial1",
+                                        num_items = 1,
+                                        release_scheduled = lubridate::floor_date(Sys.Date(), unit = "month"),
+                                        embargo = NA,
+                                        standard_compliance = TRUE,
+                                        data_portal = TRUE,
+                                        released = FALSE)
 
         
-    df <- data.frame(Contributor = contributor,
-                     Dataset_Name = dataset_name,
-                     Dataset_Type = dataset_type,
-                     Num_Items = num,
-                     Release_Scheduled = release_scheduled,
-                     Embargo = embargo,
-                     Standard_Compliance = standard_compliance,
-                     QC_Compliance = qc_compliance,
-                     PHI_Detection_Compliance = phi_detection_compliance,
-                     Access_Controls_Compliance = access_controls_compliance,
-                     Data_Portal = data_portal,
-                     Released = released)
+    df <- data.frame(contributor,
+                     dataset_name,
+                     dataset_type,
+                     num_items,
+                     release_scheduled,
+                     embargo,
+                     standard_compliance,
+                     data_portal,
+                     released)
     
     df <- rbind(df, all_check_passing_row)
     
@@ -170,6 +164,5 @@ app_server <- function( input, output, session ) {
   mod_tabbed_dashboard_server("tabbed_dashboard_1", 
                               dataset_dash_data,
                               jsonlite::read_json("inst/datatable_dashboard_config.json"))
-  
   
 }

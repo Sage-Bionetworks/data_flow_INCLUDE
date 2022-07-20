@@ -56,30 +56,30 @@ mod_tabbed_dashboard_server <- function(id, df, config){
     # subset dataframe into various views
     unreleased_datasets <- reactive({
       data <- df()
-      data[ data$Released == FALSE, ]
+      data[ data$released == FALSE, ]
     })
 
     # not scheduled
     not_scheduled_datasets <- reactive({
       data <- df()
-      data[ is.na(data$Release_Scheduled), ]
+      data[ is.na(data$release_scheduled), ]
     })
 
     # all checks passing / no embargo / unreleased (i.e. ready for release)
     all_checks_passed_datasets <- reactive({
       
-      qc_cols <- unlist(strsplit(config$icon$col_names, ","))
+      qc_cols <- "standard_compliance"
       
       data <- df()
 
       # which rows have all qc_cols == TRUE
-      passing <- apply(data[ , qc_cols ], 1, all)
+      passing <- apply(data[qc_cols], 1, all)
 
       # which rows have passed their embargo date or are NA
-      no_embargo <- data$Embargo <= Sys.Date() | is.na(data$Embargo)
+      no_embargo <- data$embargo <= Sys.Date() | is.na(data$embargo)
 
       # which rows are unreleased
-      unreleased <- data$Released == FALSE
+      unreleased <- data$released == FALSE
 
       # which rows are passing qc, past/have no embargo, and are unreleased
       ready <- passing & no_embargo
@@ -92,7 +92,7 @@ mod_tabbed_dashboard_server <- function(id, df, config){
     # previously released
     released_datasets <- reactive({
       data <- df()
-      data[ data$Released == TRUE, ]
+      data[ data$released == TRUE, ]
     })
     
     # render datatables
