@@ -1,6 +1,7 @@
 {
     "contributor": {
-        "col_name": "Contributor"
+        "col_name": "Contributor",
+        "type": "drop_down_filter"
     },
     
     "dataset_name": {
@@ -8,7 +9,8 @@
     },
 
     "dataset_type": {
-        "col_name": "Datset Type"
+        "col_name": "Dataset Type",
+        "type": "drop_down_filter"
     },
 
     "num_items": {
@@ -28,14 +30,16 @@
 
     "standard_compliance": {
         "col_name": "Standard Compliance",
-        "icon": "true"
+        "type": "icon"
     },
 
     "data_portal": {
-        "col_name": "Data Portal"
+        "col_name": "Data Portal",
+        "type": "icon"
     },
 
     "released": {
-        "col_name": "Released"
+        "col_name": "Released",
+        "type": "icon"
     }
 }
