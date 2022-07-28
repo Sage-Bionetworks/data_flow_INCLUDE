@@ -4,10 +4,10 @@
 \alias{style_dashboard}
 \title{Add custom styling to dashboard based on contents of config}
 \usage{
-style_dashboard(prepped_dataframe, config)
+style_dashboard(prepped_dataframe, parsed_config)
 }
 \arguments{
-\item{config}{config Config for datatable dashboard module in `inst/datatable_dashboard_config.json`}
+\item{parsed_config}{updated config output by `parse_config()`}
 
 \item{df}{A dataframe prepared by `prep_df_for_dash()` with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`}
 }
