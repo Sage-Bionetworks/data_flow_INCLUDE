@@ -70,18 +70,11 @@ app_ui <- function(request) {
                                       h4("Retrieving Synapse information...")),
                                       color = "#424874"),
                                     
-                                    mod_dataset_selection_ui("dataset_selection_ui_1"),
-                                    
-                                    # file_selection module
-                                    mod_file_selection_ui("file_selection_ui_1"),
+                                    mod_dataset_selection_ui("dataset_selection_1"),
                                     
                                     br(),
                                     
-                                    # set release status module
-                                    mod_set_release_status_ui("set_release_status_ui_1"),
-                                    
-                                    # for testing purposes: output modified manifest
-                                    DT::DTOutput("modified_manifest"))
+                                    mod_update_data_flow_status_ui("update_data_flow_status_1"))
           )
 
           )
