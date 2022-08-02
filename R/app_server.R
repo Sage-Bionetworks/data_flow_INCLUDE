@@ -27,6 +27,7 @@ app_server <- function( input, output, session ) {
   syn <- synapseclient$Synapse()
   syn$login()
   
+  # read in global config
   global_config <- jsonlite::read_json("inst/global.json")
 
   # ADMINISTRATE  #######################################################################

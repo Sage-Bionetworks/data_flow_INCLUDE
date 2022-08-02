@@ -24,7 +24,7 @@ app_ui <- function(request) {
       
       # dashboardHeader
       shinydashboard::dashboardHeader(
-        title = "Release Administrator"
+        title = "Data Flow"
       ),
       
       # dashboardSidebar
@@ -32,11 +32,11 @@ app_ui <- function(request) {
         
         #sidebarMenu
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("Dataset Level Dashboard", 
+          shinydashboard::menuItem("Data Flow Status Dashboard", 
                                    tabName = "dataset-dashboard",
                                    icon = icon("dashboard")),
-          shinydashboard::menuItem("Administrative", 
-                                   tabName = "administrate",
+          shinydashboard::menuItem("Administrator", 
+                                   tabName = "administrator",
                                    icon = icon("cog"))
           
         )
@@ -57,8 +57,8 @@ app_ui <- function(request) {
                                     mod_tabbed_dashboard_ui("tabbed_dashboard_1"))
                                   ),
           
-          # administrate tab
-          shinydashboard::tabItem(tabName = "administrate",
+          # Administrator tab
+          shinydashboard::tabItem(tabName = "administrator",
                                   
                                   fluidPage(
                                     
