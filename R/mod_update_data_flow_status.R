@@ -10,7 +10,43 @@
 mod_update_data_flow_status_ui <- function(id){
   ns <- NS(id)
   tagList(
- 
+    shinydashboard::box(
+      title = "Update Data Flow Status",
+      width = NULL,
+      
+      # release scheduled input
+      dateInput("release_date", label = h4("Schedule Release"), value = NA),
+      
+      # embargo input
+      dateInput("embargo_date", label = h4("Schedule Embargo"), value = NA),
+      
+      # standard compliance input
+      radioButtons("standard_compliance", 
+                   label = h3("Standard Compliance"),
+                   choices = list("TRUE" = 1, "FALSE" = 2), 
+                   selected = NA),
+      
+      # data portal input
+      radioButtons("data_portal", 
+                   label = h3("Data Portal"),
+                   choices = list("TRUE" = 1, "FALSE" = 2), 
+                   selected = NA),
+      
+      # released input
+      radioButtons("release", 
+                   label = h3("Released"),
+                   choices = list("TRUE" = 1, "FALSE" = 2), 
+                   selected = NA),
+    
+    
+      
+      br(),
+      
+      # Button to initiate dataset selection
+      actionButton(ns("submit"), "Submit"),
+      
+      br()
+    )
   )
 }
     
