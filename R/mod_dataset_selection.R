@@ -104,7 +104,7 @@ mod_dataset_selection_server <- function(id,
       # parse into a dataframe
 
       rv$dataset_df <- list_to_dataframe(list = dataset_list,
-                                      col_names = c("id", "name"))
+                                         col_names = c("id", "name"))
 
       rv$dataset_df <- dplyr::select(rv$dataset_df, name, id)
 
