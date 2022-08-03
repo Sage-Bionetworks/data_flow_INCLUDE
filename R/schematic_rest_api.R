@@ -228,6 +228,38 @@ storage_projects <- function(asset_view,
   httr::content(req)
 }
 
+#' /storage/project/manifests
+#'
+#' @param asset_view synapse ID of master file view.
+#' @param dataset_id synapse ID of a storage dataset.
+#' @param input_token synapse PAT
+#' @param url URL to schematic API endpoint
+#' 
+#' @export
+
+storage_project_manifests <- function(asset_view,
+                                      project_id,
+                                      input_token,
+                                      url="http://localhost:3001/v1/storage/project/manifests") {
+  
+  require(httr)
+  
+  headers = c(
+    `accept` = 'application/json'
+  )
+  
+  params = list(
+    `input_token` = input_token,
+    `project_id` = project_id,
+    `asset_view` = asset_view
+  )
+  
+  req <- httr::GET(url = url, httr::add_headers(.headers=headers), query = params)
+  
+  httr::content(req)
+  
+}
+
 #' /storage/dataset/files
 #'
 #' @param asset_view synapse ID of master file view.
