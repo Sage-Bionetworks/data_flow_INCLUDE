@@ -1,0 +1,67 @@
+generate_data_flow_manifest <- function(storage_project_id,
+                                        config,
+                                        contributor = NULL) {
+  
+  asset_view <- config$asset_view
+  token <- config$schematic_token
+  
+  # get all manifests for storage_project
+  message(glue::glue("Building data flow status manifest for {storage_project_id}"))
+  message("Getting all manifests")
+  all_manifests_list <- storage_project_manifests(asset_view, 
+                                                  storage_project_id, 
+                                                  token)
+  
+  # pull out data from list
+  # dataset metadata
+  dataset_naming_metadata <- purrr::map(all_manifests_list, 1)
+  dataset_ids <- purrr::map_chr(dataset_naming_metadata, 1)
+  dataset_names <- purrr::map_chr(dataset_naming_metadata, 2)
+  
+  # component metadata
+  dataset_component_metadata <- purrr::map(all_manifests_list, 3)
+  component <- purrr::map_chr(dataset_component_metadata, 1)
+  
+  # calculate number of items
+  # pull down each manifest and count each row (1 file / row)
+  message("Counting items in each manifest")
+  num_items_list <- lapply(dataset_ids, function(id) {
+    manifest <- suppressMessages(manifest_download_to_df(config$asset_view,
+                                        id,
+                                        config$schematic_token))
+    if (!is.null(manifest)) {
+      nrow(manifest)
+    } else {
+      NA
+    }
+  })
+  
+  num_items <- purrr::flatten_int(num_items_list)
+  
+  # create empty dataframe
+  colnames <- c("contributor",
+                "dataset_name",
+                "dataset_type",
+                "num_items",
+                "release_scheduled",
+                "embargo",
+                "standard_compliance",
+                "data_portal",
+                "released")
+  
+  df <- data.frame(matrix(nrow = length(dataset_ids), ncol = length(colnames)))
+  
+  names(df) <- colnames 
+  
+  # fill in dataframe
+  df$dataset_name <- dataset_names
+  df$dataset_type <- component
+  df$num_items <- num_items
+  
+  # add contributor
+  if (!is.null(contributor)) {
+    df$contributor <- rep(contributor, length(dataset_ids))
+  }
+  
+  return(df)
+}
