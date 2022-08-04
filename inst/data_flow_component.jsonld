@@ -2034,7 +2034,7 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "Contributor",
+            "sms:displayName": "contributor",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
@@ -2051,7 +2051,7 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "Dataset Name",
+            "sms:displayName": "dataset_name",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
@@ -2068,15 +2068,15 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "Dataset",
+            "sms:displayName": "dataset",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
         {
-            "@id": "bts:NumberofItems",
+            "@id": "bts:NumItems",
             "@type": "rdfs:Class",
             "rdfs:comment": "Number of files contained in a manifest",
-            "rdfs:label": "NumberofItems",
+            "rdfs:label": "NumItems",
             "rdfs:subClassOf": [
                 {
                     "@id": "bts:DataProperty"
@@ -2085,7 +2085,7 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "Number of Items",
+            "sms:displayName": "num_items",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
@@ -2102,7 +2102,7 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "Release Scheduled",
+            "sms:displayName": "release_scheduled",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
@@ -2119,7 +2119,7 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "Embargo",
+            "sms:displayName": "embargo",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
@@ -2144,14 +2144,14 @@
                     "@id": "bts:FALSE"
                 }
             ],
-            "sms:displayName": "Standard Compliance",
+            "sms:displayName": "standard_compliance",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
         {
             "@id": "bts:DataPortal",
             "@type": "rdfs:Class",
-            "rdfs:comment": "Has dataset been published to data portal\n",
+            "rdfs:comment": "Has dataset been published to data portal\r\n",
             "rdfs:label": "DataPortal",
             "rdfs:subClassOf": [
                 {
@@ -2169,14 +2169,14 @@
                     "@id": "bts:FALSE"
                 }
             ],
-            "sms:displayName": "Data Portal",
+            "sms:displayName": "data_portal",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
         {
             "@id": "bts:Released",
             "@type": "rdfs:Class",
-            "rdfs:comment": "Has this dataset been released\n",
+            "rdfs:comment": "Has this dataset been released\r\n",
             "rdfs:label": "Released",
             "rdfs:subClassOf": [
                 {
@@ -2194,7 +2194,7 @@
                     "@id": "bts:FALSE"
                 }
             ],
-            "sms:displayName": "Released",
+            "sms:displayName": "released",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
@@ -2212,6 +2212,23 @@
                 "@id": "http://schema.biothings.io"
             },
             "sms:displayName": "Component",
+            "sms:required": "sms:false",
+            "sms:validationRules": []
+        },
+        {
+            "@id": "bts:NumberofItems",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "TBD",
+            "rdfs:label": "NumberofItems",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:DataFlow"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:displayName": "Number of Items",
             "sms:required": "sms:false",
             "sms:validationRules": []
         },
