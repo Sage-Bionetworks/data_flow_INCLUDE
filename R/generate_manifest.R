@@ -1,6 +1,7 @@
 generate_data_flow_manifest <- function(storage_project_id,
                                         config,
-                                        contributor = NULL) {
+                                        contributor = NULL,
+                                        testing = FALSE) {
   
   asset_view <- config$asset_view
   token <- config$schematic_token
@@ -61,6 +62,15 @@ generate_data_flow_manifest <- function(storage_project_id,
   # add contributor
   if (!is.null(contributor)) {
     df$contributor <- rep(contributor, length(dataset_ids))
+  }
+  
+  # if testing = TRUE: fill in w dummy data
+  if (testing) {
+    df$release_scheduled <- rep("---", length(dataset_ids))
+    df$embargo <- rep("---", length(dataset_ids))
+    df$standard_compliance <- rep(FALSE, length(dataset_ids))
+    df$data_portal <- rep(FALSE, length(dataset_ids))
+    df$released <- rep(FALSE, length(dataset_ids))
   }
   
   return(df)
