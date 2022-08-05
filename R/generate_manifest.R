@@ -21,7 +21,7 @@ generate_data_flow_manifest <- function(storage_project_id,
   
   # component metadata
   dataset_component_metadata <- purrr::map(all_manifests_list, 3)
-  component <- purrr::map_chr(dataset_component_metadata, 1)
+  dataset <- purrr::map_chr(dataset_component_metadata, 1)
   
   # calculate number of items
   # pull down each manifest and count each row (1 file / row)
@@ -40,9 +40,10 @@ generate_data_flow_manifest <- function(storage_project_id,
   num_items <- purrr::flatten_int(num_items_list)
   
   # create empty dataframe
-  colnames <- c("contributor",
+  colnames <- c("Component", 
+                "contributor",
                 "dataset_name",
-                "dataset_type",
+                "dataset",
                 "num_items",
                 "release_scheduled",
                 "embargo",
@@ -55,8 +56,9 @@ generate_data_flow_manifest <- function(storage_project_id,
   names(df) <- colnames 
   
   # fill in dataframe
+  df$Component <- "DataFlow"
   df$dataset_name <- dataset_names
-  df$dataset_type <- component
+  df$dataset <- dataset
   df$num_items <- num_items
   
   # add contributor
