@@ -54,14 +54,12 @@ app_ui <- function(request) {
           # dataset view dashboard tab
           shinydashboard::tabItem(tabName = "dataset-dashboard",
                                   fluidPage(
-                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"))
-                                  ),
+                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"))),
           
           # Administrator tab
           shinydashboard::tabItem(tabName = "administrator",
                                   
                                   fluidPage(
-                                    
 
                                     # initialize waiter + use preloader
                                     waiter::use_waiter(),
@@ -70,11 +68,18 @@ app_ui <- function(request) {
                                       h4("Retrieving Synapse information...")),
                                       color = "#424874"),
                                     
+                                    mod_select_storage_project_ui("select_storage_project_1"),
+
                                     mod_dataset_selection_ui("dataset_selection_1"),
-                                    
+
                                     br(),
                                     
-                                    mod_update_data_flow_status_ui("update_data_flow_status_1"))
+                                    mod_update_data_flow_status_ui("update_data_flow_status_1"),
+
+                                    br(),
+                                    
+                                    mod_submit_model_ui("submit_model_1"))
+                                  
           )
 
           )

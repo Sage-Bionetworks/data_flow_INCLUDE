@@ -20,13 +20,10 @@ mod_select_storage_project_ui <- function(id){
       uiOutput(ns("project_selector")),
       
       # Button to initiate project selection
-      actionButton(ns("select_project_btn"),
+      actionButton(ns("submit_btn"),
                    "Submit"),
-      
-      br()
+      )
     )
- 
-  )
 }
     
 # Storage Project Selection Module Server
@@ -48,7 +45,7 @@ mod_select_storage_project_server <- function(id, asset_view, input_token) {
     # convert to dataframe
     storage_project_df <- list_to_dataframe(list = storage_project_list,
                                             col_names = c("id", "name"))
-
+  
     # reorder and add to reactive values
     storage_project_df <- dplyr::select(storage_project_df, name, id)
     
@@ -64,18 +61,19 @@ mod_select_storage_project_server <- function(id, asset_view, input_token) {
       
     })
     
-    # ON BUTTON CLICK RETURN SELECTED PROJECT  ##############################################################
+    # SUBSET STORAGE PROJECT DATAFRAME BY SELECTED PROJECT  ##############################################################
     
-    # return project df subsetted by selected project and action button click
-    eventReactive(input$select_project_btn, {
+    selected_project_df <- reactive({
       
-      selected_project_df <- storage_project_df[ grepl(input$selected_project, storage_project_df$name), ]
+      req(input$selected_project)
       
-      return(list(
-        selected_df = selected_project_df,
-        action_btn = input$select_project_btn
-        ))
-      })
+      storage_project_df[ grepl(input$selected_project, storage_project_df$name), ]})
+    
+    # RETURN SELECTED PROJECT  ##############################################################
+    
+    eventReactive(input$submit_btn, {
+      return(selected_project_df())
+    })
   })
   }
     
