@@ -30,13 +30,24 @@ app_server <- function( input, output, session ) {
   # read in global config
   global_config <- jsonlite::read_json("inst/global.json")
 
-  # ADMINISTRATE  #######################################################################
+  # ADMINISTRATOR  #######################################################################
   
-  # MOD_DATASET_SELECTION
+  # STORAGE PROJECT SELECTION
+  # selected_df (dataframe)
+  # action_btn (TRUE/FALSE)
+  
+  select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
+                                                              asset_view = global_config$asset_view,
+                                                              input_token = global_config$schematic_token)
+    
   dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
+                                                    storage_project_df = select_storage_project,
                                                     asset_view = global_config$asset_view,
                                                     input_token = global_config$schematic_token)
 
+  res <- mod_update_data_flow_status_server("update_data_flow_status_1")
+
+  mod_submit_model_server("submit_model_1")
   
   # DATASET DASH  #######################################################################
   
