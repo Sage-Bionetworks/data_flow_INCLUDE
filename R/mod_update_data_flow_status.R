@@ -15,26 +15,26 @@ mod_update_data_flow_status_ui <- function(id){
       width = NULL,
       
       # release scheduled input
-      dateInput("release_date", label = h4("Schedule Release"), value = NA),
+      dateInput(ns("release_date"), label = h4("Schedule Release"), value = NA),
       
       # embargo input
-      dateInput("embargo_date", label = h4("Schedule Embargo"), value = NA),
+      dateInput(ns("embargo_date"), label = h4("Schedule Embargo"), value = NA),
       
       # standard compliance input
-      radioButtons("standard_compliance", 
-                   label = h3("Standard Compliance"),
+      radioButtons(ns("standard_compliance"), 
+                   label = h4("Standard Compliance"),
                    choices = list("TRUE" = 1, "FALSE" = 2), 
                    selected = NA),
       
       # data portal input
-      radioButtons("data_portal", 
-                   label = h3("Data Portal"),
+      radioButtons(ns("data_portal"), 
+                   label = h4("Data Portal"),
                    choices = list("TRUE" = 1, "FALSE" = 2), 
                    selected = NA),
       
       # released input
-      radioButtons("release", 
-                   label = h3("Released"),
+      radioButtons(ns("released"), 
+                   label = h4("Released"),
                    choices = list("TRUE" = 1, "FALSE" = 2), 
                    selected = NA),
     
@@ -45,7 +45,9 @@ mod_update_data_flow_status_ui <- function(id){
       # Button to initiate dataset selection
       actionButton(ns("submit"), "Submit"),
       
-      br()
+      br(),
+      
+      verbatimTextOutput(ns("tst"))
     )
   )
 }
@@ -56,6 +58,17 @@ mod_update_data_flow_status_ui <- function(id){
 mod_update_data_flow_status_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    res <- reactive({
+      list(release_scheduled = input$release_date,
+           embargo = input$embargo_date,
+           standard_compliance = input$standard_compliance,
+           data_portal = input$data_portal,
+           released = input$released,
+           action_button = input$submit)
+    })
+
+    return(reactive({res()}))
  
   })
 }
