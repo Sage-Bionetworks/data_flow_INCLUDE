@@ -75,6 +75,8 @@ app_ui <- function(request) {
                                     br(),
                                     
                                     mod_update_data_flow_status_ui("update_data_flow_status_1"),
+                                    
+                                    dataTableOutput("tst_manifest_tbl"),
 
                                     br(),
                                     

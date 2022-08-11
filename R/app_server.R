@@ -9,6 +9,13 @@ app_server <- function( input, output, session ) {
   
   # DEV STUFF ###########################################################################
 
+  # GET DFS MANIFEST (LOCALLY)
+  # FIXME: pull DFS manifest from synapse
+  
+  manifest <- read.table("~/Desktop/tsting_manifests/data_flow/duke/data_flow_status_manifest.csv",
+                         sep = ",",
+                         header = TRUE)
+  
   # initialize waiter
   w <- Waiter$new(id = "release_status_wrapper",
                   html = div(
@@ -17,7 +24,6 @@ app_server <- function( input, output, session ) {
                     h4("Submitting updated manifest to Synapse...")),
                   color = transparent(.8))
   
-
   
   # SYNAPSE LOGIN
   # TODO: log in will eventually live in global.R/rely on config info
@@ -33,19 +39,40 @@ app_server <- function( input, output, session ) {
   # ADMINISTRATOR  #######################################################################
   
   # STORAGE PROJECT SELECTION
-  # selected_df (dataframe)
-  # action_btn (TRUE/FALSE)
   
   select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
                                                               asset_view = global_config$asset_view,
                                                               input_token = global_config$schematic_token)
+  
+  # DATASET SELECTION
     
   dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
                                                     storage_project_df = select_storage_project,
                                                     asset_view = global_config$asset_view,
                                                     input_token = global_config$schematic_token)
-
-  res <- mod_update_data_flow_status_server("update_data_flow_status_1")
+  
+  # UPDATE DATA FLOW STATUS SELECTIONS 
+  updated_data_flow_status <- mod_update_data_flow_status_server("update_data_flow_status_1")
+  
+  
+  # MODIFY MANIFEST
+  modified_manifest <- reactive({
+    req(updated_data_flow_status)
+    
+    tst <- updated_data_flow_status()
+    
+    selected_ds <- dataset_selection()
+    
+    update_dfs_manifest(dfs_manifest = manifest,
+                        dfs_updates = tst,
+                        selected_datasets_df = selected_ds)
+  })
+  
+  # DISPLAY MODIFIED MANIFEST
+  
+  output$tst_manifest_tbl <- renderDataTable({
+    modified_manifest()
+  })
 
   mod_submit_model_server("submit_model_1")
   
