@@ -23,34 +23,29 @@ mod_update_data_flow_status_ui <- function(id){
       # standard compliance input
       radioButtons(ns("standard_compliance"), 
                    label = h4("Standard Compliance"),
-                   choices = list("TRUE" = 1, "FALSE" = 2), 
+                   list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
       
       # data portal input
       radioButtons(ns("data_portal"), 
                    label = h4("Data Portal"),
-                   choices = list("TRUE" = 1, "FALSE" = 2), 
+                   choices = list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
       
       # released input
       radioButtons(ns("released"), 
                    label = h4("Released"),
-                   choices = list("TRUE" = 1, "FALSE" = 2), 
+                   choices = list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
-    
-    
       
       br(),
       
       # Button to initiate dataset selection
-      actionButton(ns("submit"), "Submit"),
-      
-      br(),
-      
-      verbatimTextOutput(ns("tst"))
-    )
+      actionButton(ns("submit_btn"), "Submit")
+      )
   )
 }
+
     
 #' update_data_flow_status Server Functions
 #'
@@ -59,16 +54,37 @@ mod_update_data_flow_status_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    release_scheduled <- reactive({
+      
+      if (length(input$release_date) == 0) {
+        return(NULL)
+      } else {
+        return(input$release_date)
+      }
+      
+    })
+    
+    embargo <- reactive({
+      
+      if (length(input$embargo_date) == 0) {
+        return(NULL)
+      } else {
+        return(input$embargo_date)
+      }
+      
+    })
+    
     res <- reactive({
-      list(release_scheduled = input$release_date,
-           embargo = input$embargo_date,
+      list(release_scheduled = release_scheduled(),
+           embargo = embargo(),
            standard_compliance = input$standard_compliance,
            data_portal = input$data_portal,
-           released = input$released,
-           action_button = input$submit)
+           released = input$released)
     })
-
-    return(reactive({res()}))
+    
+    eventReactive(input$submit_btn, {
+      return(res())
+    })
  
   })
 }
