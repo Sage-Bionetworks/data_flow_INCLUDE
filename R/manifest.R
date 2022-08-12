@@ -1,3 +1,7 @@
+#' Generate a data flow status manifest. Fills in the component, contributor, data type, and dataset name columns.
+#' 
+#' @export
+
 generate_data_flow_manifest <- function(storage_project_id,
                                         config,
                                         contributor = NULL,

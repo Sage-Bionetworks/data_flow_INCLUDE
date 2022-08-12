@@ -1,0 +1,3 @@
+"AgeIsObfuscated","AgeatIndex","CauseofDeath","CauseofDeathSource","Component","DaystoBirth","DaystoDeath","Ethnicity","Gender","HTANParticipantID","OccupationDurationYears","PrematureAtBirth","Race","ReleaseStatus","Uuid","VitalStatus","WeeksGestationatBirth","YearOfBirth","YearofDeath","entityId"
+FALSE,67,NA,NA,"Demographics",0,NA,"hispanic or latino","male","HTA1_11",NA,"Unknown","Not Reported","Upcoming Release","492b593a-c4a7-4d61-b8a0-029e767a3186","Alive",NA,1968,NA,"syn21980679"
+FALSE,76,"Cancer Related","Death Certificate","Demographics",0,NA,"not hispanic or latino","female","HTA1_15",NA,"Not Reported","white","Upcoming Release","1a0cff00-5b8d-456f-bbff-b41ac173ee93","Dead",NA,1949,2018,"syn21980680"
