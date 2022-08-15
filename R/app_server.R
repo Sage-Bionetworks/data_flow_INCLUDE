@@ -8,13 +8,6 @@ app_server <- function( input, output, session ) {
   # Your application server logic
   
   # DEV STUFF ###########################################################################
-
-  # GET DFS MANIFEST (LOCALLY)
-  # FIXME: pull DFS manifest from synapse
-  
-  manifest <- read.table("~/Desktop/tsting_manifests/data_flow/duke/data_flow_status_manifest.csv",
-                         sep = ",",
-                         header = TRUE)
   
   # initialize waiter
   w <- Waiter$new(id = "release_status_wrapper",
@@ -44,6 +37,24 @@ app_server <- function( input, output, session ) {
                                                               asset_view = global_config$asset_view,
                                                               input_token = global_config$schematic_token)
   
+  # DOWNLOAD MANIFEST
+  
+  # get DFS manifest locally
+  # FIXME: pull DFS manifest from synapse
+  
+  manifest <- reactive({
+    req(select_storage_project())
+    
+    synapse_manifest <- read.table("~/Desktop/tsting_manifests/data_flow/duke/fake_synapse/synapse_storage_manifest.csv",
+                           sep = ",",
+                           header = TRUE)
+    
+    manifest_w_dates <- manifest_string_to_date(synapse_manifest)
+    
+    return(manifest_w_dates)
+    
+  })
+  
   # DATASET SELECTION
     
   dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
@@ -59,13 +70,9 @@ app_server <- function( input, output, session ) {
   modified_manifest <- reactive({
     req(updated_data_flow_status)
     
-    tst <- updated_data_flow_status()
-    
-    selected_ds <- dataset_selection()
-    
-    update_dfs_manifest(dfs_manifest = manifest,
-                        dfs_updates = tst,
-                        selected_datasets_df = selected_ds)
+    update_dfs_manifest(dfs_manifest = manifest(),
+                        dfs_updates = updated_data_flow_status(),
+                        selected_datasets_df = dataset_selection())
   })
   
   # DISPLAY MODIFIED MANIFEST
@@ -73,8 +80,18 @@ app_server <- function( input, output, session ) {
   output$tst_manifest_tbl <- renderDataTable({
     modified_manifest()
   })
+  
+  # SUBMIT MODEL TO SYNAPSE
+  # make sure to submit using a manifest that has been run through date to string
+  #mod_submit_model_server("submit_model_1")
+  
+  
+  observeEvent( input$submit, {
+    write.csv(modified_manifest(),
+              "~/Desktop/tsting_manifests/data_flow/duke/fake_synapse/synapse_storage_manifest.csv",
+              row.names = FALSE)
+  })
 
-  mod_submit_model_server("submit_model_1")
   
   # DATASET DASH  #######################################################################
   
