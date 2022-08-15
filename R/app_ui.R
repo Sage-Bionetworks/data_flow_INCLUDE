@@ -71,7 +71,7 @@ app_ui <- function(request) {
                                     mod_select_storage_project_ui("select_storage_project_1"),
 
                                     mod_dataset_selection_ui("dataset_selection_1"),
-
+                                    
                                     br(),
                                     
                                     mod_update_data_flow_status_ui("update_data_flow_status_1"),
@@ -80,7 +80,9 @@ app_ui <- function(request) {
 
                                     br(),
                                     
-                                    mod_submit_model_ui("submit_model_1"))
+                                    actionButton("submit", "Submit to Synapse"))
+                                    
+                                    #mod_submit_model_ui("submit_model_1"))
                                   
           )
 

@@ -13,12 +13,15 @@ update_dfs_manifest <- function(dfs_manifest,
   # remove unchanged attributes from selections
   dfs_updates <- dfs_updates[!unlist(lapply(dfs_updates, is.null))]
   
+  # capture column names to update
+  col_names <- names(dfs_updates)
+  
   # loop over the list of changed attributes
   # for each attribute:
   #   - pull out the original vector
   #   - get the updated entry from the list of attributes
   #   - apply the entry to the selected datasets in dfs manifest
-  res <- sapply(names(dfs_updates), function(x) {
+  dfs_manifest[col_names] <- lapply(col_names, function(x) {
     
     # pull out column into a vector
     vec <- dfs_manifest[[x]]
@@ -33,12 +36,6 @@ update_dfs_manifest <- function(dfs_manifest,
     return(vec)
     
   })
-  
-  # get manifest idx of columns
-  update_cols_idx <- match(colnames(res), names(dfs_manifest))
-  
-  # replace manifest columns with results
-  dfs_manifest[,update_cols_idx] <- res
   
   return(dfs_manifest)
 }

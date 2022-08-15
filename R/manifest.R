@@ -1,3 +1,7 @@
+#' Generate a data flow status manifest. Fills in the component, contributor, data type, and dataset name columns.
+#' 
+#' @export
+
 generate_data_flow_manifest <- function(storage_project_id,
                                         config,
                                         contributor = NULL,
@@ -76,4 +80,40 @@ generate_data_flow_manifest <- function(storage_project_id,
   }
   
   return(df)
+}
+
+#' Convert date columns from string to date
+#'
+#' @param manifest A data flow status manifest. 
+#' 
+#' @export
+
+manifest_string_to_date <- function(manifest) {
+  
+  # convert Not Applicable to NA
+  manifest[ manifest == "Not Applicable" ] <- NA
+  
+  # convert string to date for date cols
+  date_cols <- c("release_scheduled", "embargo")
+  manifest[date_cols] <- lapply(manifest[,date_cols], as.Date)
+  
+  return(manifest)
+}
+
+#' Convert date columns from date to string
+#'
+#' @manifest a data flow status manifest.
+#' 
+#' @export
+
+manifeset_date_to_string <- function(manifest) {
+  
+  # convert date to string for date cols
+  date_cols <- c("release_scheduled", "embargo")
+  manifest[date_cols] <- lapply(manifest[,date_cols], as.character)
+  
+  # convert NA to Not Applicable
+  manifest[ is.na(manifest) ] <- "Not Applicable"
+  
+  return(manifest)
 }
