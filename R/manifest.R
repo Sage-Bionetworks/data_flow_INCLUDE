@@ -102,7 +102,7 @@ manifest_string_to_date <- function(manifest) {
 
 #' Convert date columns from date to string
 #'
-#' @manifest a data flow status manifest.
+#' @param manifest a data flow status manifest.
 #' 
 #' @export
 
