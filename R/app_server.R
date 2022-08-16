@@ -45,7 +45,7 @@ app_server <- function( input, output, session ) {
   manifest <- reactive({
     req(select_storage_project())
     
-    synapse_manifest <- read.table("~/Desktop/tsting_manifests/data_flow/duke/fake_synapse/synapse_storage_manifest.csv",
+    synapse_manifest <- read.table("./manifest/data_flow_status_manifest.csv",
                            sep = ",",
                            header = TRUE)
     
@@ -78,20 +78,25 @@ app_server <- function( input, output, session ) {
   # DISPLAY MODIFIED MANIFEST
   
   output$tst_manifest_tbl <- renderDataTable({
-    modified_manifest()
+    manifest_submit()
+  })
+  
+  # PREP MANIFEST FOR SYNAPSE SUBMISSION
+  
+  manifest_submit <- reactive({
+    req(modified_manifest())
+    
+    manifest_date_to_string(modified_manifest())
   })
   
   # SUBMIT MODEL TO SYNAPSE
   # make sure to submit using a manifest that has been run through date to string
-  #mod_submit_model_server("submit_model_1")
-  
-  
-  observeEvent( input$submit, {
-    write.csv(modified_manifest(),
-              "~/Desktop/tsting_manifests/data_flow/duke/fake_synapse/synapse_storage_manifest.csv",
-              row.names = FALSE)
-  })
-
+  mod_submit_model_server("submit_model_1",
+                          dfs_manifest = manifest_submit,
+                          data_type = "DataFlow",
+                          dataset_id = "syn34571639",
+                          manifest_path = "./manifest",
+                          input_token = global_config$schematic_token)
   
   # DATASET DASH  #######################################################################
   

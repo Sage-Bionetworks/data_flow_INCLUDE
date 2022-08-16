@@ -80,9 +80,7 @@ app_ui <- function(request) {
 
                                     br(),
                                     
-                                    actionButton("submit", "Submit to Synapse"))
-                                    
-                                    #mod_submit_model_ui("submit_model_1"))
+                                    mod_submit_model_ui("submit_model_1"))
                                   
           )
 
