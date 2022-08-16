@@ -106,7 +106,7 @@ manifest_string_to_date <- function(manifest) {
 #' 
 #' @export
 
-manifeset_date_to_string <- function(manifest) {
+manifest_date_to_string <- function(manifest) {
   
   # convert date to string for date cols
   date_cols <- c("release_scheduled", "embargo")
