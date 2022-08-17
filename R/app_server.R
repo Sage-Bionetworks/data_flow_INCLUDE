@@ -45,13 +45,12 @@ app_server <- function( input, output, session ) {
   manifest <- reactive({
     req(select_storage_project())
     
-    synapse_manifest <- read.table("./manifest/data_flow_status_manifest.csv",
-                           sep = ",",
-                           header = TRUE)
+    # download data flow status manifest
+    dfs_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
+                                                dataset_id = global_config$manifest_dataset_id,
+                                                input_token = global_config$schematic_token)
     
-    manifest_w_dates <- manifest_string_to_date(synapse_manifest)
-    
-    return(manifest_w_dates)
+    manifest_string_to_date(dfs_manifest)
     
   })
   
@@ -59,7 +58,7 @@ app_server <- function( input, output, session ) {
     
   dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
                                                     storage_project_df = select_storage_project,
-                                                    asset_view = global_config$asset_view,
+                                                    asset_view = global_config$htan_tst_asset_view,
                                                     input_token = global_config$schematic_token)
   
   # UPDATE DATA FLOW STATUS SELECTIONS 
@@ -94,7 +93,7 @@ app_server <- function( input, output, session ) {
   mod_submit_model_server("submit_model_1",
                           dfs_manifest = manifest_submit,
                           data_type = "DataFlow",
-                          dataset_id = "syn34571639",
+                          dataset_id = global_config$manifest_dataset_id,
                           manifest_path = "./manifest",
                           input_token = global_config$schematic_token)
   
