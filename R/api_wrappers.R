@@ -20,7 +20,8 @@ manifest_download_to_df <- function(asset_view,
   manifest_json <- manifest_download(asset_view = asset_view,
                                      dataset_id = dataset_id,
                                      input_token = input_token,
-                                     as_json = TRUE)
+                                     as_json = TRUE,
+                                     new_manifest_name = NULL)
   
   
   # use json lite to parse into dataframe
@@ -40,5 +41,4 @@ manifest_download_to_df <- function(asset_view,
   # output df
   return(content_df)
 }
-
 

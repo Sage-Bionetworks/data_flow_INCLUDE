@@ -20,6 +20,7 @@ manifest_download <- function(asset_view,
                               dataset_id,
                               input_token,
                               as_json,
+                              new_manifest_name = NULL,
                               url="http://localhost:3001/v1/manifest/download") {
   
   # set up parameters for httr::get call
@@ -27,7 +28,8 @@ manifest_download <- function(asset_view,
     `input_token` = input_token,
     `asset_view` = asset_view,
     `dataset_id` = dataset_id,
-    `as_json` = as_json
+    `as_json` = as_json,
+    `new_manifest_name` = new_manifest_name
   )
   
   # run GET
