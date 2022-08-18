@@ -94,8 +94,9 @@ app_server <- function( input, output, session ) {
                           dfs_manifest = manifest_submit,
                           data_type = "DataFlow",
                           dataset_id = global_config$manifest_dataset_id,
-                          manifest_path = "./manifest",
-                          input_token = global_config$schematic_token)
+                          manifest_dir = "./manifest",
+                          input_token = global_config$schematic_token,
+                          schema_url = global_config$schema_url)
   
   # DATASET DASH  #######################################################################
   
