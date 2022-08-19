@@ -37,10 +37,6 @@ app_server <- function( input, output, session ) {
                                                               asset_view = global_config$asset_view,
                                                               input_token = global_config$schematic_token)
   
-  output$tst_sp_out <- renderPrint({
-    select_storage_project()
-  })
-  
   # DOWNLOAD MANIFEST
   
   # get DFS manifest ID
