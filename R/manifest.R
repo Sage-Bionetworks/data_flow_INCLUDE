@@ -72,8 +72,8 @@ generate_data_flow_manifest <- function(storage_project_id,
   
   # if testing = TRUE: fill in w dummy data
   if (testing) {
-    df$release_scheduled <- rep("---", length(dataset_ids))
-    df$embargo <- rep("---", length(dataset_ids))
+    df$release_scheduled <- rep("Not Applicable", length(dataset_ids))
+    df$embargo <- rep("Not Applicable", length(dataset_ids))
     df$standard_compliance <- rep(FALSE, length(dataset_ids))
     df$data_portal <- rep(FALSE, length(dataset_ids))
     df$released <- rep(FALSE, length(dataset_ids))
