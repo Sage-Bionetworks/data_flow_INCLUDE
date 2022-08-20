@@ -67,7 +67,7 @@ mod_select_storage_project_server <- function(id, asset_view, input_token) {
       
       req(input$selected_project)
       
-      storage_project_df[ grepl(input$selected_project, storage_project_df$name), ]})
+      storage_project_df[ match(input$selected_project, storage_project_df$name), ]})
     
     # RETURN SELECTED PROJECT  ##############################################################
     

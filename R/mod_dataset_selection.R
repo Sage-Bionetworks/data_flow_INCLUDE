@@ -45,7 +45,8 @@ mod_dataset_selection_ui <- function(id){
 mod_dataset_selection_server <- function(id,
                                          storage_project_df,
                                          asset_view,
-                                         input_token) {
+                                         input_token,
+                                         hidden_datasets = NULL) {
   
   moduleServer( id, function(input, output, session) {
     
@@ -72,14 +73,24 @@ mod_dataset_selection_server <- function(id,
         w$hide()
       })
       
-       dataset_list <- storage_project_datasets(asset_view = asset_view,
-                               project_id = storage_project_df()$id,
-                               input_token = input_token)
-       
-       dataset_df <- list_to_dataframe(list = dataset_list,
+      dataset_list <- storage_project_datasets(asset_view = asset_view,
+                                               project_id = storage_project_df()$id,
+                                               input_token = input_token)
+      
+      dataset_df <- list_to_dataframe(list = dataset_list,
                                        col_names = c("id", "name"))
+      
+      # remove specified datasets from being shown 
+      if (!is.null(hidden_datasets)) {
        
-       dplyr::select(dataset_df, name, id)
+        dfs_idx <- match(hidden_datasets, dataset_df$name)
+        
+        dataset_df <- dataset_df[-(dfs_idx),] 
+      }
+       
+      dplyr::select(dataset_df, name, id)
+       
+       
     })
     
 

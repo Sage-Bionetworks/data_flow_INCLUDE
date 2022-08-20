@@ -37,11 +37,6 @@ mod_update_data_flow_status_ui <- function(id){
                    label = h4("Released"),
                    choices = list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
-      
-      br(),
-      
-      # Button to initiate dataset selection
-      actionButton(ns("submit_btn"), "Submit")
       )
   )
 }
@@ -82,9 +77,9 @@ mod_update_data_flow_status_server <- function(id){
            released = input$released)
     })
     
-    eventReactive(input$submit_btn, {
-      return(res())
-    })
+
+    return(reactive({ res() }))
+
  
   })
 }
