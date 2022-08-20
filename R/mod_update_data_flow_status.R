@@ -15,40 +15,32 @@ mod_update_data_flow_status_ui <- function(id){
       width = NULL,
       
       # release scheduled input
-      dateInput("release_date", label = h4("Schedule Release"), value = NA),
+      dateInput(ns("release_date"), label = h4("Schedule Release"), value = NA),
       
       # embargo input
-      dateInput("embargo_date", label = h4("Schedule Embargo"), value = NA),
+      dateInput(ns("embargo_date"), label = h4("Schedule Embargo"), value = NA),
       
       # standard compliance input
-      radioButtons("standard_compliance", 
-                   label = h3("Standard Compliance"),
-                   choices = list("TRUE" = 1, "FALSE" = 2), 
+      radioButtons(ns("standard_compliance"), 
+                   label = h4("Standard Compliance"),
+                   list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
       
       # data portal input
-      radioButtons("data_portal", 
-                   label = h3("Data Portal"),
-                   choices = list("TRUE" = 1, "FALSE" = 2), 
+      radioButtons(ns("data_portal"), 
+                   label = h4("Data Portal"),
+                   choices = list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
       
       # released input
-      radioButtons("release", 
-                   label = h3("Released"),
-                   choices = list("TRUE" = 1, "FALSE" = 2), 
+      radioButtons(ns("released"), 
+                   label = h4("Released"),
+                   choices = list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
-    
-    
-      
-      br(),
-      
-      # Button to initiate dataset selection
-      actionButton(ns("submit"), "Submit"),
-      
-      br()
-    )
+      )
   )
 }
+
     
 #' update_data_flow_status Server Functions
 #'
@@ -56,6 +48,38 @@ mod_update_data_flow_status_ui <- function(id){
 mod_update_data_flow_status_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    release_scheduled <- reactive({
+      
+      if (length(input$release_date) == 0) {
+        return(NULL)
+      } else {
+        return(input$release_date)
+      }
+      
+    })
+    
+    embargo <- reactive({
+      
+      if (length(input$embargo_date) == 0) {
+        return(NULL)
+      } else {
+        return(input$embargo_date)
+      }
+      
+    })
+    
+    res <- reactive({
+      list(release_scheduled = release_scheduled(),
+           embargo = embargo(),
+           standard_compliance = input$standard_compliance,
+           data_portal = input$data_portal,
+           released = input$released)
+    })
+    
+
+    return(reactive({ res() }))
+
  
   })
 }

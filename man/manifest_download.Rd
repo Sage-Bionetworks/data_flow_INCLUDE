@@ -9,6 +9,7 @@ manifest_download(
   dataset_id,
   input_token,
   as_json,
+  new_manifest_name = NULL,
   url = "http://localhost:3001/v1/manifest/download"
 )
 }
