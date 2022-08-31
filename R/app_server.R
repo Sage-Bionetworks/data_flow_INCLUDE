@@ -8,7 +8,7 @@ app_server <- function( input, output, session ) {
   # Your application server logic
   
   # DEV STUFF ###########################################################################
-
+  
   # initialize waiter
   w <- Waiter$new(id = "release_status_wrapper",
                   html = div(
@@ -17,7 +17,6 @@ app_server <- function( input, output, session ) {
                     h4("Submitting updated manifest to Synapse...")),
                   color = transparent(.8))
   
-
   
   # SYNAPSE LOGIN
   # TODO: log in will eventually live in global.R/rely on config info
@@ -27,81 +26,97 @@ app_server <- function( input, output, session ) {
   syn <- synapseclient$Synapse()
   syn$login()
   
+  # read in global config
   global_config <- jsonlite::read_json("inst/global.json")
 
-  # ADMINISTRATE  #######################################################################
+  # ADMINISTRATOR  #######################################################################
   
-  # MOD_DATASET_SELECTION
-  dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_ui_1",
+  # STORAGE PROJECT SELECTION
+  
+  select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
+                                                              asset_view = global_config$asset_view,
+                                                              input_token = global_config$schematic_token)
+  
+  # DOWNLOAD MANIFEST
+  
+  # get DFS manifest ID
+  
+  data_flow_status_id <- reactive({
+    req(select_storage_project())
+
+    select_storage_project_df <- select_storage_project()
+    
+    # get all manifests
+    all_manifests_list <- storage_project_manifests(global_config$asset_view, 
+                                                    select_storage_project_df$id, 
+                                                    global_config$schematic_token)
+    
+    # get DataFlowStatus idx
+    dfs_manifest_idx <- grep("DataFlowStatus", all_manifests_list)
+    
+    # Return first element from nested list (DataFlowStatus dataset synID)
+    all_manifests_list[[dfs_manifest_idx]][[1]][[1]]
+    
+  })
+  
+  
+  # retrieve manifest
+  manifest <- reactive({
+    req(data_flow_status_id())
+    
+    # download data flow status manifest
+    dfs_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
+                                            dataset_id = data_flow_status_id(),
+                                            input_token = global_config$schematic_token)
+    
+    manifest_string_to_date(dfs_manifest)
+    
+  })
+  
+  # DATASET SELECTION
+  
+  dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
+                                                    storage_project_df = select_storage_project,
                                                     asset_view = global_config$asset_view,
-                                                    input_token = global_config$schematic_token)
+                                                    input_token = global_config$schematic_token,
+                                                    hidden_datasets = "DataFlowStatus")
   
-  # MOD_FILE_SELECTION
-  file_selection <- mod_file_selection_server(id = "file_selection_ui_1",
-                                              dataset = dataset_selection,
-                                              asset_view = global_config$asset_view,
-                                              input_token = global_config$schematic_token)
-
-  # MOD_SET_STATUS
-  release_status_selection <- mod_set_release_status_server("set_release_status_ui_1")
+  # UPDATE DATA FLOW STATUS SELECTIONS 
+  updated_data_flow_status <- mod_update_data_flow_status_server("update_data_flow_status_1")
   
-  # UPDATE MANIFEST WITH STATUS SELECTION
-
-  manifest_mod <- reactive({
-
-    mani <- file_selection$manifest()
-
-    # check manifest for status column
-    # if column doesn't exist, add it
-
-    status_col <- "ReleaseStatus"
-
-    if (!status_col %in% colnames(mani)) {
-      mani$x <- NA
-      names(mani)[names(mani) == "x"] <- status_col
-      }
-
-    # add release_status_selection to selected rows
-    mani[file_selection$selected_rows(), status_col] <- release_status_selection$status_selection()
-
-    return(mani)
-
+  
+  # MODIFY MANIFEST
+  modified_manifest <- reactive({
+    req(updated_data_flow_status())
+    
+    update_dfs_manifest(dfs_manifest = manifest(),
+                        dfs_updates = updated_data_flow_status(),
+                        selected_datasets_df = dataset_selection())
   })
   
-  # SUBMIT MANIFEST
+  # PREP MANIFEST FOR SYNAPSE SUBMISSION
   
-  # wait for button click to display table
-  # in place of model/submit endpoint for now
-  observeEvent(release_status_selection$btn_click(), {
+  manifest_submit <- reactive({
+    req(modified_manifest())
     
-    # show waiter
-    w$show()
-    
-    # on exit - hide waiter
-    on.exit({
-      w$hide()
-    })
-    
-    # create manifest dir
-    suppressWarnings(dir.create("./manifest"))
-    
-    # write modified manifest to dir
-    write.table(manifest_mod(),
-                "./manifest/synapse_storage_manifest.csv",
-                sep = ",",
-                row.names = FALSE)
-    
-    # submit to symapse
-    model_submit(data_type = "None", 
-                 dataset_id = dataset_selection()$id,
-                 restrict_rules = FALSE,
-                 csv_file = "./manifest/synapse_storage_manifest.csv",
-                 input_token = schematic_token,
-                 manifest_record_type = "table",
-                 url="http://localhost:3001/v1/model/submit",
-                 schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld")
-    
+    manifest_date_to_string(modified_manifest())
   })
+  
+  # DISPLAY MANIFEST TO BE SUBMITTED
+  
+  output$tst_manifest_tbl <- renderDataTable({
+    manifest_submit()
+  })
+  
+  # SUBMIT MODEL TO SYNAPSE
+  # make sure to submit using a manifest that has been run through date to string
+  mod_submit_model_server("submit_model_1",
+                          dfs_manifest = manifest_submit,
+                          data_type = "DataFlow",
+                          dataset_id = data_flow_status_id,
+                          manifest_dir = "./manifest",
+                          input_token = global_config$schematic_token,
+                          schema_url = global_config$schema_url)
   
   # DATASET DASH  #######################################################################
   

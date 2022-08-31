@@ -24,7 +24,7 @@ app_ui <- function(request) {
       
       # dashboardHeader
       shinydashboard::dashboardHeader(
-        title = "Release Administrator"
+        title = "Data Flow"
       ),
       
       # dashboardSidebar
@@ -32,11 +32,11 @@ app_ui <- function(request) {
         
         #sidebarMenu
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("Dataset Level Dashboard", 
+          shinydashboard::menuItem("Data Flow Status Dashboard", 
                                    tabName = "dataset-dashboard",
                                    icon = icon("dashboard")),
-          shinydashboard::menuItem("Administrative", 
-                                   tabName = "administrate",
+          shinydashboard::menuItem("Administrator", 
+                                   tabName = "administrator",
                                    icon = icon("cog"))
           
         )
@@ -54,14 +54,12 @@ app_ui <- function(request) {
           # dataset view dashboard tab
           shinydashboard::tabItem(tabName = "dataset-dashboard",
                                   fluidPage(
-                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"))
-                                  ),
+                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"))),
           
-          # administrate tab
-          shinydashboard::tabItem(tabName = "administrate",
+          # Administrator tab
+          shinydashboard::tabItem(tabName = "administrator",
                                   
                                   fluidPage(
-                                    
 
                                     # initialize waiter + use preloader
                                     waiter::use_waiter(),
@@ -70,18 +68,23 @@ app_ui <- function(request) {
                                       h4("Retrieving Synapse information...")),
                                       color = "#424874"),
                                     
-                                    mod_dataset_selection_ui("dataset_selection_ui_1"),
+                                    mod_select_storage_project_ui("select_storage_project_1"),
                                     
-                                    # file_selection module
-                                    mod_file_selection_ui("file_selection_ui_1"),
+                                    mod_dataset_selection_ui("dataset_selection_1"),
                                     
                                     br(),
                                     
-                                    # set release status module
-                                    mod_set_release_status_ui("set_release_status_ui_1"),
+                                    mod_update_data_flow_status_ui("update_data_flow_status_1"),
                                     
-                                    # for testing purposes: output modified manifest
-                                    DT::DTOutput("modified_manifest"))
+                                    shinydashboard::box(title = "Updated Manifest",
+                                                        width = NULL,
+                                                        
+                                                        dataTableOutput("tst_manifest_tbl")),
+
+                                    br(),
+                                    
+                                    mod_submit_model_ui("submit_model_1"))
+                                  
           )
 
           )
