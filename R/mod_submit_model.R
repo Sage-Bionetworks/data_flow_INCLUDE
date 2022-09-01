@@ -10,7 +10,7 @@
 mod_submit_model_ui <- function(id){
   ns <- NS(id)
   tagList(
-    
+    useWaiter(),
     actionButton(ns("submit"), "Submit to Synapse")
  
   )
@@ -29,6 +29,12 @@ mod_submit_model_server <- function(id,
   moduleServer( id, function(input, output, session) {
     ns <- session$ns
     
+    w <- Waiter$new(html = div(
+      style="color:#424874;",
+      waiter::spin_3(),
+      h4("Submitting updated manifest to Synapse...")),
+      color = transparent(.8))
+    
     # make sure that manifest folder exists
     if (!file.exists(manifest_dir)) {
       dir.create(manifest_dir)
@@ -36,6 +42,7 @@ mod_submit_model_server <- function(id,
     
     # on button click submit model to synapse
     observeEvent(input$submit, {
+      w$show()
       
       # write manifest table for upload
       path <- file.path(manifest_dir, "data_flow_status_manifest.csv")
@@ -54,6 +61,7 @@ mod_submit_model_server <- function(id,
                    manifest_record_type = "entity",
                    url = "http://localhost:3001/v1/model/submit",
                    schema_url = schema_url)
+      w$hide()
       
     })
     
