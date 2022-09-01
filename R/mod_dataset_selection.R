@@ -29,7 +29,7 @@ mod_dataset_selection_ui <- function(id){
                  br(),
 
                  # Button to initiate dataset selection
-                 actionButton(ns("submit_btn"), "Submit"),
+                 actionButton(ns("submit_btn"), "Select Dataset(s)"),
                  
                  br()
                  )
