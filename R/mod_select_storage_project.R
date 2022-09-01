@@ -21,7 +21,7 @@ mod_select_storage_project_ui <- function(id){
       
       # Button to initiate project selection
       actionButton(ns("submit_btn"),
-                   "Submit"),
+                   "Select Project"),
       )
     )
 }
@@ -55,7 +55,7 @@ mod_select_storage_project_server <- function(id, asset_view, input_token) {
     output$project_selector <- shiny::renderUI({
       
        selectInput(inputId = ns("selected_project"),
-                   label = "Select Project",
+                   label = NULL,
                    choices = storage_project_df$name,
                    selectize = FALSE) # must be false or for some reason cannot reference `input$selected_project`
       
