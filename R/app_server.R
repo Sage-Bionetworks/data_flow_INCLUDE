@@ -19,8 +19,6 @@ app_server <- function( input, output, session ) {
   
   # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
-  dashboard_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
-  
 
   # DATASET DASH  #######################################################################
   
