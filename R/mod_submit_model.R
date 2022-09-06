@@ -47,7 +47,7 @@ mod_submit_model_server <- function(id,
       
       # submit model to synapse
       model_submit(data_type = data_type,
-                   dataset_id = dataset_id(),
+                   dataset_id = dataset_id,
                    restrict_rules = TRUE,
                    csv_file = path,
                    input_token = input_token,

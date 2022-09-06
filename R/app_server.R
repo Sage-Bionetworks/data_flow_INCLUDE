@@ -17,72 +17,25 @@ app_server <- function( input, output, session ) {
   syn <- synapseclient$Synapse()
   syn$login()
   
-  # read in global config
+  # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
+  dashboard_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
+  
 
   # DATASET DASH  #######################################################################
   
-  # dummy data
-  dataset_dash_data <- reactive({
-    
-    n <- 10
-    
-    dates<- lubridate::ymd(paste0("2022-", seq(3:12), "-01"))
-    
-    ds_names <- paste0(
-      sample(LETTERS, n, replace = TRUE),
-      sample(LETTERS, n, replace = TRUE),
-      "-unique-dataset-name")
-    
-    contributor <- sample(c("HTAN BU", "HTAN OHSU", "HTAN CHOP"), n, replace = TRUE)
-    dataset_type <- sample(c("BiospecimanBatch1", "PatientTrial1", "scATAC-seq", "FamilyHistory"), n, replace = TRUE)
-    dataset_name <- paste0(
-      sample(LETTERS, n, replace = TRUE),
-      sample(LETTERS, n, replace = TRUE),
-      "-unique-dataset-name")
-    num_items <- as.integer(runif(n, min = 5, max = 500))
-    release_scheduled <- sample(c(dates, NA), n, replace = TRUE)
-    embargo <- sample(c(dates, NA), n, replace = TRUE)
-    standard_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    qc_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    phi_detection_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    access_controls_compliance <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    data_portal <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    released <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    
-    all_check_passing_row <- data.frame(contributor = "HTAN_OHSU",
-                                        dataset_name = "TF-unique-dataset-name",
-                                        dataset_type = "PatientTrial1",
-                                        num_items = 1,
-                                        release_scheduled = lubridate::floor_date(Sys.Date(), unit = "month"),
-                                        embargo = NA,
-                                        standard_compliance = TRUE,
-                                        data_portal = TRUE,
-                                        released = FALSE)
-    
-    
-    df <- data.frame(contributor,
-                     dataset_name,
-                     dataset_type,
-                     num_items,
-                     release_scheduled,
-                     embargo,
-                     standard_compliance,
-                     data_portal,
-                     released)
-    
-    df <- rbind(df, all_check_passing_row)
-    
-    return(df)
-  })
+  # download data flow status manifest
+  dfs_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
+                                          dataset_id = global_config$manifest_dataset_id,
+                                          input_token = global_config$schematic_token)
+  
+  dfs_manifest <- manifest_string_to_date(dfs_manifest)
   
   # prepare data to be displayed by mod_datatable
   
   mod_tabbed_dashboard_server("tabbed_dashboard_1", 
-                              dataset_dash_data,
+                              reactive({dfs_manifest}),
                               jsonlite::read_json("inst/datatable_dashboard_config.json"))
-  
-}
 
   # ADMINISTRATOR  #######################################################################
   
@@ -91,42 +44,6 @@ app_server <- function( input, output, session ) {
   select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
                                                               asset_view = global_config$asset_view,
                                                               input_token = global_config$schematic_token)
-  
-  # DOWNLOAD MANIFEST
-  
-  # get DFS manifest ID
-  
-  data_flow_status_id <- reactive({
-    req(select_storage_project())
-
-    select_storage_project_df <- select_storage_project()
-    
-    # get all manifests
-    all_manifests_list <- storage_project_manifests(global_config$asset_view, 
-                                                    select_storage_project_df$id, 
-                                                    global_config$schematic_token)
-    
-    # get DataFlowStatus idx
-    dfs_manifest_idx <- grep("DataFlowStatus", all_manifests_list)
-    
-    # Return first element from nested list (DataFlowStatus dataset synID)
-    all_manifests_list[[dfs_manifest_idx]][[1]][[1]]
-    
-  })
-  
-  
-  # retrieve manifest
-  manifest <- reactive({
-    req(data_flow_status_id())
-    
-    # download data flow status manifest
-    dfs_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
-                                            dataset_id = data_flow_status_id(),
-                                            input_token = global_config$schematic_token)
-    
-    manifest_string_to_date(dfs_manifest)
-    
-  })
   
   # DATASET SELECTION
   
@@ -144,7 +61,7 @@ app_server <- function( input, output, session ) {
   modified_manifest <- reactive({
     req(updated_data_flow_status())
     
-    update_dfs_manifest(dfs_manifest = manifest(),
+    update_dfs_manifest(dfs_manifest = dfs_manifest,
                         dfs_updates = updated_data_flow_status(),
                         selected_datasets_df = dataset_selection())
   })
@@ -168,7 +85,9 @@ app_server <- function( input, output, session ) {
   mod_submit_model_server("submit_model_1",
                           dfs_manifest = manifest_submit,
                           data_type = "DataFlow",
-                          dataset_id = data_flow_status_id,
+                          dataset_id = global_config$manifest_dataset_id,
                           manifest_dir = "./manifest",
                           input_token = global_config$schematic_token,
                           schema_url = global_config$schema_url)
+
+}

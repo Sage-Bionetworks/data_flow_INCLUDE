@@ -1,4 +1,6 @@
 {
-    "asset_view": "syn20446927",
-    "schematic_token": "schematic_token"
+    "asset_view": "syn23643253",
+    "manifest_dataset_id": "syn34640850",
+    "schematic_token": "token",
+    "schema_url": "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld"
   }
