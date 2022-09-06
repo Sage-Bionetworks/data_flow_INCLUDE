@@ -20,7 +20,6 @@ app_ui <- function(request) {
     
     # dashboardPage
     shinydashboard::dashboardPage(
-      skin = "purple",
       
       # dashboardHeader
       shinydashboard::dashboardHeader(
@@ -44,6 +43,9 @@ app_ui <- function(request) {
       
       #dashboardBody
       shinydashboard::dashboardBody(
+        
+        # implement dca theme module
+        dcamodules::use_dca(theme = "sage"),
         
         # initialize shinyjs
         shinyjs::useShinyjs(),
