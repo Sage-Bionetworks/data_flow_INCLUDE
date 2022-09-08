@@ -35,14 +35,16 @@ style_dashboard <- function(prepped_dataframe,
   # define center styling for icon columns
   center_list <- list(className = 'dt-center', targets = icon_idx)
   
-  # index of past_due column created in df prep step
-  past_due_idx <- match("past_due", names(prepped_dataframe))
+  # hide columns that are not included in the config
+  expected_colnames <- names(config)
+  hide_cols <- setdiff(names(prepped_dataframe), expected_colnames)
+  hide_idx <- match(hide_cols, names(prepped_dataframe))
   
   # capture icon and center styling in single variable
   defs <- list(
     center_list,
     # hide past_due column
-    list(targets = past_due_idx, visible = FALSE))
+    list(targets = hide_idx, visible = FALSE))
 
   # define styling for na_replacement
   na_replace_defs <- get_na_replace_defs(prepped_dataframe,

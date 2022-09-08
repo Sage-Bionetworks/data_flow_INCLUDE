@@ -8,7 +8,7 @@
         "col_name": "Dataset Name"
     },
 
-    "dataset_type": {
+    "dataset": {
         "col_name": "Dataset Type",
         "type": "drop_down_filter"
     },
