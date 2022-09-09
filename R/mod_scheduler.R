@@ -22,7 +22,7 @@ mod_scheduler_ui <- function(id,
     dateInput(ns("date"), label = dateInput_label, value = NA),
     checkboxInput(ns("unschedule_chk"), label = checkboxInput_label, value = FALSE))
 }
-    
+
 #' scheduler Server Functions
 #'
 #' @noRd 
@@ -30,36 +30,53 @@ mod_scheduler_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    # on checkbox click
     observeEvent(input$unschedule_chk, {
+      
+      # if the checkbox is clicked:
       if(input$unschedule_chk == TRUE){
+        
+        # update the date input to blank out the date
         updateDateInput(session = session, inputId = "date", value = NA)
+        
+        # use shinyjs to disable the date ui widget
         shinyjs::disable("date")
-        } else {
-          shinyjs::enable("date")
+        
+      } else {
+        
+        # when checkbox is not clicked enable the date box to be used
+        shinyjs::enable("date")
       }
     })
     
     date_out <- reactive({
       
+      # if there is no date selected AND checkbox is not clicked return NULL
       if (length(input$date) == 0 & input$unschedule_chk == FALSE) {
         return(NULL)
-        } else if (length(input$date) == 0 & input$unschedule_chk == TRUE) {
+        
+        # if there is no date selected AND checkbox is clicked return NA (unschedule)
+      } else if (length(input$date) == 0 & input$unschedule_chk == TRUE) {
         return(NA)
-        } else if (length(input$date) != 0 & input$unschedule_chk == TRUE) {
+        
+        # if there is a selected AND checkbox is clicked return NA (unschedule)
+      } else if (length(input$date) != 0 & input$unschedule_chk == TRUE) {
         return(NA)
-        } else {
-          return(input$date)
+        
+        # if there is a selected date and checkbox is not clicked return date
+      } else {
+        return(input$date)
       }
       
     })
     
     return(reactive({ date_out() }))
- 
+    
   })
 }
-    
+
 ## To be copied in the UI
 # mod_scheduler_ui("scheduler_1")
-    
+
 ## To be copied in the server
 # mod_scheduler_server("scheduler_1")
