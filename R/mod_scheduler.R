@@ -14,6 +14,10 @@ mod_scheduler_ui <- function(id,
                              checkboxInput_label) {
   ns <- NS(id)
   tagList(
+    
+    # initialize shinyjs 
+    shinyjs::useShinyjs(),
+    
     # release scheduled input
     dateInput(ns("date"), label = dateInput_label, value = NA),
     checkboxInput(ns("unschedule_chk"), label = checkboxInput_label, value = FALSE))
@@ -26,16 +30,25 @@ mod_scheduler_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    observeEvent(input$unschedule_chk, {
+      if(input$unschedule_chk == TRUE){
+        updateDateInput(session = session, inputId = "date", value = NA)
+        shinyjs::disable("date")
+        } else {
+          shinyjs::enable("date")
+      }
+    })
+    
     date_out <- reactive({
       
       if (length(input$date) == 0 & input$unschedule_chk == FALSE) {
         return(NULL)
-      } else if (length(input$date) == 0 & input$unschedule_chk == TRUE) {
+        } else if (length(input$date) == 0 & input$unschedule_chk == TRUE) {
         return(NA)
-      } else if (length(input$date) != 0 & input$unschedule_chk == TRUE) {
+        } else if (length(input$date) != 0 & input$unschedule_chk == TRUE) {
         return(NA)
-      } else {
-        return(input$date)
+        } else {
+          return(input$date)
       }
       
     })
