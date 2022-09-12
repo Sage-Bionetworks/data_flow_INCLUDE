@@ -81,7 +81,7 @@ app_ui <- function(request) {
                                     shinydashboard::box(title = "Updated Manifest",
                                                         width = NULL,
                                                         
-                                                        dataTableOutput("tst_manifest_tbl"),
+                                                        dataTableOutput("admin_manifest_tbl"),
                                                         br(),
                                                         actionButton("save_update", "Save Updates"),
                                                         actionButton("clear_update", "Clear Updates")),
