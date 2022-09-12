@@ -83,8 +83,8 @@ app_ui <- function(request) {
                                                         
                                                         dataTableOutput("tst_manifest_tbl"),
                                                         br(),
-                                                        actionButton("save-update", "Save Updates"),
-                                                        actionButton("clear-update", "Clear Updates")),
+                                                        actionButton("save_update", "Save Updates"),
+                                                        actionButton("clear_update", "Clear Updates")),
 
                                     br(),
                                     
