@@ -29,6 +29,10 @@ create_dashboard <- function(df,
 style_dashboard <- function(prepped_dataframe,
                             config) {
   
+  # rearrange dataframe to match config order
+  expected_colnames <- names(config)
+  prepped_dataframe <- rearrange_dataframe(prepped_dataframe, expected_colnames)
+  
   # get icon col index
   icon_idx <- match(get_colname_by_type("icon", config), names(prepped_dataframe))
   
@@ -36,7 +40,6 @@ style_dashboard <- function(prepped_dataframe,
   center_list <- list(className = 'dt-center', targets = icon_idx)
   
   # hide columns that are not included in the config
-  expected_colnames <- names(config)
   hide_cols <- setdiff(names(prepped_dataframe), expected_colnames)
   hide_idx <- match(hide_cols, names(prepped_dataframe))
   

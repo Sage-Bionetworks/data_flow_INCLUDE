@@ -117,3 +117,26 @@ manifest_date_to_string <- function(manifest) {
   
   return(manifest)
 }
+
+#' Rearrange a dataframe. Expected columns are ordered to match `expected_col_names` and moved to the front of the dataframe. Unexpected columns are moved to the back of the dataframe.
+#'
+#' @param df a dataframe
+#' @param expected_col_names a vector of expected column names in the order you would like them to appear.
+#' 
+#' @export
+
+rearrange_dataframe <- function(df,
+                                expected_col_names) {
+  
+  # capture column names of unexpected columns
+  other_column_names <- setdiff(names(df), expected_col_names)
+  
+  # create separate dataframes
+  # order expected columns to match expected_col_names
+  exected_df <- df[expected_col_names]
+  other_df <- df[other_column_names]
+  
+  # bind back together
+  dplyr::bind_cols(exected_df, other_df)
+
+}
