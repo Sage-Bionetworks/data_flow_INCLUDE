@@ -19,6 +19,8 @@ app_server <- function( input, output, session ) {
   
   # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
+  dash_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
+  
 
   # DATASET DASH  #######################################################################
   
@@ -85,8 +87,9 @@ app_server <- function( input, output, session ) {
   
   # DISPLAY MANIFEST TO BE SUBMITTED
   
-  output$admin_manifest_tbl <- renderDataTable({
-    manifest_submit()
+  output$tst_manifest_tbl <- renderDataTable({
+    rearrange_dataframe(manifest_submit(),
+                        names(dash_config))
   })
   
   # SUBMIT MODEL TO SYNAPSE

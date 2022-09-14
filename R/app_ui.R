@@ -31,7 +31,7 @@ app_ui <- function(request) {
         
         #sidebarMenu
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("Data Flow Status Dashboard", 
+          shinydashboard::menuItem("Dashboard", 
                                    tabName = "dataset-dashboard",
                                    icon = icon("dashboard")),
           shinydashboard::menuItem("Administrator", 

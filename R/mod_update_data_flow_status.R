@@ -15,10 +15,13 @@ mod_update_data_flow_status_ui <- function(id){
       width = NULL,
       
       # release scheduled input
-      dateInput(ns("release_date"), label = h4("Schedule Release"), value = NA),
-      
+      mod_scheduler_ui(ns("release_date"), 
+                       dateInput_label = h4("Schedule Release"),
+                       checkboxInput_label = "Unschedule Release"),
       # embargo input
-      dateInput(ns("embargo_date"), label = h4("Schedule Embargo"), value = NA),
+      mod_scheduler_ui(ns("embargo"), 
+                       dateInput_label = h4("Schedule Embargo"),
+                       checkboxInput_label = "Unschedule Embargo"),
       
       # standard compliance input
       radioButtons(ns("standard_compliance"), 
@@ -37,6 +40,11 @@ mod_update_data_flow_status_ui <- function(id){
                    label = h4("Released"),
                    choices = list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
+      
+      br(),
+      
+      # reset button
+      actionButton(ns("reset_btn"), "Reset Button")
       )
   )
 }
@@ -49,24 +57,24 @@ mod_update_data_flow_status_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    release_scheduled <- reactive({
-      
-      if (length(input$release_date) == 0) {
-        return(NULL)
-      } else {
-        return(input$release_date)
-      }
-      
-    })
+    release_scheduled <- mod_scheduler_server("release_date",
+                                              reactive({input$reset_btn}))
+
+    embargo <- mod_scheduler_server("embargo",
+                                    reactive({input$reset_btn}))
     
-    embargo <- reactive({
+    observeEvent(input$reset_btn, {
+      updateRadioButtons(session = session,
+                         inputId = "standard_compliance",
+                         selected = character(0))
       
-      if (length(input$embargo_date) == 0) {
-        return(NULL)
-      } else {
-        return(input$embargo_date)
-      }
+      updateRadioButtons(session = session,
+                         inputId = "data_portal",
+                         selected = character(0))
       
+      updateRadioButtons(session = session,
+                         inputId = "released",
+                         selected = character(0))
     })
     
     res <- reactive({
