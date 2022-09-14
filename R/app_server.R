@@ -87,7 +87,7 @@ app_server <- function( input, output, session ) {
   
   # DISPLAY MANIFEST TO BE SUBMITTED
   
-  output$tst_manifest_tbl <- renderDataTable({
+  output$admin_manifest_tbl <- renderDataTable({
     rearrange_dataframe(manifest_submit(),
                         names(dash_config))
   })
