@@ -39,6 +39,9 @@ app_server <- function( input, output, session ) {
 
   # ADMINISTRATOR  #######################################################################
   
+  # reactive value that holds dfs_manifest 
+  rv_manifest <- reactiveVal(dfs_manifest)
+  
   # STORAGE PROJECT SELECTION
   
   select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
@@ -61,15 +64,23 @@ app_server <- function( input, output, session ) {
   modified_manifest <- reactive({
     req(updated_data_flow_status())
     
-    update_dfs_manifest(dfs_manifest = dfs_manifest,
+    update_dfs_manifest(dfs_manifest = rv_manifest(),
                         dfs_updates = updated_data_flow_status(),
                         selected_datasets_df = dataset_selection())
+  })
+  
+  
+   observeEvent(input$save_update, {
+     rv_manifest(modified_manifest())
+   })
+  
+  observeEvent(input$clear_update, {
+    rv_manifest(dfs_manifest)
   })
   
   # PREP MANIFEST FOR SYNAPSE SUBMISSION
   
   manifest_submit <- reactive({
-    req(modified_manifest())
     
     manifest_date_to_string(modified_manifest())
   })
