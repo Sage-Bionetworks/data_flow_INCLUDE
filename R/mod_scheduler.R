@@ -26,7 +26,8 @@ mod_scheduler_ui <- function(id,
 #' scheduler Server Functions
 #'
 #' @noRd 
-mod_scheduler_server <- function(id){
+mod_scheduler_server <- function(id,
+                                 reset_btn){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -47,6 +48,10 @@ mod_scheduler_server <- function(id){
         # when checkbox is not clicked enable the date box to be used
         shinyjs::enable("date")
       }
+    })
+    
+    observeEvent(reset_btn(), {
+      updateDateInput(session = session, inputId = "date", value = NA)
     })
     
     date_out <- reactive({

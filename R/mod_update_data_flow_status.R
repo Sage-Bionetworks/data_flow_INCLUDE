@@ -40,6 +40,11 @@ mod_update_data_flow_status_ui <- function(id){
                    label = h4("Released"),
                    choices = list("TRUE" = TRUE, "FALSE" = FALSE), 
                    selected = NA),
+      
+      br(),
+      
+      # reset button
+      actionButton(ns("reset_btn"), "Reset Button")
       )
   )
 }
@@ -52,9 +57,25 @@ mod_update_data_flow_status_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    release_scheduled <- mod_scheduler_server("release_date")
+    release_scheduled <- mod_scheduler_server("release_date",
+                                              reactive({input$reset_btn}))
 
-    embargo <- mod_scheduler_server("embargo")
+    embargo <- mod_scheduler_server("embargo",
+                                    reactive({input$reset_btn}))
+    
+    observeEvent(input$reset_btn, {
+      updateRadioButtons(session = session,
+                         inputId = "standard_compliance",
+                         selected = character(0))
+      
+      updateRadioButtons(session = session,
+                         inputId = "data_portal",
+                         selected = character(0))
+      
+      updateRadioButtons(session = session,
+                         inputId = "released",
+                         selected = character(0))
+    })
     
     res <- reactive({
       list(release_scheduled = release_scheduled(),
