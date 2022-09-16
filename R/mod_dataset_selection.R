@@ -51,14 +51,6 @@ mod_dataset_selection_server <- function(id,
   moduleServer( id, function(input, output, session) {
     
     ns <- session$ns
-    
-    # initialize waiter
-    w <- Waiter$new(id = ns("select_dataset_wrapper"),
-                    html = div(
-                      style="color:#424874;",
-                      waiter::spin_3(),
-                      h4("Retrieving datasets...")),
-                    color = transparent(.8))
 
     ## DISPLAY STORAGE PROJECT DATASETS  ###########################################################
     # call schematic API - get datasets for selected storage project
@@ -66,12 +58,15 @@ mod_dataset_selection_server <- function(id,
     datasets <- reactive({
       
       # show waiter
-      w$show()
+      waiter::waiter_show(id = ns("select_dataset_wrapper"),
+                          html = div(
+                            style="color:#424874;",
+                            waiter::spin_3(),
+                            h4("Retrieving datasets...")),
+                          color = transparent(.8))
       
       # on exit - hide waiter
-      on.exit({
-        w$hide()
-      })
+      on.exit(waiter::waiter_hide())
       
       dataset_list <- storage_project_datasets(asset_view = asset_view,
                                                project_id = storage_project_df()$id,
