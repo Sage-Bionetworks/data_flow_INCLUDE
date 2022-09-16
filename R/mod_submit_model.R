@@ -10,7 +10,7 @@
 mod_submit_model_ui <- function(id){
   ns <- NS(id)
   tagList(
-    useWaiter(),
+    waiter::useWaiter(),
     actionButton(ns("submit"), "Submit to Synapse")
  
   )
