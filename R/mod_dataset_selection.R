@@ -62,8 +62,7 @@ mod_dataset_selection_server <- function(id,
                           html = div(
                             style="color:#424874;",
                             waiter::spin_3(),
-                            h4("Retrieving datasets...")),
-                          color = transparent(.8))
+                            h4("Retrieving datasets...")))
       
       # on exit - hide waiter
       on.exit(waiter::waiter_hide())

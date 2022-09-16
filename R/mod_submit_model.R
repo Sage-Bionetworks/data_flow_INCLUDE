@@ -40,8 +40,7 @@ mod_submit_model_server <- function(id,
       waiter::waiter_show(html = div(
         style="color:#424874;",
         waiter::spin_3(),
-        h4("Submitting updated manifest to Synapse...")),
-        color = transparent(.8))
+        h4("Submitting updated manifest to Synapse...")))
       
       # write manifest table for upload
       path <- file.path(manifest_dir, "data_flow_status_manifest.csv")
