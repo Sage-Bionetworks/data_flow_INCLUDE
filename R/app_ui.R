@@ -64,8 +64,8 @@ app_ui <- function(request) {
                                   fluidPage(
 
                                     # initialize waiter + use preloader
-                                    waiter::use_waiter(),
-                                    waiter::waiter_preloader(html = tagList(
+                                    waiter::useWaiter(),
+                                    waiter::waiterPreloader(html = tagList(
                                       img(src = "www/loading.gif"),
                                       h4("Retrieving Synapse information...")),
                                       color = "#424874"),
