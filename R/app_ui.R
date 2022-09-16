@@ -10,15 +10,20 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     
+    # define colors for icons in datatable
+    # green check
+    tags$style(".fa-check {color:#58A158}"),
+    # red x
+    tags$style(".fa-times {color:#B2242A}"),
+    
     # Your application UI logic
     
     # dashboardPage
     shinydashboard::dashboardPage(
-      skin = "purple",
       
       # dashboardHeader
       shinydashboard::dashboardHeader(
-        title = "Release Administrator"
+        title = "Data Flow"
       ),
       
       # dashboardSidebar
@@ -26,17 +31,21 @@ app_ui <- function(request) {
         
         #sidebarMenu
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("Administrative", 
-                                   tabName = "administrate",
-                                   icon = icon("cog")),
           shinydashboard::menuItem("Dashboard", 
-                                   tabName = "dashboard",
-                                   icon = icon("dashboard"))
+                                   tabName = "dataset-dashboard",
+                                   icon = icon("dashboard")),
+          shinydashboard::menuItem("Administrator", 
+                                   tabName = "administrator",
+                                   icon = icon("cog"))
+          
         )
       ),
       
       #dashboardBody
       shinydashboard::dashboardBody(
+        
+        # implement dca theme module
+        dcamodules::use_dca(theme = "sage"),
         
         # initialize shinyjs
         shinyjs::useShinyjs(),
@@ -44,30 +53,45 @@ app_ui <- function(request) {
         # dashboardTabItems
         shinydashboard::tabItems(
           
-          # administrate tab
-          shinydashboard::tabItem(tabName = "administrate",
-                                  # dataset and file selection
+          # dataset view dashboard tab
+          shinydashboard::tabItem(tabName = "dataset-dashboard",
                                   fluidPage(
-                                    mod_dataset_selection_ui("dataset_selection_ui_1"),
-                                    mod_file_selection_ui("file_selection_ui_1")),
-                                  
-                                  #set status
-                                  wellPanel(
-                                    h3("Select Status"),
-                                    fluidPage(
-                                      radioButtons("select_status",
-                                                   label = "Select status",
-                                                   choices = c("Quarantine", "Upcoming Release")
-                                                   ),
-                                      actionButton("status_btn",
-                                                   label = "Submit")
-                                      )
-                                    )
-                                  ),
+                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"))),
           
-          # dashboard tab
-          shinydashboard::tabItem(tabName = "dashboard",
-                                  h2("Coming Soon: Dashbaord!"))
+          # Administrator tab
+          shinydashboard::tabItem(tabName = "administrator",
+                                  
+                                  fluidPage(
+
+                                    # initialize waiter + use preloader
+                                    waiter::useWaiter(),
+                                    waiter::waiterPreloader(html = tagList(
+                                      img(src = "www/loading.gif"),
+                                      h4("Retrieving Synapse information...")),
+                                      color = "#424874"),
+                                    
+                                    mod_select_storage_project_ui("select_storage_project_1"),
+                                    
+                                    mod_dataset_selection_ui("dataset_selection_1"),
+                                    
+                                    br(),
+                                    
+                                    mod_update_data_flow_status_ui("update_data_flow_status_1"),
+                                    
+                                    shinydashboard::box(title = "Updated Manifest",
+                                                        width = NULL,
+                                                        
+                                                        dataTableOutput("admin_manifest_tbl"),
+                                                        br(),
+                                                        actionButton("save_update", "Save Updates"),
+                                                        actionButton("clear_update", "Clear Updates")),
+
+                                    br(),
+                                    
+                                    mod_submit_model_ui("submit_model_1"))
+                                  
+          )
+
           )
         )
       )

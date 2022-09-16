@@ -25,6 +25,9 @@ usethis::use_package("shinyjs")
 ## Create a module infrastructure in R/
 golem::add_module( name = "dataset_selection" ) # Name of the module
 golem::add_module( name = "file_selection" ) # Name of the module
+golem::add_module( name = "submit_manifest" ) # Name of the module
+golem::add_module( name = "datatable" ) # Name of the module
+
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
