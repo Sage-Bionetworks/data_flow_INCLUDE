@@ -78,14 +78,9 @@ app_ui <- function(request) {
                                     
                                     mod_update_data_flow_status_ui("update_data_flow_status_1"),
                                     
-                                    shinydashboard::box(title = "Updated Manifest",
-                                                        width = NULL,
-                                                        
-                                                        dataTableOutput("admin_manifest_tbl"),
-                                                        br(),
-                                                        actionButton("save_update", "Save Updates"),
-                                                        actionButton("clear_update", "Clear Updates")),
-
+                                    mod_highlight_datatable_ui("highlight_datatable_1",
+                                                               "Updated Manifest"),
+                                    
                                     br(),
                                     
                                     mod_submit_model_ui("submit_model_1"))

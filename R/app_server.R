@@ -87,10 +87,22 @@ app_server <- function( input, output, session ) {
   
   # DISPLAY MANIFEST TO BE SUBMITTED
   
-  output$admin_manifest_tbl <- renderDataTable({
+  # rearrange manifest so it's more readable
+  admin_display_manifest <- reactive({
     rearrange_dataframe(manifest_submit(),
                         names(dash_config))
   })
+  
+  # get names of selected datasets
+  selected_row_names <- reactive({
+    dataset_selection()$name
+    
+  })
+  
+  mod_highlight_datatable_server("highlight_datatable_1",
+                                admin_display_manifest,
+                                selected_row_names,
+                                "dataset_name")
   
   # SUBMIT MODEL TO SYNAPSE
   # make sure to submit using a manifest that has been run through date to string
