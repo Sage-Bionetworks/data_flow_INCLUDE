@@ -7,22 +7,11 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-mod_highlight_datatable_ui <- function(id,
-                                       box_title){
+mod_highlight_datatable_ui <- function(id){
   ns <- NS(id)
   tagList(
     
-    shinydashboard::box(
-      
-      title = box_title,
-      width = NULL,
-      
-      DT::DTOutput(ns("highlight_tbl")),
-      
-      br(),
-      
-      actionButton(ns("save_update"), "Save Updates"),
-      actionButton(ns("clear_update"), "Clear Updates")),
+    DT::DTOutput(ns("highlight_tbl")),
   )
 }
     
