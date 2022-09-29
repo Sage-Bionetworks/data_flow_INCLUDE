@@ -6,8 +6,10 @@
 \usage{
 generate_data_flow_manifest(
   storage_project_id,
-  config,
+  asset_view,
+  input_token,
   contributor = NULL,
+  calc_num_items = FALSE,
   testing = FALSE
 )
 }

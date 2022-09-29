@@ -42,6 +42,9 @@ generate_data_flow_manifest <- function(storage_project_id,
     })
     
     num_items <- purrr::flatten_int(num_items_list)
+
+  } else {
+    num_items <- rep("Not Applicable", length(dataset_ids))
   }
   
   # create empty dataframe
