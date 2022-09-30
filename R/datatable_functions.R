@@ -33,6 +33,11 @@ style_dashboard <- function(prepped_dataframe,
   expected_colnames <- names(config)
   prepped_dataframe <- rearrange_dataframe(prepped_dataframe, expected_colnames)
   
+  # get column names for datatable display
+  colnames <- get_renamed_colnames(config)
+  # put empty string in front to account for rownum column
+  colnames <- c("", colnames)
+  
   # get icon col index
   icon_idx <- match(get_colname_by_type("icon", config), names(prepped_dataframe))
   
@@ -42,17 +47,18 @@ style_dashboard <- function(prepped_dataframe,
   # hide columns that are not included in the config
   hide_cols <- setdiff(names(prepped_dataframe), expected_colnames)
   hide_idx <- match(hide_cols, names(prepped_dataframe))
+  hide_list <- list(targets = hide_idx, visible = FALSE)
   
   # capture icon and center styling in single variable
   defs <- list(
     center_list,
-    # hide past_due column
-    list(targets = hide_idx, visible = FALSE))
+    hide_list)
 
   # define styling for na_replacement
   na_replace_defs <- get_na_replace_defs(prepped_dataframe,
                                          config)
   
+
   # combine the two lists
   defs <- append(defs, na_replace_defs)
 
@@ -61,6 +67,7 @@ style_dashboard <- function(prepped_dataframe,
                       escape = FALSE, 
                       selection = "none",
                       filter = "top",
+                      colnames = colnames,
                       options = list(scrollX = TRUE,
                                      scrollY = 800,
                                      bPaginate = FALSE,
@@ -156,8 +163,9 @@ get_colname_by_type <- function(type = c("icon", "drop_down_fliter"),
 
 get_renamed_colnames <- function(config) {
   # create a vector of display column names
-  col_names<- purrr::map(config, "col_name") 
-  purrr::flatten_chr(col_names)
+  new_col_names <- purrr::map(config, "col_name") 
+  
+  purrr::flatten_chr(new_col_names)
 }
 
 #' Parse config to get columns with na_replace specified

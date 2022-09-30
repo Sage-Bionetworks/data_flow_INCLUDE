@@ -81,16 +81,34 @@ app_server <- function( input, output, session ) {
   # PREP MANIFEST FOR SYNAPSE SUBMISSION
   
   manifest_submit <- reactive({
-    
     manifest_date_to_string(modified_manifest())
   })
   
-  # DISPLAY MANIFEST TO BE SUBMITTED
-  
-  output$admin_manifest_tbl <- renderDataTable({
-    rearrange_dataframe(manifest_submit(),
-                        names(dash_config))
+  # DISPLAY MANIFEST
+  admin_display_manifest <- reactive({
+    
+    # rearrange manifest so it's more readable
+    manifest <- rearrange_dataframe(manifest_submit(),
+                                    names(dash_config))
+    
+    # make columns factors
+    factor_cols <- get_colname_by_type(dash_config, type = "drop_down_filter")
+    manifest[factor_cols] <- lapply(manifest[,factor_cols], factor)
+    
+    # return
+    manifest
   })
+  
+  # get names of selected datasets
+  selected_row_names <- reactive({
+    dataset_selection()$name
+    
+  })
+  
+  mod_highlight_datatable_server("highlight_datatable_1",
+                                admin_display_manifest,
+                                selected_row_names,
+                                "dataset_name")
   
   # SUBMIT MODEL TO SYNAPSE
   # make sure to submit using a manifest that has been run through date to string
