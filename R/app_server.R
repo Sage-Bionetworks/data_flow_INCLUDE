@@ -31,11 +31,13 @@ app_server <- function( input, output, session ) {
   
   dfs_manifest <- manifest_string_to_date(dfs_manifest)
   
-  # prepare data to be displayed by mod_datatable
+  # create tabbed dashboard
   
   mod_tabbed_dashboard_server("tabbed_dashboard_1", 
                               reactive({dfs_manifest}),
                               jsonlite::read_json("inst/datatable_dashboard_config.json"))
+  
+  # DATASET DASH VIZ  ###################################################################
   
   mod_distribution_server(id = "contributor_distribution",
                           df = dfs_manifest,
@@ -52,6 +54,66 @@ app_server <- function( input, output, session ) {
                           x_lab = "Type of dataset",
                           y_lab = "Number of Datasets",
                           fill = "#0d1c38")
+  
+  manifest_w_status <- reactive({
+    
+    # add some columns to manifest to make logic easier
+    manifest <- dfs_manifest %>%
+      dplyr::mutate(scheduled = !is.na(release_scheduled),
+             no_embargo = is.na(embargo) || embargo < Sys.chmod(),
+             past_due = !is.na(release_scheduled) && release_scheduled < Sys.Date())
+    
+    # generate status variable based on some logic that defines various data flow statuses
+    status <- sapply(1:nrow(manifest), function(i) {
+      row <- manifest[i, ]
+      
+      if (row$scheduled == FALSE) {
+        status <- "not scheduled"
+      } else if (row$no_embargo == FALSE || row$standard_compliance == FALSE) {
+        status <- "quarantine"
+      } else if (row$no_embargo == TRUE & row$standard_compliance == TRUE & row$released == FALSE) {
+        status <- "quarantine (ready for release)"
+      } else if (row$released == TRUE) {
+        status <- "released"
+      } else {
+        NA
+      }
+      
+      status
+    })
+    
+    manifest$data_flow_status <- status
+    
+    manifest
+  })
+  
+  release_status_data <- reactive({
+    
+    release_status_data <- manifest_w_status() %>%
+      dplyr::group_by(contributor) %>%
+      dplyr::group_by(dataset, .add = TRUE) %>%
+      dplyr::group_by(data_flow_status, .add = TRUE) %>%
+      dplyr::tally()
+    
+    # reorder factors
+    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
+                                                   levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
+    
+    release_status_data
+  })
+  
+  mod_stacked_bar_server(id = "stacked_all",
+                         df = release_status_data,
+                         x_var = "contributor",
+                         y_var = "n",
+                         fill_var = "data_flow_status",
+                         title = NULL,
+                         x_lab = "Contributors",
+                         y_lab = NULL,
+                         colors = NULL,
+                         coord_flip = TRUE)
+  
+  
 
   # ADMINISTRATOR  #######################################################################
   

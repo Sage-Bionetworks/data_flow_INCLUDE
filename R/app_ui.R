@@ -60,7 +60,9 @@ app_ui <- function(request) {
                                     
                                     mod_distribution_ui("contributor_distribution"),
                                     
-                                    mod_distribution_ui("datatype_distribution"))),
+                                    mod_distribution_ui("datatype_distribution"),
+                                    
+                                    mod_stacked_bar_ui("stacked_all"))),
           
           # Administrator tab
           shinydashboard::tabItem(tabName = "administrator",
