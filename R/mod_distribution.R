@@ -19,7 +19,7 @@ mod_distribution_ui <- function(id){
 #' @noRd 
 mod_distribution_server <- function(id,
                                     df,
-                                    x_axis_var,
+                                    group_by_var,
                                     title = NULL,
                                     x_lab = NULL,
                                     y_lab = NULL,
@@ -27,24 +27,28 @@ mod_distribution_server <- function(id,
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    df <- df()
+    #df <- df()
     
     plot_df <- df %>%
-      group_by(contributor) %>%
-      tally()
+      dplyr::group_by(.data[[group_by_var]]) %>%
+      dplyr::tally()
     
-    ggplot2::ggplot(plot_df, 
-                    aes(x = reorder(.data[[x_axis_var]], -n, ), y = n)) +
+    dist <- ggplot2::ggplot(plot_df,
+                            ggplot2::aes(x = reorder(.data[[group_by_var]], -n, ), y = n)) +
       
-      geom_bar(stat = "identity", fill = fill) +
+      ggplot2::geom_bar(stat = "identity", fill = fill) +
       
-      labs(title = title,
-           x = x_lab,
-           y = y_lab) +
+      ggplot2::labs(title = title,
+                    x = x_lab,
+                    y = y_lab) +
       
-      theme_minimal() +
+      ggplot2::theme_minimal() +
       
-      theme(axis.text.x=element_text(angle=90,hjust=1)) 
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle=90,hjust=1)) 
+    
+    output$distribution_plot <- shiny::renderPlot({
+      dist
+    })
   })
 }
     

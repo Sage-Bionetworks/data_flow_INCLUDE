@@ -56,7 +56,11 @@ app_ui <- function(request) {
           # dataset view dashboard tab
           shinydashboard::tabItem(tabName = "dataset-dashboard",
                                   fluidPage(
-                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"))),
+                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"),
+                                    
+                                    mod_distribution_ui("contributor_distribution"),
+                                    
+                                    mod_distribution_ui("datatype_distribution"))),
           
           # Administrator tab
           shinydashboard::tabItem(tabName = "administrator",

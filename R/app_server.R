@@ -36,6 +36,22 @@ app_server <- function( input, output, session ) {
   mod_tabbed_dashboard_server("tabbed_dashboard_1", 
                               reactive({dfs_manifest}),
                               jsonlite::read_json("inst/datatable_dashboard_config.json"))
+  
+  mod_distribution_server(id = "contributor_distribution",
+                          df = dfs_manifest,
+                          group_by_var = "contributor",
+                          title = "Distribution of datasets by contributor",
+                          x_lab = "Contributor",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
+  
+  mod_distribution_server(id = "datatype_distribution",
+                          df = dfs_manifest,
+                          group_by_var = "dataset",
+                          title = "Distribution of datasets by data type",
+                          x_lab = "Type of dataset",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
 
   # ADMINISTRATOR  #######################################################################
   
