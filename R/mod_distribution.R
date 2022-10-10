@@ -29,23 +29,24 @@ mod_distribution_server <- function(id,
     
     #df <- df()
     
+    # group and tally data
     plot_df <- df %>%
       dplyr::group_by(.data[[group_by_var]]) %>%
       dplyr::tally()
     
+    # create distribution plot
     dist <- ggplot2::ggplot(plot_df,
                             ggplot2::aes(x = reorder(.data[[group_by_var]], -n, ), y = n)) +
       
       ggplot2::geom_bar(stat = "identity", fill = fill) +
       
-      ggplot2::labs(title = title,
-                    x = x_lab,
-                    y = y_lab) +
+      ggplot2::labs(title = title, x = x_lab, y = y_lab) +
       
       ggplot2::theme_minimal() +
       
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle=90,hjust=1)) 
     
+    # render plot
     output$distribution_plot <- shiny::renderPlot({
       dist
     })
