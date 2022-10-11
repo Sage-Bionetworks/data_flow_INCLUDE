@@ -56,7 +56,7 @@ mod_submit_model_server <- function(id,
                    restrict_rules = TRUE,
                    csv_file = path,
                    input_token = input_token,
-                   manifest_record_type = "entity",
+                   manifest_record_type = "table",
                    url = "http://localhost:3001/v1/model/submit",
                    schema_url = schema_url)
       
