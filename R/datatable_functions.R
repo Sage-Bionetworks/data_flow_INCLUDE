@@ -62,7 +62,7 @@ style_dashboard <- function(prepped_dataframe,
                       selection = "none",
                       filter = "top",
                       options = list(scrollX = TRUE,
-                                     scrollY = 800,
+                                     scrollY = 500,
                                      bPaginate = FALSE,
                                      columnDefs = defs))
   
