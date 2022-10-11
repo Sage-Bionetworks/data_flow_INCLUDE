@@ -37,9 +37,9 @@ app_server <- function( input, output, session ) {
                               reactive({dfs_manifest}),
                               jsonlite::read_json("inst/datatable_dashboard_config.json"))
   
-  # DATASET DASH VIZ  ###################################################################
+  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
   
-  mod_distribution_server(id = "contributor_distribution",
+  mod_distribution_server(id = "distribution_contributor",
                           df = dfs_manifest,
                           group_by_var = "contributor",
                           title = "Distribution of datasets by contributor",
@@ -47,13 +47,15 @@ app_server <- function( input, output, session ) {
                           y_lab = "Number of Datasets",
                           fill = "#0d1c38")
   
-  mod_distribution_server(id = "datatype_distribution",
+  mod_distribution_server(id = "distribution_datatype",
                           df = dfs_manifest,
                           group_by_var = "dataset",
                           title = "Distribution of datasets by data type",
                           x_lab = "Type of dataset",
                           y_lab = "Number of Datasets",
                           fill = "#0d1c38")
+
+  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
   
   manifest_w_status <- reactive({
     
@@ -82,11 +84,13 @@ app_server <- function( input, output, session ) {
       status
     })
     
+    # add status to manifest
     manifest$data_flow_status <- status
     
     manifest
   })
   
+  # wrangle data for stacked bar plot
   release_status_data <- reactive({
     
     release_status_data <- manifest_w_status() %>%
@@ -107,13 +111,28 @@ app_server <- function( input, output, session ) {
                          x_var = "contributor",
                          y_var = "n",
                          fill_var = "data_flow_status",
-                         title = NULL,
+                         title = "Release status of all datasets by contributor",
                          x_lab = "Contributors",
                          y_lab = NULL,
-                         colors = NULL,
+                         colors = c("#407ba0", "#58a158", "#b2242a", "#c7c5c5"),
                          coord_flip = TRUE)
   
+  # wrangle data for stacked bar plot (only scheduled)
+  release_status_data_scheduled <- reactive({
+    
+    release_status_data()[release_status_data()$data_flow_status != "not scheduled",]
+  })
   
+  mod_stacked_bar_server(id = "stacked_scheduled",
+                         df = release_status_data_scheduled,
+                         x_var = "contributor",
+                         y_var = "n",
+                         fill_var = "data_flow_status",
+                         title = "Release status of scheduled datasets by contributor",
+                         x_lab = "Contributors",
+                         y_lab = NULL,
+                         colors = c("#407ba0", "#58a158", "#b2242a"),
+                         coord_flip = TRUE)
 
   # ADMINISTRATOR  #######################################################################
   

@@ -58,11 +58,13 @@ app_ui <- function(request) {
                                   fluidPage(
                                     mod_tabbed_dashboard_ui("tabbed_dashboard_1"),
                                     
-                                    mod_distribution_ui("contributor_distribution"),
+                                    mod_distribution_ui("distribution_contributor"),
                                     
-                                    mod_distribution_ui("datatype_distribution"),
+                                    mod_distribution_ui("distribution_datatype"),
                                     
-                                    mod_stacked_bar_ui("stacked_all"))),
+                                    mod_stacked_bar_ui("stacked_all"),
+                                    
+                                    mod_stacked_bar_ui("stacked_scheduled"))),
           
           # Administrator tab
           shinydashboard::tabItem(tabName = "administrator",
