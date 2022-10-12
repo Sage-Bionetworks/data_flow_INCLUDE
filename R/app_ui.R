@@ -61,17 +61,25 @@ app_ui <- function(request) {
                                   
                                   shiny::fluidRow(
                                     shinydashboard::box(
+                                      title = "Distribution of datasets by contributor",
+                                      status = "primary",
                                       mod_distribution_ui("distribution_contributor")
                                       ),
                                     shinydashboard::box(
+                                      title = "Distribution of datasets by data type",
+                                      status = "primary",
                                       mod_distribution_ui("distribution_datatype")
                                     )),
                                   
                                   shiny::fluidRow(
                                     shinydashboard::box(
+                                      title = "Release status of all datasets by contributor",
+                                      status = "primary",
                                       mod_stacked_bar_ui("stacked_all")
                                       ),
                                   shinydashboard::box(
+                                    title = "Release status of all datasets by contributor (only scheduled datasets)",
+                                    status = "primary",
                                     mod_stacked_bar_ui("stacked_scheduled")
                                     )
                                   )),
