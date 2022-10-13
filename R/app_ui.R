@@ -82,6 +82,13 @@ app_ui <- function(request) {
                                     status = "primary",
                                     mod_stacked_bar_ui("stacked_scheduled")
                                     )
+                                  ),
+                                  shiny::fluidRow(
+                                    shinydashboard::box(
+                                      title = "Runners plot",
+                                      status = "primary",
+                                      mod_stacked_bar_ui("stacked_runners")
+                                    )
                                   )),
           
           # Administrator tab

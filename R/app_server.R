@@ -133,6 +133,33 @@ app_server <- function( input, output, session ) {
                          y_lab = NULL,
                          colors = c("#407ba0", "#58a158", "#b2242a"),
                          coord_flip = TRUE)
+  
+  release_data_runners <- reactive({
+    
+    release_status_data <- manifest_w_status() %>%
+      dplyr::filter(!is.na(release_scheduled)) %>%
+      dplyr::group_by(contributor) %>%
+      dplyr::group_by(release_scheduled, .add = TRUE) %>%
+      dplyr::group_by(data_flow_status, .add = TRUE) %>%
+      dplyr::tally()
+    
+    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
+                                                   levels = c("released", "quarantine (ready for release)", "quarantine"))
+    
+    release_status_data
+  })
+  
+  mod_stacked_bar_server(id = "stacked_runners",
+                         df = release_data_runners,
+                         x_var = "release_scheduled",
+                         y_var = "n",
+                         fill_var = "data_flow_status",
+                         title = NULL,
+                         x_lab = "Release Dates",
+                         y_lab = NULL,
+                         x_line = Sys.Date(),
+                         colors = c("#407ba0", "#58a158", "#b2242a"),
+                         coord_flip = TRUE)
 
   # ADMINISTRATOR  #######################################################################
   
