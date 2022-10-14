@@ -134,10 +134,21 @@ app_server <- function( input, output, session ) {
                          colors = c("#407ba0", "#58a158", "#b2242a"),
                          coord_flip = TRUE)
   
+  output$select_project_ui <- shiny::renderUI({
+    
+    contributors <- unique(manifest_w_status()$contributor)
+    
+    shiny::selectInput(inputId = "select_project_input",
+                       label = NULL,
+                       choices = contributors,
+                       selectize = FALSE)
+  })
+  
   release_data_runners <- reactive({
     
     release_status_data <- manifest_w_status() %>%
       dplyr::filter(!is.na(release_scheduled)) %>%
+      dplyr::filter(contributor == input$select_project_input) %>%
       dplyr::group_by(contributor) %>%
       dplyr::group_by(release_scheduled, .add = TRUE) %>%
       dplyr::group_by(data_flow_status, .add = TRUE) %>%
@@ -149,6 +160,7 @@ app_server <- function( input, output, session ) {
     release_status_data
   })
   
+  
   mod_stacked_bar_server(id = "stacked_runners",
                          df = release_data_runners,
                          x_var = "release_scheduled",
@@ -159,7 +171,7 @@ app_server <- function( input, output, session ) {
                          y_lab = NULL,
                          x_line = Sys.Date(),
                          colors = c("#407ba0", "#58a158", "#b2242a"),
-                         coord_flip = TRUE)
+                         coord_flip = FALSE)
 
   # ADMINISTRATOR  #######################################################################
   

@@ -87,6 +87,9 @@ app_ui <- function(request) {
                                     shinydashboard::box(
                                       title = "Runners plot",
                                       status = "primary",
+                                      
+                                      shiny::uiOutput("select_project_ui"),
+                                      
                                       mod_stacked_bar_ui("stacked_runners")
                                     )
                                   )),
