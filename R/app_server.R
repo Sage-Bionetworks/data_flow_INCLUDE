@@ -106,34 +106,48 @@ app_server <- function( input, output, session ) {
     release_status_data
   })
   
-  mod_stacked_bar_server(id = "stacked_all",
-                         df = release_status_data,
-                         x_var = "contributor",
-                         y_var = "n",
-                         fill_var = "data_flow_status",
-                         title = NULL,
-                         x_lab = "Contributors",
-                         y_lab = NULL,
-                         colors = c("#407ba0", "#58a158", "#b2242a", "#c7c5c5"),
-                         coord_flip = TRUE)
-  
   # wrangle data for stacked bar plot (only scheduled)
   release_status_data_scheduled <- reactive({
     
     release_status_data()[release_status_data()$data_flow_status != "not scheduled",]
   })
   
-  mod_stacked_bar_server(id = "stacked_scheduled",
-                         df = release_status_data_scheduled,
+  whichPlot <- reactiveVal(TRUE)
+  
+  observeEvent(input$toggle_stacked_bar, {
+    whichPlot(!whichPlot())
+  })
+  
+  which_release_data <- reactive({
+
+    release_status_data <- manifest_w_status() %>%
+      dplyr::group_by(contributor) %>%
+      dplyr::group_by(dataset, .add = TRUE) %>%
+      dplyr::group_by(data_flow_status, .add = TRUE) %>%
+      dplyr::tally()
+    
+    # reorder factors
+    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
+                                                   levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
+    if (whichPlot() == FALSE) {
+      release_status_data <- release_status_data[release_status_data$data_flow_status != "not scheduled",]
+    }
+    
+    release_status_data
+  })
+  
+  mod_stacked_bar_server(id = "stacked_bar_release_status",
+                         df = which_release_data,
                          x_var = "contributor",
                          y_var = "n",
                          fill_var = "data_flow_status",
                          title = NULL,
                          x_lab = "Contributors",
                          y_lab = NULL,
-                         colors = c("#407ba0", "#58a158", "#b2242a"),
+                         colors = c("#085631", "#ffa500", "#a72a1e", "#3d3d3d"),
                          coord_flip = TRUE)
   
+  # drop down for runners plot
   output$select_project_ui <- shiny::renderUI({
     
     contributors <- unique(manifest_w_status()$contributor)
@@ -143,6 +157,8 @@ app_server <- function( input, output, session ) {
                        choices = contributors,
                        selectize = FALSE)
   })
+  
+  # wrangle data for stacked bar plot (runners)
   
   release_data_runners <- reactive({
     
@@ -170,7 +186,7 @@ app_server <- function( input, output, session ) {
                          x_lab = "Release Dates",
                          y_lab = NULL,
                          x_line = Sys.Date(),
-                         colors = c("#407ba0", "#58a158", "#b2242a"),
+                         colors = c("#085631", "#ffa500", "#a72a1e"),
                          coord_flip = FALSE)
 
   # ADMINISTRATOR  #######################################################################

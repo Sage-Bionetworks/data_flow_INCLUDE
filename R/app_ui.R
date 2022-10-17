@@ -75,17 +75,12 @@ app_ui <- function(request) {
                                     shinydashboard::box(
                                       title = "Release status of all datasets by contributor",
                                       status = "primary",
-                                      mod_stacked_bar_ui("stacked_all")
+                                      mod_stacked_bar_ui("stacked_bar_release_status"),
+                                      br(),
+                                      actionButton("toggle_stacked_bar", "All / Scheduled Only")
                                       ),
-                                  shinydashboard::box(
-                                    title = "Release status of all datasets by contributor (only scheduled datasets)",
-                                    status = "primary",
-                                    mod_stacked_bar_ui("stacked_scheduled")
-                                    )
-                                  ),
-                                  shiny::fluidRow(
                                     shinydashboard::box(
-                                      title = "Runners plot",
+                                      title = "Data flow status by release date",
                                       status = "primary",
                                       
                                       shiny::uiOutput("select_project_ui"),
