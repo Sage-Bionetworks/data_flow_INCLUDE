@@ -187,6 +187,8 @@ app_server <- function( input, output, session ) {
                          y_lab = NULL,
                          x_line = Sys.Date(),
                          colors = c("#085631", "#ffa500", "#a72a1e"),
+                         width = 10,
+                         date_breaks = "1 month",
                          coord_flip = FALSE)
 
   # ADMINISTRATOR  #######################################################################

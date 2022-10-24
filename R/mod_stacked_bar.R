@@ -1,6 +1,6 @@
-#' stacked_bar UI Function
+#' Stacked Bar Plot UI Function
 #'
-#' @description A shiny Module.
+#' @description A Shiny module that takes in a datafame and outputs a stacked bar plot.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
@@ -14,8 +14,22 @@ mod_stacked_bar_ui <- function(id){
   )
 }
     
-#' stacked_bar Server Functions
-#'
+#' Stacked Bar Plot Server Functions
+#' 
+#' @param id Shiny ID to call server module
+#' @param df A data frame containing data to plot
+#' @param x_var Column name of X variable
+#' @param y_var Column name of Y variable
+#' @param fill_var Column name of fill variable
+#' @param title Title of plot
+#' @param x_lab X axis label
+#' @param y_lab Y axis label
+#' @param colors Fill colors
+#' @param x_line Add a line across x axis
+#' @param width Width of stacked bars
+#' @param date_breaks X axis date breaks
+#' @param coord_flip Flip coordinates 90 degrees
+
 #' @noRd 
 mod_stacked_bar_server <- function(id,
                                    df,
@@ -27,23 +41,32 @@ mod_stacked_bar_server <- function(id,
                                    y_lab = NULL,
                                    colors = NULL,
                                    x_line = NULL,
+                                   width = NULL,
+                                   date_breaks = NULL,
                                    coord_flip = FALSE) {
   
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    # render stacked bar
     output$stacked_bar <- shiny::renderPlot({
       df <- df()
       
       # base plot
       bar <- ggplot2::ggplot(df, ggplot2::aes(x = .data[[x_var]], y = .data[[y_var]], fill = .data[[fill_var]])) +
         
-        ggplot2::geom_bar(stat = "identity", position = "fill")
+        ggplot2::geom_col(position = "fill", width = width)
       
       # add x intercept
       if (!is.null(x_line)) {
         bar <- bar +
           ggplot2::geom_vline(xintercept = x_line, linetype = 2, colour = "black")
+      }
+      
+      # scale x axis with date breaks
+      if (!is.null(date_breaks)) {
+        bar <- bar +
+          ggplot2::scale_x_date(date_breaks = date_breaks)
       }
       
       # add styling/labs
