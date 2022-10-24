@@ -1,6 +1,6 @@
-#' distribution UI Function
+#' Distribution Plot UI Function
 #'
-#' @description A shiny Module.
+#' @description A Shiny module that takes a dataframe and displays a distribution bar plot
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
@@ -14,8 +14,16 @@ mod_distribution_ui <- function(id){
   )
 }
     
-#' distribution Server Functions
-#'
+#' Distribution Plot Server Functions
+#' 
+#' @param id Shiny ID to call server module
+#' @param df A data frame containing data to plot
+#' @param group_by_var Column variable to group data by (x axis variable)
+#' @param title Title of plot
+#' @param x_lab X axis label
+#' @param y_lab Y axis label
+#' @param fill Fill color
+#' 
 #' @noRd 
 mod_distribution_server <- function(id,
                                     df,
