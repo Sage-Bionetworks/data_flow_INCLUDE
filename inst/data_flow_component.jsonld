@@ -2039,6 +2039,23 @@
             "sms:validationRules": []
         },
         {
+            "@id": "bts:EntityId",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "Synapse unique ID",
+            "rdfs:label": "EntityId",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:DataProperty"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:displayName": "entity_id",
+            "sms:required": "sms:true",
+            "sms:validationRules": []
+        },
+        {
             "@id": "bts:DatasetName",
             "@type": "rdfs:Class",
             "rdfs:comment": "Unique dataset name",
@@ -2056,10 +2073,10 @@
             "sms:validationRules": []
         },
         {
-            "@id": "bts:Dataset",
+            "@id": "bts:DatasetType",
             "@type": "rdfs:Class",
             "rdfs:comment": "Type of dataset",
-            "rdfs:label": "Dataset",
+            "rdfs:label": "DatasetType",
             "rdfs:subClassOf": [
                 {
                     "@id": "bts:DataProperty"
@@ -2068,7 +2085,7 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "dataset",
+            "sms:displayName": "dataset_type",
             "sms:required": "sms:true",
             "sms:validationRules": []
         },
@@ -2151,7 +2168,7 @@
         {
             "@id": "bts:DataPortal",
             "@type": "rdfs:Class",
-            "rdfs:comment": "Has dataset been published to data portal\r\n",
+            "rdfs:comment": "Has dataset been published to data portal\n",
             "rdfs:label": "DataPortal",
             "rdfs:subClassOf": [
                 {
@@ -2176,7 +2193,7 @@
         {
             "@id": "bts:Released",
             "@type": "rdfs:Class",
-            "rdfs:comment": "Has this dataset been released\r\n",
+            "rdfs:comment": "Has this dataset been released\n",
             "rdfs:label": "Released",
             "rdfs:subClassOf": [
                 {
@@ -2212,6 +2229,23 @@
                 "@id": "http://schema.biothings.io"
             },
             "sms:displayName": "Component",
+            "sms:required": "sms:false",
+            "sms:validationRules": []
+        },
+        {
+            "@id": "bts:Dataset",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "TBD",
+            "rdfs:label": "Dataset",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:DataFlow"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:displayName": "Dataset",
             "sms:required": "sms:false",
             "sms:validationRules": []
         },
