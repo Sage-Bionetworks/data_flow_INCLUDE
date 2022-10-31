@@ -3,12 +3,10 @@
 #' @export
 
 generate_data_flow_manifest <- function(storage_project_id,
-                                        config,
+                                        asset_view,
+                                        input_token,
                                         contributor = NULL,
                                         testing = FALSE) {
-  
-  asset_view <- config$asset_view
-  token <- config$schematic_token
   
   # get all manifests for storage_project
   message(glue::glue("Building data flow status manifest for {storage_project_id}"))
@@ -46,6 +44,7 @@ generate_data_flow_manifest <- function(storage_project_id,
   # create empty dataframe
   colnames <- c("Component", 
                 "contributor",
+                "entity_id",
                 "dataset_name",
                 "dataset",
                 "num_items",
@@ -64,6 +63,7 @@ generate_data_flow_manifest <- function(storage_project_id,
   df$dataset_name <- dataset_names
   df$dataset <- dataset
   df$num_items <- num_items
+  df$entity_id <- dataset_ids
   
   # add contributor
   if (!is.null(contributor)) {
