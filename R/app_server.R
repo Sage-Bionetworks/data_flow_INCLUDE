@@ -47,14 +47,13 @@ app_server <- function( input, output, session ) {
   select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
                                                               asset_view = global_config$asset_view,
                                                               input_token = global_config$schematic_token)
-  
+
   # DATASET SELECTION
   
   dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
                                                     storage_project_df = select_storage_project,
                                                     asset_view = global_config$asset_view,
-                                                    input_token = global_config$schematic_token,
-                                                    hidden_datasets = "DataFlowStatus")
+                                                    input_token = global_config$schematic_token)
   
   # UPDATE DATA FLOW STATUS SELECTIONS 
   updated_data_flow_status <- mod_update_data_flow_status_server("update_data_flow_status_1")
@@ -69,7 +68,7 @@ app_server <- function( input, output, session ) {
                         selected_datasets_df = dataset_selection())
   })
   
-  
+  # BUTTON CLICK UPDATE MANIFEST
    observeEvent(input$save_update, {
      rv_manifest(modified_manifest())
    })
@@ -101,14 +100,14 @@ app_server <- function( input, output, session ) {
   
   # get names of selected datasets
   selected_row_names <- reactive({
-    dataset_selection()$name
+    dataset_selection()$id
     
   })
   
   mod_highlight_datatable_server("highlight_datatable_1",
                                 admin_display_manifest,
                                 selected_row_names,
-                                "dataset_name")
+                                "entityId")
   
   # SUBMIT MODEL TO SYNAPSE
   # make sure to submit using a manifest that has been run through date to string
