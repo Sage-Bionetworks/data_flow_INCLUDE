@@ -55,8 +55,39 @@ app_ui <- function(request) {
           
           # dataset view dashboard tab
           shinydashboard::tabItem(tabName = "dataset-dashboard",
-                                  fluidPage(
-                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1"))),
+                                  shiny::fluidRow(
+                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1")
+                                    ),
+                                  
+                                  shiny::fluidRow(
+                                    shinydashboard::box(
+                                      title = "Distribution of datasets by contributor",
+                                      status = "primary",
+                                      mod_distribution_ui("distribution_contributor")
+                                      ),
+                                    shinydashboard::box(
+                                      title = "Distribution of datasets by data type",
+                                      status = "primary",
+                                      mod_distribution_ui("distribution_datatype")
+                                    )),
+                                  
+                                  shiny::fluidRow(
+                                    shinydashboard::box(
+                                      title = "Release status of all datasets by contributor",
+                                      status = "primary",
+                                      mod_stacked_bar_ui("stacked_bar_release_status"),
+                                      br(),
+                                      actionButton("toggle_stacked_bar", "All / Scheduled Only")
+                                      ),
+                                    shinydashboard::box(
+                                      title = "Data flow status by release date",
+                                      status = "primary",
+                                      
+                                      shiny::uiOutput("select_project_ui"),
+                                      
+                                      mod_stacked_bar_ui("stacked_runners")
+                                    )
+                                  )),
           
           # Administrator tab
           shinydashboard::tabItem(tabName = "administrator",

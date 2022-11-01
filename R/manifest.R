@@ -6,6 +6,7 @@ generate_data_flow_manifest <- function(storage_project_id,
                                         asset_view,
                                         input_token,
                                         contributor = NULL,
+                                        calc_num_items = FALSE,
                                         testing = FALSE) {
   
   # get all manifests for storage_project
@@ -13,7 +14,7 @@ generate_data_flow_manifest <- function(storage_project_id,
   message("Getting all manifests")
   all_manifests_list <- storage_project_manifests(asset_view, 
                                                   storage_project_id, 
-                                                  token)
+                                                  input_token)
   
   # pull out data from list
   # dataset metadata
@@ -27,19 +28,24 @@ generate_data_flow_manifest <- function(storage_project_id,
   
   # calculate number of items
   # pull down each manifest and count each row (1 file / row)
-  message("Counting items in each manifest")
-  num_items_list <- lapply(dataset_ids, function(id) {
-    manifest <- suppressMessages(manifest_download_to_df(config$asset_view,
-                                        id,
-                                        config$schematic_token))
-    if (!is.null(manifest)) {
-      nrow(manifest)
-    } else {
-      NA
-    }
-  })
-  
-  num_items <- purrr::flatten_int(num_items_list)
+  if (calc_num_items) {
+    message("Counting items in each manifest")
+    num_items_list <- lapply(dataset_ids, function(id) {
+      manifest <- suppressMessages(manifest_download_to_df(asset_view,
+                                                           id,
+                                                           input_token))
+      if (!is.null(manifest)) {
+        nrow(manifest)
+      } else {
+        NA
+      }
+    })
+    
+    num_items <- purrr::flatten_int(num_items_list)
+
+  } else {
+    num_items <- rep("Not Applicable", length(dataset_ids))
+  }
   
   # create empty dataframe
   colnames <- c("Component", 

@@ -31,11 +31,165 @@ app_server <- function( input, output, session ) {
   
   dfs_manifest <- manifest_string_to_date(dfs_manifest)
   
-  # prepare data to be displayed by mod_datatable
+  # create tabbed dashboard
   
   mod_tabbed_dashboard_server("tabbed_dashboard_1", 
                               reactive({dfs_manifest}),
                               jsonlite::read_json("inst/datatable_dashboard_config.json"))
+  
+  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
+  
+  mod_distribution_server(id = "distribution_contributor",
+                          df = dfs_manifest,
+                          group_by_var = "contributor",
+                          title = NULL,
+                          x_lab = "Contributor",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
+  
+  mod_distribution_server(id = "distribution_datatype",
+                          df = dfs_manifest,
+                          group_by_var = "dataset",
+                          title = NULL,
+                          x_lab = "Type of dataset",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
+
+  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
+  
+  manifest_w_status <- reactive({
+    
+    # add some columns to manifest to make logic easier
+    manifest <- dfs_manifest %>%
+      dplyr::mutate(scheduled = !is.na(release_scheduled),
+             no_embargo = is.na(embargo) || embargo < Sys.chmod(),
+             past_due = !is.na(release_scheduled) && release_scheduled < Sys.Date())
+    
+    # generate status variable based on some logic that defines various data flow statuses
+    status <- sapply(1:nrow(manifest), function(i) {
+      row <- manifest[i, ]
+      
+      if (row$scheduled == FALSE) {
+        status <- "not scheduled"
+      } else if (row$no_embargo == FALSE || row$standard_compliance == FALSE) {
+        status <- "quarantine"
+      } else if (row$no_embargo == TRUE & row$standard_compliance == TRUE & row$released == FALSE) {
+        status <- "quarantine (ready for release)"
+      } else if (row$released == TRUE) {
+        status <- "released"
+      } else {
+        NA
+      }
+      
+      status
+    })
+    
+    # add status to manifest
+    manifest$data_flow_status <- status
+    
+    manifest
+  })
+  
+  # wrangle data for stacked bar plot
+  release_status_data <- reactive({
+    
+    release_status_data <- manifest_w_status() %>%
+      dplyr::group_by(contributor) %>%
+      dplyr::group_by(dataset, .add = TRUE) %>%
+      dplyr::group_by(data_flow_status, .add = TRUE) %>%
+      dplyr::tally()
+    
+    # reorder factors
+    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
+                                                   levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
+    
+    release_status_data
+  })
+  
+  # wrangle data for stacked bar plot (only scheduled)
+  release_status_data_scheduled <- reactive({
+    
+    release_status_data()[release_status_data()$data_flow_status != "not scheduled",]
+  })
+  
+  whichPlot <- reactiveVal(TRUE)
+  
+  observeEvent(input$toggle_stacked_bar, {
+    whichPlot(!whichPlot())
+  })
+  
+  which_release_data <- reactive({
+
+    release_status_data <- manifest_w_status() %>%
+      dplyr::group_by(contributor) %>%
+      dplyr::group_by(dataset, .add = TRUE) %>%
+      dplyr::group_by(data_flow_status, .add = TRUE) %>%
+      dplyr::tally()
+    
+    # reorder factors
+    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
+                                                   levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
+    if (whichPlot() == FALSE) {
+      release_status_data <- release_status_data[release_status_data$data_flow_status != "not scheduled",]
+    }
+    
+    release_status_data
+  })
+  
+  mod_stacked_bar_server(id = "stacked_bar_release_status",
+                         df = which_release_data,
+                         x_var = "contributor",
+                         y_var = "n",
+                         fill_var = "data_flow_status",
+                         title = NULL,
+                         x_lab = "Contributors",
+                         y_lab = NULL,
+                         colors = c("#085631", "#ffa500", "#a72a1e", "#3d3d3d"),
+                         coord_flip = TRUE)
+  
+  # drop down for runners plot
+  output$select_project_ui <- shiny::renderUI({
+    
+    contributors <- unique(manifest_w_status()$contributor)
+    
+    shiny::selectInput(inputId = "select_project_input",
+                       label = NULL,
+                       choices = contributors,
+                       selectize = FALSE)
+  })
+  
+  # wrangle data for stacked bar plot (runners)
+  
+  release_data_runners <- reactive({
+    
+    release_status_data <- manifest_w_status() %>%
+      dplyr::filter(!is.na(release_scheduled)) %>%
+      dplyr::filter(contributor == input$select_project_input) %>%
+      dplyr::group_by(contributor) %>%
+      dplyr::group_by(release_scheduled, .add = TRUE) %>%
+      dplyr::group_by(data_flow_status, .add = TRUE) %>%
+      dplyr::tally()
+    
+    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
+                                                   levels = c("released", "quarantine (ready for release)", "quarantine"))
+    
+    release_status_data
+  })
+  
+  
+  mod_stacked_bar_server(id = "stacked_runners",
+                         df = release_data_runners,
+                         x_var = "release_scheduled",
+                         y_var = "n",
+                         fill_var = "data_flow_status",
+                         title = NULL,
+                         x_lab = "Release Dates",
+                         y_lab = NULL,
+                         x_line = Sys.Date(),
+                         colors = c("#085631", "#ffa500", "#a72a1e"),
+                         width = 10,
+                         date_breaks = "1 month",
+                         coord_flip = FALSE)
 
   # ADMINISTRATOR  #######################################################################
   
