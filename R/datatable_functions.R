@@ -11,42 +11,36 @@
 #' 
 
 create_dashboard <- function(df,
+                             past_due_col,
                              config) {
   
-  prepped_df <- prep_df_for_dash(df, config)
+  prepped_df <- prep_manifest_dash(df, 
+                                   past_due_col,
+                                   config)
   
   style_dashboard(prepped_df, config)
 }
 
 #' Add custom styling to dashboard based on contents of config
 #'
-#' @param df A dataframe prepared by `prep_df_for_dash()` with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`
-#' @param config config Config for datatable dashboard module in `inst/datatable_dashboard_config.json`
+#' @param prepped_manifest A manifest prepped with `prep_manifest_dash()`
+#' @param config `inst/datatable_dashboard_config.json`
 #' 
 #' @export
 #' 
 
-style_dashboard <- function(prepped_dataframe,
+style_dashboard <- function(prepped_manifest,
                             config) {
   
-  # rearrange dataframe to match config order
-  expected_colnames <- names(config)
-  prepped_dataframe <- rearrange_dataframe(prepped_dataframe, expected_colnames)
-  
-  # get column names for datatable display
-  colnames <- get_renamed_colnames(config)
-  # put empty string in front to account for rownum column
-  colnames <- c("", colnames)
-  
   # get icon col index
-  icon_idx <- match(get_colname_by_type("icon", config), names(prepped_dataframe))
+  icon_idx <- match(get_colname_by_type("icon", config), names(prepped_manifest))
   
   # define center styling for icon columns
   center_list <- list(className = 'dt-center', targets = icon_idx)
   
   # hide columns that are not included in the config
-  hide_cols <- setdiff(names(prepped_dataframe), expected_colnames)
-  hide_idx <- match(hide_cols, names(prepped_dataframe))
+  hide_cols <- setdiff(names(prepped_manifest), names(config))
+  hide_idx <- match(hide_cols, names(prepped_manifest))
   hide_list <- list(targets = hide_idx, visible = FALSE)
   
   # capture icon and center styling in single variable
@@ -55,15 +49,20 @@ style_dashboard <- function(prepped_dataframe,
     hide_list)
 
   # define styling for na_replacement
-  na_replace_defs <- get_na_replace_defs(prepped_dataframe,
+  na_replace_defs <- get_na_replace_defs(prepped_manifest,
                                          config)
   
 
   # combine the two lists
   defs <- append(defs, na_replace_defs)
-
+  
+  # get column names for datatable display
+  colnames <- get_renamed_colnames(config)
+  # put empty string in front to account for rownum column
+  colnames <- c("", colnames)
+  
   # create datatable
-  dt <- DT::datatable(prepped_dataframe,
+  dt <- DT::datatable(prepped_manifest,
                       escape = FALSE, 
                       selection = "none",
                       filter = "top",
@@ -92,24 +91,29 @@ style_dashboard <- function(prepped_dataframe,
 #' @export
 #' 
 
-prep_df_for_dash <- function(df,
-                             config) {
+prep_manifest_dash <- function(df,
+                               past_due_col,
+                               config) {
   
   # create past_due column for highlighting release_scheduled
   today <- Sys.Date()
-  today <- lubridate::floor_date(today, unit = "month")
-  dates <- lubridate::floor_date(df[,"release_scheduled"], unit = "month")
-  df$past_due <- ifelse(dates < today, "pd", 
-                        ifelse(dates == today, "t", NA))
+  df$past_due <- ifelse(df[[past_due_col]] < today, "pd", NA)
   
   # convert TRUE / FALSE to icon html
-  icon_cols <- get_colname_by_type(config, type = "icon")
-  df[icon_cols] <- lapply(df[,icon_cols], true_false_icon)
+  
+  df <- convert_column_type(df = df,
+                            col_names = get_colname_by_type(config, type = "icon"),
+                            type = "icon")
   
   # convert certain columns to factors 
   # enables drop down selection style filtering for column
-  factor_cols <- get_colname_by_type(config, type = "drop_down_filter")
-  df[factor_cols] <- lapply(df[,factor_cols], factor)
+  df <- convert_column_type(df = df,
+                            col_names = get_colname_by_type(config, type = "drop_down_filter"),
+                            type = "factor")
+  
+  # rearrange dataframe based on config order (any columns not in config are moved to end of dataframe)
+  expected_colnames <- names(config)
+  df <- rearrange_dataframe(df, expected_colnames)
   
   return(df)
 }
