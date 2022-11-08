@@ -117,22 +117,6 @@ prep_df_for_dash <- function(df,
 
 ## HELPERS ##############################################################################
 
-#' Convert a vector of TRUE/FALSE to icon html
-#'
-#' @param vec A vector of TRUE/FALSE
-#' 
-#' @export
-
-true_false_icon <- function(vec) {
-  
-  # if true assign checkmark icon
-  # if false assign x icon
-  true_icon <- as.character(icon("check", lib = "font-awesome"))
-  false_icon <- as.character(icon("times", lib = "font-awesome"))
-  
-  ifelse(vec == TRUE, true_icon, false_icon)
-}
-
 #' NA replacement - datatable custom JS
 #'
 #' @param col_index target columns index
