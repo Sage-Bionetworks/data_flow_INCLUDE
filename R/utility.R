@@ -27,6 +27,36 @@ list_to_dataframe <- function(list,
   return(df)
 }
 
+#' Convert date columns from date to string
+#'
+#' @param df a data flow status manifest.
+#' @param col_names columns to update
+#' @param type date, character, integer, logical, icon, or factor
+#' 
+#' @export
+
+convert_column_type <- function(df,
+                                col_names,
+                                type) {
+  if (type == "date") {
+    df[col_names] <- lapply(df[,col_names], as.Date)
+  } else if (type == "character") {
+    df[col_names] <- sapply(df[,col_names], as.character)
+  } else if (type == "factor") {
+    df[col_names] <- lapply(df[,col_names], as.factor)
+  } else if (type == "logical") {
+    df[col_names] <- sapply(df[,col_names], as.logical)
+  } else if (type == "integer") {
+    df[col_names] <- sapply(df[,col_names], as.integer)
+  } else if (type == "icon") {
+    df[col_names] <- sapply(df[,col_names], true_false_icon)
+  } else {
+    stop(paste0(type, " is not a supported date type"))
+  }
+  
+  return(df)
+}
+
 #' Convert a vector of TRUE/FALSE to icon html
 #'
 #' @param vec A vector of TRUE/FALSE
