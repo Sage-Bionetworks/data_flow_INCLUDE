@@ -1,3 +1,32 @@
+#' Prepare a dataframe that has been downloaded from Synapse for the Data Flow App
+#'
+#' @param synapse_manifest A manifest that has been downloaded from using manifest_download_to_df()
+#' 
+#' @export
+
+prep_manifest_dfa <- function(synapse_manifest,
+                              config) {
+  
+  # convert "Not Applicable" to NA
+  synapse_manifest[ synapse_manifest == "Not Applicable" ] <- NA
+  
+  # convert contribute and dataset to factor
+  manifest <- convert_column_type(df = synapse_manifest,
+                                  col_names = get_colname_by_type("drop_down_filter", config),
+                                  type = "factor")
+  
+  # num_items to integer column
+  manifest <- convert_column_type(df = manifest,
+                                  col_names = get_colname_by_type("integer", config),
+                                  type = "integer")
+  
+  # release_scheduled and embargo to date columns
+  manifest <- convert_column_type(df = manifest,
+                                  col_names = get_colname_by_type("date", config),
+                                  type = "date")
+  
+  return(manifest)
+}
 
 
 

@@ -18,17 +18,20 @@
     },
 
     "num_items": {
-        "col_name": "Number of Items"
+        "col_name": "Number of Items",
+        "type": "integer"
     },
 
     "release_scheduled": {
         "col_name": "Release Scheduled",
+        "type": "date",
         "na_replace": "Not scheduled",
         "color_past_due": "True"
     },
 
     "embargo": {
         "col_name": "Embargo",
+        "type": "date",
         "na_replace": "No embargo"
     },
 
