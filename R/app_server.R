@@ -29,7 +29,10 @@ app_server <- function( input, output, session ) {
                                           dataset_id = global_config$manifest_dataset_id,
                                           input_token = global_config$schematic_token)
   
-  dfs_manifest <- manifest_string_to_date(dfs_manifest)
+  dfs_manifest <- prep_manifest_dfa(manifest = dfs_manifest,
+                                    config = dash_config)
+  
+  #dfs_manifest <- manifest_string_to_date(dfs_manifest)
   
   # create tabbed dashboard
   
