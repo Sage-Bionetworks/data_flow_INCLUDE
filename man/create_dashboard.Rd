@@ -4,7 +4,7 @@
 \alias{create_dashboard}
 \title{Create a dashboard style datatable}
 \usage{
-create_dashboard(df, config)
+create_dashboard(df, past_due_col, config)
 }
 \arguments{
 \item{df}{A dataframe prepared by `prep_df_for_dash()` with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`}
