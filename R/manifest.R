@@ -1,6 +1,7 @@
 #' Prepare a dataframe that has been downloaded from Synapse for the Data Flow App
 #'
 #' @param manifest A manifest that has been downloaded from using manifest_download_to_df()
+#' @param config `datatable_dashboard_config.json` read in as a dataframe
 #' 
 #' @export
 
@@ -28,8 +29,30 @@ prep_manifest_dfa <- function(manifest,
   return(manifest)
 }
 
+#' Prepare a dataframe for Synapse submission 
+#'
+#' @param manifest A manifest that has been downloaded from using manifest_download_to_df()
+#' @param config `datatable_dashboard_config.json` read in as a dataframe
+#' 
+#' @export
 
-
+prep_manifest_submit <- function(manifest,
+                                 config) {
+  
+  # convert columns back to string
+  col_names <- c(get_colname_by_type("date", config),
+                 get_colname_by_type("drop_down_filter", config),
+                 get_colname_by_type("integer", config))
+  
+  manifest <- convert_column_type(df = manifest,
+                                  col_names = col_names,
+                                  type = "character")
+  
+  # convert NA to "Not Applicable"
+  manifest[ is.na(manifest) ] <- "Not Applicable"
+  
+  return(manifest)
+}
 
 
 
