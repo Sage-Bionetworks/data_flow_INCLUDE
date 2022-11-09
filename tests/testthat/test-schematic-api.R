@@ -18,7 +18,7 @@ ping <- try(httr::GET(schematic_url), silent = TRUE)
 
 ping <- try(httr::GET(schematic_url), silent = TRUE)
 skip_it <- function(skip=ping) {
-  if (inherits(ping, "try-error")) skip(sprintf("schematic server URL unavailable (%s). Is it running locally?", schem_url)) #nolint
+  if (inherits(ping, "try-error")) skip(sprintf("schematic server URL unavailable (%s). Is it running locally?", schematic_url)) #nolint
 }
 
 # TEST API ##############################################################################
