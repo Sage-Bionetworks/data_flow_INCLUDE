@@ -29,7 +29,8 @@ app_server <- function( input, output, session ) {
                                           dataset_id = global_config$manifest_dataset_id,
                                           input_token = global_config$schematic_token)
   
-  dfs_manifest <- manifest_string_to_date(dfs_manifest)
+  dfs_manifest <- prep_manifest_dfa(manifest = dfs_manifest,
+                                    config = dash_config)
   
   # create tabbed dashboard
   
@@ -234,7 +235,8 @@ app_server <- function( input, output, session ) {
   # PREP MANIFEST FOR SYNAPSE SUBMISSION
   
   manifest_submit <- reactive({
-    manifest_date_to_string(modified_manifest())
+    prep_manifest_submit(modified_manifest(),
+                         dash_config)
   })
   
   # DISPLAY MANIFEST
