@@ -34,9 +34,9 @@ app_server <- function( input, output, session ) {
   
   # create tabbed dashboard
   
-  mod_tabbed_dashboard_server("tabbed_dashboard_1", 
-                              reactive({dfs_manifest}),
-                              jsonlite::read_json("inst/datatable_dashboard_config.json"))
+  mod_datatable_dashboard_server("dashboard_1",
+                                 reactive({dfs_manifest}),
+                                 jsonlite::read_json("inst/datatable_dashboard_config.json"))
   
   # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
   

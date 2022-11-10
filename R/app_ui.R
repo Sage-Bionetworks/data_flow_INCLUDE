@@ -56,7 +56,7 @@ app_ui <- function(request) {
           # dataset view dashboard tab
           shinydashboard::tabItem(tabName = "dataset-dashboard",
                                   shiny::fluidRow(
-                                    mod_tabbed_dashboard_ui("tabbed_dashboard_1")
+                                    mod_datatable_dashboard_ui("dashboard_1")
                                     ),
                                   
                                   shiny::fluidRow(
