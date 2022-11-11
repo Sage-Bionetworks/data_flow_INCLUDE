@@ -21,50 +21,24 @@ app_server <- function( input, output, session ) {
   global_config <- jsonlite::read_json("inst/global.json")
   dash_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
   
-
-  # DATASET DASH  #######################################################################
-  
   # download data flow status manifest
-  dfs_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
+  synapse_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
                                           dataset_id = global_config$manifest_dataset_id,
                                           input_token = global_config$schematic_token)
   
-  dfs_manifest <- prep_manifest_dfa(manifest = dfs_manifest,
+  manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest,
                                     config = dash_config)
   
-  # create tabbed dashboard
+  # PREPARE MANIFEST FOR DASH ####################################################################
   
-  mod_datatable_dashboard_server("dashboard_1",
-                                 reactive({dfs_manifest}),
-                                 jsonlite::read_json("inst/datatable_dashboard_config.json"))
-  
-  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
-  
-  mod_distribution_server(id = "distribution_contributor",
-                          df = dfs_manifest,
-                          group_by_var = "contributor",
-                          title = NULL,
-                          x_lab = "Contributor",
-                          y_lab = "Number of Datasets",
-                          fill = "#0d1c38")
-  
-  mod_distribution_server(id = "distribution_datatype",
-                          df = dfs_manifest,
-                          group_by_var = "dataset",
-                          title = NULL,
-                          x_lab = "Type of dataset",
-                          y_lab = "Number of Datasets",
-                          fill = "#0d1c38")
-
-  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
-  
+  # add status to manifest
   manifest_w_status <- reactive({
     
     # add some columns to manifest to make logic easier
-    manifest <- dfs_manifest %>%
+    manifest <- manifest_dfa %>%
       dplyr::mutate(scheduled = !is.na(release_scheduled),
-             no_embargo = is.na(embargo) || embargo < Sys.chmod(),
-             past_due = !is.na(release_scheduled) && release_scheduled < Sys.Date())
+                    no_embargo = is.na(embargo) || embargo < Sys.chmod(),
+                    past_due = !is.na(release_scheduled) && release_scheduled < Sys.Date())
     
     # generate status variable based on some logic that defines various data flow statuses
     status <- sapply(1:nrow(manifest), function(i) {
@@ -91,6 +65,38 @@ app_server <- function( input, output, session ) {
     manifest
   })
   
+  # FILTER MANIFEST FOR DASH  ###########################################################
+  
+  
+
+  # DATASET DASH  #######################################################################
+  
+  # create dashboard
+  
+  mod_datatable_dashboard_server("dashboard_1",
+                                 reactive({manifest_dfa}),
+                                 jsonlite::read_json("inst/datatable_dashboard_config.json"))
+  
+  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
+  
+  mod_distribution_server(id = "distribution_contributor",
+                          df = manifest_dfa,
+                          group_by_var = "contributor",
+                          title = NULL,
+                          x_lab = "Contributor",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
+  
+  mod_distribution_server(id = "distribution_datatype",
+                          df = manifest_dfa,
+                          group_by_var = "dataset",
+                          title = NULL,
+                          x_lab = "Type of dataset",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
+
+  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
+  
   # wrangle data for stacked bar plot
   release_status_data <- reactive({
     
@@ -112,6 +118,7 @@ app_server <- function( input, output, session ) {
     
     release_status_data()[release_status_data()$data_flow_status != "not scheduled",]
   })
+  
   
   whichPlot <- reactiveVal(TRUE)
   
@@ -194,8 +201,8 @@ app_server <- function( input, output, session ) {
 
   # ADMINISTRATOR  #######################################################################
   
-  # reactive value that holds dfs_manifest 
-  rv_manifest <- reactiveVal(dfs_manifest)
+  # reactive value that holds manifest_dfa 
+  rv_manifest <- reactiveVal(manifest_dfa)
   
   # STORAGE PROJECT SELECTION
   
@@ -229,7 +236,7 @@ app_server <- function( input, output, session ) {
    })
   
   observeEvent(input$clear_update, {
-    rv_manifest(dfs_manifest)
+    rv_manifest(manifest_dfa)
   })
   
   # PREP MANIFEST FOR SYNAPSE SUBMISSION
