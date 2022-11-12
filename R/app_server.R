@@ -67,6 +67,28 @@ app_server <- function( input, output, session ) {
   
   # FILTER MANIFEST FOR DASH  ###########################################################
   
+  # prepare inputs for filter module
+  filter_inputs <- reactive({
+
+    contributor_choices <- unique(manifest_w_status()$contributor)
+    dataset_choices <- unique(manifest_w_status()$dataset)
+    release_daterange_start <- min(manifest_w_status()$release_scheduled)
+    release_daterange_end <- max(manifest_w_status()$release_scheduled)
+    status_choices <- unique(manifest_w_status()$data_flow_status)
+    
+    list(contributor_choices, 
+         dataset_choices,
+         status_choices)
+  })
+  
+  output$filter_module <- renderUI({
+    filters <- filter_inputs()
+    mod_datatable_filters_ui("datatable_filters_1",
+                             contributor_choices = filters[[1]],
+                             dataset_choices = filters[[2]],
+                             release_daterange = c(as.Date(NA), as.Date(NA)),
+                             status_choices = filters[[3]])
+  })
   
 
   # DATASET DASH  #######################################################################
