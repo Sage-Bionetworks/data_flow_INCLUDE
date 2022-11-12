@@ -60,18 +60,25 @@ app_ui <- function(request) {
                                     uiOutput("filter_module")                                    ),
                                   
                                   shiny::fluidRow(
-                                    mod_datatable_dashboard_ui("dashboard_1")
-                                    ),
+                                    shinydashboard::box(
+                                      width = NULL,
+                                      title = "Dashboard",
+                                      status = "primary",
+                                      collapsible = TRUE,
+                                      mod_datatable_dashboard_ui("dashboard_1")
+                                    )),
                                   
                                   shiny::fluidRow(
                                     shinydashboard::box(
                                       title = "Distribution of datasets by contributor",
                                       status = "primary",
+                                      collapsible = TRUE,
                                       mod_distribution_ui("distribution_contributor")
                                       ),
                                     shinydashboard::box(
                                       title = "Distribution of datasets by data type",
                                       status = "primary",
+                                      collapsible = TRUE,
                                       mod_distribution_ui("distribution_datatype")
                                     )),
                                   
@@ -79,6 +86,7 @@ app_ui <- function(request) {
                                     shinydashboard::box(
                                       title = "Release status of all datasets by contributor",
                                       status = "primary",
+                                      collapsible = TRUE,
                                       mod_stacked_bar_ui("stacked_bar_release_status"),
                                       br(),
                                       actionButton("toggle_stacked_bar", "All / Scheduled Only")
@@ -86,6 +94,7 @@ app_ui <- function(request) {
                                     shinydashboard::box(
                                       title = "Data flow status by release date",
                                       status = "primary",
+                                      collapsible = TRUE,
                                       
                                       shiny::uiOutput("select_project_ui"),
                                       
