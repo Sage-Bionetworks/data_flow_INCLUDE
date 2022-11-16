@@ -57,7 +57,8 @@ app_ui <- function(request) {
           shinydashboard::tabItem(tabName = "dataset-dashboard",
                                   
                                   shiny::fluidRow(
-                                    uiOutput("filter_module")                                    ),
+                                    uiOutput("filter_module")),
+                                  
                                   
                                   shiny::fluidRow(
                                     shinydashboard::box(

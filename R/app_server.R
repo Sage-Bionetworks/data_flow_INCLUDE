@@ -16,7 +16,7 @@ app_server <- function( input, output, session ) {
   syntab <- reticulate::import("synapseclient.table")
   syn <- synapseclient$Synapse()
   syn$login()
-  
+
   # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
   dash_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
@@ -29,7 +29,7 @@ app_server <- function( input, output, session ) {
   manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest,
                                     config = dash_config)
   
-  # PREPARE MANIFEST FOR DASH ####################################################################
+  # PREPARE MANIFEST FOR DASH ###########################################################
   
   # add status to manifest
   manifest_w_status <- reactive({
@@ -65,7 +65,7 @@ app_server <- function( input, output, session ) {
     manifest
   })
   
-  # FILTER MANIFEST FOR DASH  ###########################################################
+  # FILTER MANIFEST FOR DASH UI ###########################################################
   
   # prepare inputs for filter module
   filter_inputs <- reactive({
@@ -90,13 +90,17 @@ app_server <- function( input, output, session ) {
                              status_choices = filters[[3]])
   })
   
+  # FILTER MANIFEST FOR DASH SERVER  ####################################################
+  filtered_manifest <- mod_datatable_filters_server("datatable_filters_1",
+                                                    reactive({manifest_dfa}))
+  
 
   # DATASET DASH  #######################################################################
   
   # create dashboard
   
   mod_datatable_dashboard_server("dashboard_1",
-                                 reactive({manifest_dfa}),
+                                 filtered_manifest,
                                  jsonlite::read_json("inst/datatable_dashboard_config.json"))
   
   # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
