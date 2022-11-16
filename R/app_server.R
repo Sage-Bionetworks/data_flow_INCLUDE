@@ -92,7 +92,7 @@ app_server <- function( input, output, session ) {
   
   # FILTER MANIFEST FOR DASH SERVER  ####################################################
   filtered_manifest <- mod_datatable_filters_server("datatable_filters_1",
-                                                    reactive({manifest_dfa}))
+                                                    manifest_w_status)
   
 
   # DATASET DASH  #######################################################################
@@ -131,7 +131,7 @@ app_server <- function( input, output, session ) {
   
   stacked_bar_data <- reactive({
 
-    release_status_data <- manifest_w_status() %>%
+    release_status_data <- filtered_manifest() %>%
       dplyr::group_by(contributor) %>%
       dplyr::group_by(dataset, .add = TRUE) %>%
       dplyr::group_by(data_flow_status, .add = TRUE) %>%
