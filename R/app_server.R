@@ -106,7 +106,7 @@ app_server <- function( input, output, session ) {
   # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
   
   mod_distribution_server(id = "distribution_contributor",
-                          df = manifest_dfa,
+                          df = filtered_manifest,
                           group_by_var = "contributor",
                           title = NULL,
                           x_lab = "Contributor",
@@ -114,7 +114,7 @@ app_server <- function( input, output, session ) {
                           fill = "#0d1c38")
   
   mod_distribution_server(id = "distribution_datatype",
-                          df = manifest_dfa,
+                          df = filtered_manifest,
                           group_by_var = "dataset",
                           title = NULL,
                           x_lab = "Type of dataset",
@@ -141,11 +141,11 @@ app_server <- function( input, output, session ) {
   
   # wrangle data for stacked bar plot (only scheduled)
   release_status_data_scheduled <- reactive({
-    
+
     release_status_data()[release_status_data()$data_flow_status != "not scheduled",]
   })
   
-  
+
   whichPlot <- reactiveVal(TRUE)
   
   observeEvent(input$toggle_stacked_bar, {
