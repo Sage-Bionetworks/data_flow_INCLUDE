@@ -97,8 +97,6 @@ app_server <- function( input, output, session ) {
 
   # DATASET DASH  #######################################################################
   
-  # create dashboard
-  
   mod_datatable_dashboard_server("dashboard_1",
                                  filtered_manifest,
                                  jsonlite::read_json("inst/datatable_dashboard_config.json"))
@@ -121,31 +119,17 @@ app_server <- function( input, output, session ) {
                           y_lab = "Number of Datasets",
                           fill = "#0d1c38")
 
-  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
-  
-  # wrangle data for stacked bar plot
-  release_status_data <- reactive({
-    
-    release_status_data <- manifest_w_status() %>%
-      dplyr::group_by(contributor) %>%
-      dplyr::group_by(dataset, .add = TRUE) %>%
-      dplyr::group_by(data_flow_status, .add = TRUE) %>%
-      dplyr::tally()
-    
-    # reorder factors
-    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
-                                                   levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
-    
-    release_status_data
-  })
-
+  # TOGGLE BETWEEN STACKED BARS #########################################################
   whichPlot <- reactiveVal(TRUE)
   
   observeEvent(input$toggle_stacked_bar, {
     whichPlot(!whichPlot())
   })
   
-  which_release_data <- reactive({
+  # PREPARE DATA FOR STACKED BAR PLOTS ##################################################
+  # specifically stacked bar plots that show data flow status grouped by contributor
+  
+  stacked_bar_data <- reactive({
 
     release_status_data <- manifest_w_status() %>%
       dplyr::group_by(contributor) %>%
@@ -164,7 +148,7 @@ app_server <- function( input, output, session ) {
   })
   
   mod_stacked_bar_server(id = "stacked_bar_release_status",
-                         df = which_release_data,
+                         df = stacked_bar_data,
                          x_var = "contributor",
                          y_var = "n",
                          fill_var = "data_flow_status",
@@ -217,7 +201,7 @@ app_server <- function( input, output, session ) {
                          width = 10,
                          date_breaks = "1 month",
                          coord_flip = FALSE)
-
+  
   # ADMINISTRATOR  #######################################################################
   
   # reactive value that holds manifest_dfa 
