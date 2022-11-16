@@ -138,13 +138,6 @@ app_server <- function( input, output, session ) {
     
     release_status_data
   })
-  
-  # wrangle data for stacked bar plot (only scheduled)
-  release_status_data_scheduled <- reactive({
-
-    release_status_data()[release_status_data()$data_flow_status != "not scheduled",]
-  })
-  
 
   whichPlot <- reactiveVal(TRUE)
   
