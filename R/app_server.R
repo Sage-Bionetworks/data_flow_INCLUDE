@@ -23,8 +23,8 @@ app_server <- function( input, output, session ) {
   
   # download data flow status manifest
   synapse_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
-                                          dataset_id = global_config$manifest_dataset_id,
-                                          input_token = global_config$schematic_token)
+                                              dataset_id = global_config$manifest_dataset_id,
+                                              input_token = global_config$schematic_token)
   
   manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest,
                                     config = dash_config)
@@ -72,12 +72,14 @@ app_server <- function( input, output, session ) {
 
     contributor_choices <- unique(manifest_w_status()$contributor)
     dataset_choices <- unique(manifest_w_status()$dataset)
-    release_daterange_start <- min(manifest_w_status()$release_scheduled)
-    release_daterange_end <- max(manifest_w_status()$release_scheduled)
+    release_daterange_start <- min(manifest_w_status()$release_scheduled, na.rm = TRUE)
+    release_daterange_end <- max(manifest_w_status()$release_scheduled, na.rm = TRUE)
     status_choices <- unique(manifest_w_status()$data_flow_status)
     
     list(contributor_choices, 
          dataset_choices,
+         release_daterange_start,
+         release_daterange_end,
          status_choices)
   })
   
@@ -86,8 +88,8 @@ app_server <- function( input, output, session ) {
     mod_datatable_filters_ui("datatable_filters_1",
                              contributor_choices = filters[[1]],
                              dataset_choices = filters[[2]],
-                             release_daterange = c(as.Date(NA), as.Date(NA)),
-                             status_choices = filters[[3]])
+                             release_daterange = c(filters[[3]], filters[[4]]),
+                             status_choices = filters[[5]])
   })
   
   # FILTER MANIFEST FOR DASH SERVER  ####################################################

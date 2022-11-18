@@ -39,7 +39,8 @@ mod_datatable_filters_ui <- function(id,
                         
                         shiny::checkboxGroupInput(ns("choose_status_checkbox"),
                                                   label = "Filter by status",
-                                                  choices = status_choices)
+                                                  choices = status_choices,
+                                                  selected = status_choices)
                         )
   )
 }
@@ -68,7 +69,9 @@ mod_datatable_filters_server <- function(id,
       
       filtered <- manifest %>%
         dplyr::filter(contributor %in% input$contributor_select,
-                      dataset %in% selected_datasets_modified())
+                      dataset %in% selected_datasets_modified(),
+                      release_scheduled > input$release_scheduled_daterange[1] & release_scheduled < input$release_scheduled_daterange[2] | is.na(release_scheduled),     
+                      data_flow_status %in% input$choose_status_checkbox)
       
       
       return(filtered)
