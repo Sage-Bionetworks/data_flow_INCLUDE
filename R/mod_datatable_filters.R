@@ -19,6 +19,7 @@ mod_datatable_filters_ui <- function(id,
                         collapsible = TRUE,
                         collapsed = TRUE,
                         width = width,
+                        status = "primary",
                         
                         shiny::selectInput(ns("contributor_select"),
                                            label = "Filter by contributor(s)",
