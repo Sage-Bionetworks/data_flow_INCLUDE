@@ -1,4 +1,4 @@
 library(testthat)
-library(release_administratorUI)
+library(dataflow)
 
-test_check("release_administratorUI")
+test_check("dataflow")

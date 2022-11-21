@@ -9,7 +9,7 @@
 #' 
 #' @noRd
 app_sys <- function(...){
-  system.file(..., package = "data_flow")
+  system.file(..., package = "dataflow")
 }
 
 
