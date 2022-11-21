@@ -1,8 +1,8 @@
 Package: dataflow
-Title: PKG_TITLE
+Title: Data Flow
 Version: 0.0.0.9000
 Authors@R: person('L', 'Wolfe', email = 'loren.wolfe@sagebase.org', role = c('cre', 'aut'))
-Description: PKG_DESC.
+Description: A data flow package.
 License: What license is it under?
 Imports: 
     attempt,
