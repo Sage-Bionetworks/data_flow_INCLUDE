@@ -8,14 +8,6 @@ app_server <- function( input, output, session ) {
   # Your application server logic
   
   # DEV STUFF ###########################################################################
-  
-  # SYNAPSE LOGIN
-  # TODO: log in will eventually live in global.R/rely on config info
-  reticulate::use_virtualenv(".venv/")
-  synapseclient <- reticulate::import("synapseclient")
-  syntab <- reticulate::import("synapseclient.table")
-  syn <- synapseclient$Synapse()
-  syn$login()
 
   # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
