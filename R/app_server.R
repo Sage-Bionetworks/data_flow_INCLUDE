@@ -120,13 +120,6 @@ app_server <- function( input, output, session ) {
                           x_lab = "Type of dataset",
                           y_lab = "Number of Datasets",
                           fill = "#0d1c38")
-
-  # TOGGLE BETWEEN STACKED BARS #########################################################
-  whichPlot <- reactiveVal(TRUE)
-  
-  observeEvent(input$toggle_stacked_bar, {
-    whichPlot(!whichPlot())
-  })
   
   # PREPARE DATA FOR STACKED BAR PLOTS ##################################################
   # specifically stacked bar plots that show data flow status grouped by contributor
@@ -142,9 +135,6 @@ app_server <- function( input, output, session ) {
     # reorder factors
     release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
                                                    levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
-    if (whichPlot() == FALSE) {
-      release_status_data <- release_status_data[release_status_data$data_flow_status != "not scheduled",]
-    }
     
     release_status_data
   })
@@ -174,7 +164,7 @@ app_server <- function( input, output, session ) {
   # wrangle data for stacked bar plot (runners)
   
   release_data_runners <- reactive({
-    
+
     release_status_data <- manifest_w_status() %>%
       dplyr::filter(!is.na(release_scheduled)) %>%
       dplyr::filter(contributor == input$select_project_input) %>%
