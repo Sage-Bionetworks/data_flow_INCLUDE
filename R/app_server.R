@@ -153,7 +153,7 @@ app_server <- function( input, output, session ) {
   # drop down for runners plot
   output$select_project_ui <- shiny::renderUI({
     
-    contributors <- unique(manifest_w_status()$contributor)
+    contributors <- unique(filtered_manifest()$contributor)
     
     shiny::selectInput(inputId = "select_project_input",
                        label = NULL,
@@ -164,8 +164,10 @@ app_server <- function( input, output, session ) {
   # wrangle data for stacked bar plot (runners)
   
   release_data_runners <- reactive({
-
-    release_status_data <- manifest_w_status() %>%
+    
+    req(input$select_project_input)
+  
+    release_status_data <- filtered_manifest() %>%
       dplyr::filter(!is.na(release_scheduled)) %>%
       dplyr::filter(contributor == input$select_project_input) %>%
       dplyr::group_by(contributor) %>%
