@@ -8,63 +8,29 @@ app_server <- function( input, output, session ) {
   # Your application server logic
   
   # DEV STUFF ###########################################################################
-  
-  # SYNAPSE LOGIN
-  # TODO: log in will eventually live in global.R/rely on config info
-  reticulate::use_virtualenv(".venv/")
-  synapseclient <- reticulate::import("synapseclient")
-  syntab <- reticulate::import("synapseclient.table")
-  syn <- synapseclient$Synapse()
-  syn$login()
-  
+
   # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
   dash_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
   
-
-  # DATASET DASH  #######################################################################
-  
   # download data flow status manifest
-  dfs_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
-                                          dataset_id = global_config$manifest_dataset_id,
-                                          input_token = global_config$schematic_token)
+  synapse_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
+                                              dataset_id = global_config$manifest_dataset_id,
+                                              input_token = global_config$schematic_token)
   
-  dfs_manifest <- prep_manifest_dfa(manifest = dfs_manifest,
+  manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest,
                                     config = dash_config)
   
-  # create tabbed dashboard
+  # PREPARE MANIFEST FOR DASH ###########################################################
   
-  mod_tabbed_dashboard_server("tabbed_dashboard_1", 
-                              reactive({dfs_manifest}),
-                              jsonlite::read_json("inst/datatable_dashboard_config.json"))
-  
-  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
-  
-  mod_distribution_server(id = "distribution_contributor",
-                          df = dfs_manifest,
-                          group_by_var = "contributor",
-                          title = NULL,
-                          x_lab = "Contributor",
-                          y_lab = "Number of Datasets",
-                          fill = "#0d1c38")
-  
-  mod_distribution_server(id = "distribution_datatype",
-                          df = dfs_manifest,
-                          group_by_var = "dataset",
-                          title = NULL,
-                          x_lab = "Type of dataset",
-                          y_lab = "Number of Datasets",
-                          fill = "#0d1c38")
-
-  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
-  
+  # add status to manifest
   manifest_w_status <- reactive({
     
     # add some columns to manifest to make logic easier
-    manifest <- dfs_manifest %>%
+    manifest <- manifest_dfa %>%
       dplyr::mutate(scheduled = !is.na(release_scheduled),
-             no_embargo = is.na(embargo) || embargo < Sys.chmod(),
-             past_due = !is.na(release_scheduled) && release_scheduled < Sys.Date())
+                    no_embargo = is.na(embargo) || embargo < Sys.chmod(),
+                    past_due = !is.na(release_scheduled) && release_scheduled < Sys.Date())
     
     # generate status variable based on some logic that defines various data flow statuses
     status <- sapply(1:nrow(manifest), function(i) {
@@ -91,37 +57,68 @@ app_server <- function( input, output, session ) {
     manifest
   })
   
-  # wrangle data for stacked bar plot
-  release_status_data <- reactive({
-    
-    release_status_data <- manifest_w_status() %>%
-      dplyr::group_by(contributor) %>%
-      dplyr::group_by(dataset, .add = TRUE) %>%
-      dplyr::group_by(data_flow_status, .add = TRUE) %>%
-      dplyr::tally()
-    
-    # reorder factors
-    release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
-                                                   levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
-    
-    release_status_data
-  })
+  # FILTER MANIFEST FOR DASH UI ###########################################################
   
-  # wrangle data for stacked bar plot (only scheduled)
-  release_status_data_scheduled <- reactive({
-    
-    release_status_data()[release_status_data()$data_flow_status != "not scheduled",]
-  })
-  
-  whichPlot <- reactiveVal(TRUE)
-  
-  observeEvent(input$toggle_stacked_bar, {
-    whichPlot(!whichPlot())
-  })
-  
-  which_release_data <- reactive({
+  # prepare inputs for filter module
+  filter_inputs <- reactive({
 
-    release_status_data <- manifest_w_status() %>%
+    contributor_choices <- unique(manifest_w_status()$contributor)
+    dataset_choices <- unique(manifest_w_status()$dataset)
+    release_daterange_start <- min(manifest_w_status()$release_scheduled, na.rm = TRUE)
+    release_daterange_end <- max(manifest_w_status()$release_scheduled, na.rm = TRUE)
+    status_choices <- unique(manifest_w_status()$data_flow_status)
+    
+    list(contributor_choices, 
+         dataset_choices,
+         release_daterange_start,
+         release_daterange_end,
+         status_choices)
+  })
+  
+  output$filter_module <- renderUI({
+    filters <- filter_inputs()
+    mod_datatable_filters_ui("datatable_filters_1",
+                             contributor_choices = filters[[1]],
+                             dataset_choices = filters[[2]],
+                             release_daterange = c(filters[[3]], filters[[4]]),
+                             status_choices = filters[[5]])
+  })
+  
+  # FILTER MANIFEST FOR DASH SERVER  ####################################################
+  filtered_manifest <- mod_datatable_filters_server("datatable_filters_1",
+                                                    manifest_w_status)
+  
+
+  # DATASET DASH  #######################################################################
+  
+  mod_datatable_dashboard_server("dashboard_1",
+                                 filtered_manifest,
+                                 jsonlite::read_json("inst/datatable_dashboard_config.json"))
+  
+  # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
+  
+  mod_distribution_server(id = "distribution_contributor",
+                          df = filtered_manifest,
+                          group_by_var = "contributor",
+                          title = NULL,
+                          x_lab = "Contributor",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
+  
+  mod_distribution_server(id = "distribution_datatype",
+                          df = filtered_manifest,
+                          group_by_var = "dataset",
+                          title = NULL,
+                          x_lab = "Type of dataset",
+                          y_lab = "Number of Datasets",
+                          fill = "#0d1c38")
+  
+  # PREPARE DATA FOR STACKED BAR PLOTS ##################################################
+  # specifically stacked bar plots that show data flow status grouped by contributor
+  
+  stacked_bar_data <- reactive({
+
+    release_status_data <- filtered_manifest() %>%
       dplyr::group_by(contributor) %>%
       dplyr::group_by(dataset, .add = TRUE) %>%
       dplyr::group_by(data_flow_status, .add = TRUE) %>%
@@ -130,15 +127,12 @@ app_server <- function( input, output, session ) {
     # reorder factors
     release_status_data$data_flow_status <- factor(release_status_data$data_flow_status, 
                                                    levels = c("released", "quarantine (ready for release)", "quarantine", "not scheduled"))
-    if (whichPlot() == FALSE) {
-      release_status_data <- release_status_data[release_status_data$data_flow_status != "not scheduled",]
-    }
     
     release_status_data
   })
   
   mod_stacked_bar_server(id = "stacked_bar_release_status",
-                         df = which_release_data,
+                         df = stacked_bar_data,
                          x_var = "contributor",
                          y_var = "n",
                          fill_var = "data_flow_status",
@@ -151,7 +145,7 @@ app_server <- function( input, output, session ) {
   # drop down for runners plot
   output$select_project_ui <- shiny::renderUI({
     
-    contributors <- unique(manifest_w_status()$contributor)
+    contributors <- unique(filtered_manifest()$contributor)
     
     shiny::selectInput(inputId = "select_project_input",
                        label = NULL,
@@ -163,7 +157,9 @@ app_server <- function( input, output, session ) {
   
   release_data_runners <- reactive({
     
-    release_status_data <- manifest_w_status() %>%
+    req(input$select_project_input)
+  
+    release_status_data <- filtered_manifest() %>%
       dplyr::filter(!is.na(release_scheduled)) %>%
       dplyr::filter(contributor == input$select_project_input) %>%
       dplyr::group_by(contributor) %>%
@@ -191,11 +187,11 @@ app_server <- function( input, output, session ) {
                          width = 10,
                          date_breaks = "1 month",
                          coord_flip = FALSE)
-
+  
   # ADMINISTRATOR  #######################################################################
   
-  # reactive value that holds dfs_manifest 
-  rv_manifest <- reactiveVal(dfs_manifest)
+  # reactive value that holds manifest_dfa 
+  rv_manifest <- reactiveVal(manifest_dfa)
   
   # STORAGE PROJECT SELECTION
   
@@ -229,7 +225,7 @@ app_server <- function( input, output, session ) {
    })
   
   observeEvent(input$clear_update, {
-    rv_manifest(dfs_manifest)
+    rv_manifest(manifest_dfa)
   })
   
   # PREP MANIFEST FOR SYNAPSE SUBMISSION

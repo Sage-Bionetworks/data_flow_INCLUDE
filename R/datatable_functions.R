@@ -65,11 +65,12 @@ style_dashboard <- function(prepped_manifest,
   dt <- DT::datatable(prepped_manifest,
                       escape = FALSE, 
                       selection = "none",
-                      filter = "top",
+                      filter = "none",
                       colnames = colnames,
                       options = list(scrollX = TRUE,
                                      scrollY = 500,
                                      bPaginate = FALSE,
+                                     searching = FALSE,
                                      columnDefs = defs))
   
   # FIXME: this is still hardcoded
