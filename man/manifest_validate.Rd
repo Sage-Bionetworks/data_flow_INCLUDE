@@ -8,8 +8,8 @@ manifest_validate(
   data_type,
   csv_file,
   url = "http://localhost:3001/v1/model/validate",
- 
-    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
+  schema_url =
+    "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
 )
 }
 \arguments{

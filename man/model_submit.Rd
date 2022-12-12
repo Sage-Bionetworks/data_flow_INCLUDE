@@ -12,8 +12,8 @@ model_submit(
   input_token,
   manifest_record_type = "table",
   url = "http://localhost:3001/v1/model/submit",
- 
-    schema_url = "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
+  schema_url =
+    "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
 )
 }
 \arguments{
