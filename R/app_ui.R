@@ -4,7 +4,13 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
-app_ui <- function(request) {
+#' 
+
+app_ui <- function(req) {
+  projectlive.modules::oauth_ui(req, ui_function, OAUTH_LIST)
+}
+
+ui_function <- function() {
   
   tagList(
     # Leave this function for adding external resources
@@ -161,7 +167,7 @@ golem_add_external_resources <- function(){
     favicon(),
     bundle_resources(
       path = app_sys('app/www'),
-      app_title = 'release_administratorUI'
+      app_title = 'Data Flow'
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert() 
