@@ -6,7 +6,9 @@ name: shiny-deploy
 on:
   push:
     branches:
-      - shinyappsio-deployment
+      - main
+      - dev*
+      - v[0-9]+.[0-9]+.[0-9]+
 
     paths-ignore:
       - '.github/ISSUE_TEMPLATE/**'
@@ -83,11 +85,10 @@ jobs:
           # if tag is v*.*.*, deploy to prod, if main to staging, otherwise to test
           if (grepl("v[0-9]+.[0-9]+.[0-9]+", refName)) {
             message("Deploying release version of app")
-          } else if (refName == "main") {
+          # } else if (refName == "main") {
+          } else if (refName == "dev") {
             appName <- paste(appName, "staging", sep = "-")
             message("Deploying staging version of app")
-          } else if (refName == 'shinyappsio-deployment') { # tmp
-            appName <- paste(appName, "staging", sep = "-")
           } else {
             appName <- paste(appName, "testing", sep = "-")
             message("Deploying testing version of app")
