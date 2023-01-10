@@ -2051,7 +2051,8 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "entity_id",
+            "sms:displayName": "entityId",
+
             "sms:required": "sms:true",
             "sms:validationRules": []
         },

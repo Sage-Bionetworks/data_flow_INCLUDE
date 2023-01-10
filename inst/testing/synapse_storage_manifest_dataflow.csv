@@ -1,0 +1,22 @@
+"Component","contributor","entityId","dataset_name","dataset","num_items","release_scheduled","embargo","standard_compliance","data_portal","released"
+"DataFlow","schematic - main","syn23643254","DataTypeX","Not Applicable","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn24239829","TestDatasets","Not Applicable","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn25705021","Credentials","Not Applicable","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn26251192","TemporaryTests","Biospecimen","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn27600053","TestMockData","MockComponent","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn27600056","TestPatientData","Patient","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn27647856","TestMockData-Duplicate","MockComponent","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn29381520","TestPatientData-Duplicate","Patient","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn30988314","TestingDatasetFolder","Patient","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn33616338","TestNAUploads","Patient","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn34292093","TestBlankAnnos","MockComponent","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn34640850","DataFlowStatus","DataFlow","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn35187716","DCATest","Biospecimen","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn36422268","TestTableUpload","FollowUp","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn38847266","Issue834","FollowUp","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn39164953","TestSubmit","FollowUp","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn39241199","TestRNA-seqDataset1","FollowUp","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn39241280","TestRNA-seqDataset2","FollowUp","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn41850334","TestDFA","DataFlow","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn42171373","MockPatientManifest","DataFlow","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE
+"DataFlow","schematic - main","syn42171508","MockBiospecimenManifest","DataFlow","Not Applicable","Not Applicable","Not Applicable",FALSE,FALSE,FALSE

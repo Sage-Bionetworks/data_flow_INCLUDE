@@ -4,12 +4,12 @@
 \alias{style_dashboard}
 \title{Add custom styling to dashboard based on contents of config}
 \usage{
-style_dashboard(prepped_dataframe, config)
+style_dashboard(prepped_manifest, config)
 }
 \arguments{
-\item{config}{config Config for datatable dashboard module in `inst/datatable_dashboard_config.json`}
+\item{prepped_manifest}{A manifest prepped with `prep_manifest_dash()`}
 
-\item{df}{A dataframe prepared by `prep_df_for_dash()` with the columns `Contributor`, `Dataset_Name`, `Dataset_Type`, `Num_Items`, `Release_Scheduled`, `Embargo`, `Standard_Compliance`, `QC_Compliance`,`PHI_Detection_Compliance`, `Access_Controls_Compliance`, `Data_Portal`, `Released`, `past_due`}
+\item{config}{`inst/datatable_dashboard_config.json`}
 }
 \description{
 Add custom styling to dashboard based on contents of config
