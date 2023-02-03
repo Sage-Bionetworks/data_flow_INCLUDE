@@ -8,7 +8,7 @@ storage_project_datasets(
   asset_view,
   project_id,
   input_token,
-  url = "https://schematic.dnt-dev.sagebase.org/v1/storage/project/datasets"
+  base_url = "https://schematic.dnt-dev.sagebase.org"
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ storage_project_datasets(
 
 \item{input_token}{synapse PAT}
 
-\item{url}{URL to schematic API endpoint}
+\item{base_url}{URL to schematic API endpoint}
 }
 \description{
 Gets all datasets in folder under a given storage project that the current user has access to.

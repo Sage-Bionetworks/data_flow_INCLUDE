@@ -8,12 +8,13 @@
 
 #' Download a manifest
 #'
-#' @param url URL to schematic API endpoint
 #' @param asset_view ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)
 #' @param dataset_id Synapse ID of existing manifest
 #' @param input_token Synapse login cookie, PAT, or API key.
 #' @param as_json Synapse login cookie, PAT, or API key.
-#' 
+#' @param new_manifest_name Manifest name
+#' @param base_url URL to schematic API endpoint
+
 #' @export
 
 manifest_download <- function(asset_view,
@@ -21,7 +22,10 @@ manifest_download <- function(asset_view,
                               input_token,
                               as_json,
                               new_manifest_name = NULL,
-                              url="https://schematic.dnt-dev.sagebase.org/v1/manifest/download") {
+                              base_url="https://schematic.dnt-dev.sagebase.org") {
+  
+  # create url
+  url <- paste0(base_url, "/v1/manifest/download")
   
   # set up parameters for httr::get call
   params = list(
@@ -49,7 +53,7 @@ manifest_download <- function(asset_view,
 #' @param title Name of dataset 
 #' @param data_type Type of dataset 
 #' @param dataset_id Synapse ID of existing manifest
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #' @param schema_url URL to a schema jsonld 
 #' @param oauth true or false STRING passed to python
 #' @param use_annotations true or false STRING passed to python 
@@ -60,10 +64,14 @@ manifest_download <- function(asset_view,
 manifest_generate <- function(title, 
                               data_type,
                               dataset_id,
-                              url="https://schematic.dnt-dev.sagebase.org/v1/manifest/generate",
+                              base_url="https://schematic.dnt-dev.sagebase.org",
                               schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld", #nolint
                               oauth="true",
                               use_annotations="false") {
+  
+  # create url
+  url <- paste0(base_url, "/v1/manifest/generate")
+  
   
   req <- httr::GET(url,
                    query = list(
@@ -84,7 +92,7 @@ manifest_generate <- function(title,
 #' @param data_type Type of dataset
 #' @param title Title of csv
 #' @param csv_file Filepath of csv to validate
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #' @param schema_url URL to a schema jsonld
 #' 
 #' @export
@@ -92,8 +100,11 @@ manifest_generate <- function(title,
 manifest_populate <- function(data_type, 
                               title, 
                               csv_file,
-                              url="https://schematic.dnt-dev.sagebase.org/v1/manifest/populate",
+                              base_url="https://schematic.dnt-dev.sagebase.org/v1/manifest/populate",
                               schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld") {
+  
+  # create url
+  url <- paste0(base_url, "/v1/manifest/populate")
   
   req <- httr::POST(url,
                     query=list(
@@ -112,7 +123,7 @@ manifest_populate <- function(data_type,
 #' 
 #' @param data_type Type of dataset
 #' @param csv_file Filepath of csv to validate
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #' @param schema_url URL to a schema jsonld 
 #' 
 #' @returns An empty list() if successfully validated. Or a list of errors.
@@ -120,8 +131,11 @@ manifest_populate <- function(data_type,
 
 manifest_validate <- function(data_type, 
                               csv_file,
-                              url="https://schematic.dnt-dev.sagebase.org/v1/model/validate",
+                              base_url="https://schematic.dnt-dev.sagebase.org",
                               schema_url="https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld") {
+  
+  # create url
+  url <- paste0(base_url, "/v1/model/validate")
   
   req <- httr::POST(url,
                     query=list(
@@ -143,7 +157,7 @@ manifest_validate <- function(data_type,
 #' @param manifest_record_type Manifest storage type. Options: "--", "table" (default), "entity", "both".
 #' @param csv_file Filepath of csv to validate
 #' @param input_token Synapse login cookie, PAT, or API key
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #' @param schema_url URL to a schema jsonld 
 #' 
 #' @returns TRUE if successful upload or validate errors if not.
@@ -156,9 +170,12 @@ model_submit <- function(data_type,
                          file_name,
                          input_token,
                          manifest_record_type = "table",
-                         url="https://schematic.dnt-dev.sagebase.org/v1/model/submit",
+                         base_url="https://schematic.dnt-dev.sagebase.org",
                          schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld") {
-
+  
+  # create url
+  url <- paste0(base_url, "/v1/model/submit")
+  
   headers = c(
     `accept` = 'application/json',
     `Content-Type` = 'multipart/form-data'
@@ -195,14 +212,17 @@ model_submit <- function(data_type,
 #' @param asset_view synapse ID of master file view.
 #' @param project_id synapse ID of a storage project.
 #' @param input_token synapse PAT
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #'
 #'@export
 
 storage_project_datasets <- function(asset_view,
                                      project_id,
                                      input_token,
-                                     url="https://schematic.dnt-dev.sagebase.org/v1/storage/project/datasets") {
+                                     base_url="https://schematic.dnt-dev.sagebase.org") {
+  
+  # create url
+  url <- paste0(base_url, "/v1/storage/project/datasets")
   
   req <- httr::GET(url,
                    #add_headers(Authorization=paste0("Bearer ", pat)),
@@ -219,13 +239,16 @@ storage_project_datasets <- function(asset_view,
 #' 
 #' @param asset_view synapse ID of master file view.
 #' @param input_token synapse PAT
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #'
 #' @export
 
 storage_projects <- function(asset_view,
                              input_token,
-                             url="https://schematic.dnt-dev.sagebase.org/v1/storage/projects") {
+                             base_url="https://schematic.dnt-dev.sagebase.org") {
+  
+  # create url
+  url <- paste0(base_url, "/v1/storage/projects")
   
   req <- httr::GET(url,
                    query = list(
@@ -241,16 +264,18 @@ storage_projects <- function(asset_view,
 #' @param asset_view synapse ID of master file view.
 #' @param dataset_id synapse ID of a storage dataset.
 #' @param input_token synapse PAT
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #' 
 #' @export
 
 storage_project_manifests <- function(asset_view,
                                       project_id,
                                       input_token,
-                                      url="https://schematic.dnt-dev.sagebase.org/v1/storage/project/manifests") {
+                                      base_url="https://schematic.dnt-dev.sagebase.org") {
   
   require(httr)
+  
+  url <- paste0(base_url, "/v1/storage/project/manifests")
   
   headers = c(
     `accept` = 'application/json'
@@ -275,7 +300,7 @@ storage_project_manifests <- function(asset_view,
 #' @param input_token synapse PAT
 #' @param file_names a list of files with particular names (i.e. Sample_A.txt). If you leave it empty, it will return all dataset files under the dataset ID.
 #' @param full_path Boolean. If True return the full path as part of this filename; otherwise return just base filename
-#' @param url URL to schematic API endpoint
+#' @param base_url URL to schematic API endpoint
 #' 
 #' @export
 
@@ -284,7 +309,9 @@ storage_dataset_files <- function(asset_view,
                                   input_token,
                                   file_names=list(),
                                   full_path=FALSE, 
-                                  url="https://schematic.dnt-dev.sagebase.org/v1/storage/dataset/files") {
+                                  base_url="https://schematic.dnt-dev.sagebase.org") {
+  
+  url <- paste0(base_url, "/v1/storage/dataset/files")
   
   req <- httr::GET(url,
                    #add_headers(Authorization=paste0("Bearer ", pat)),

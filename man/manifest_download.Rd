@@ -10,7 +10,7 @@ manifest_download(
   input_token,
   as_json,
   new_manifest_name = NULL,
-  url = "https://schematic.dnt-dev.sagebase.org/v1/manifest/download"
+  base_url = "https://schematic.dnt-dev.sagebase.org"
 )
 }
 \arguments{
@@ -22,7 +22,9 @@ manifest_download(
 
 \item{as_json}{Synapse login cookie, PAT, or API key.}
 
-\item{url}{URL to schematic API endpoint}
+\item{new_manifest_name}{Manifest name}
+
+\item{base_url}{URL to schematic API endpoint}
 }
 \description{
 Download a manifest
