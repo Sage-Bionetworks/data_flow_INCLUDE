@@ -102,6 +102,7 @@ update_dfs_manifest <- function(dfs_manifest,
 #' @param asset_view ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)
 #' @param dataset_id Synapse ID of existing manifest
 #' @param calc_num_items TRUE/FALSE. Calculate the number of items in each manifest.
+#' @param base_url Base URL of schematic API
 #' 
 #' @export
 
@@ -109,7 +110,7 @@ generate_data_flow_manifest_skeleton <- function(storage_project_list,
                                                  asset_view,
                                                  input_token,
                                                  calc_num_items,
-                                                 .url = "https://schematic.dnt-dev.sagebase.org/v1/storage/project/manifests") {
+                                                 base_url = "https://schematic.dnt-dev.sagebase.org") {
   
   # parse storage project list
   storage_project_names <- purrr::map_chr(storage_project_list, 2)
@@ -127,7 +128,7 @@ generate_data_flow_manifest_skeleton <- function(storage_project_list,
     manifests <- storage_project_manifests(asset_view,
                                            storage_project_ids[i],
                                            input_token,
-                                           .url)
+                                           base_url)
     
     # pull out data from list
     # dataset metadata
@@ -168,7 +169,8 @@ generate_data_flow_manifest_skeleton <- function(storage_project_list,
         # download manifest
         manifest <- manifest_download_to_df(asset_view,
                                             dfs_manifest[i, "entityId"],
-                                            input_token)
+                                            input_token,
+                                            base_url)
         
         # if no manifest is downloaded, return NA
         # otherwise count rows and return nrow
