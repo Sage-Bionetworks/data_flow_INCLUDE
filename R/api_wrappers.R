@@ -25,13 +25,14 @@ manifest_download_to_df <- function(asset_view,
                                      new_manifest_name = NULL,
                                      base_url = base_url)
   
+  message(manifest_json)
   
   # use json lite to parse into dataframe
   content_df <- tryCatch({
     jsonlite::fromJSON(manifest_json)
   },
   error = function(e) {
-    message("No manifest available")
+    message(e)
     return(NULL)
   })
   
