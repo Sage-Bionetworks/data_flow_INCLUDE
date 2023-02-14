@@ -46,6 +46,8 @@ app_server <- function( input, output, session ) {
                                               input_token = access_token,
                                               base_url = global_config$api_base_url)
   
+  message(synapse_manifest)
+  
   manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest,
                                     config = dash_config)
   
