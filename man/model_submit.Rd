@@ -12,7 +12,7 @@ model_submit(
   file_name,
   input_token,
   manifest_record_type = "table",
-  url = "https://schematic.dnt-dev.sagebase.org/v1/model/submit",
+  base_url = "https://schematic.dnt-dev.sagebase.org",
   schema_url =
     "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld"
 )
@@ -28,7 +28,7 @@ model_submit(
 
 \item{manifest_record_type}{Manifest storage type. Options: "--", "table" (default), "entity", "both".}
 
-\item{url}{URL to schematic API endpoint}
+\item{base_url}{URL to schematic API endpoint}
 
 \item{schema_url}{URL to a schema jsonld}
 

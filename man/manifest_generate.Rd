@@ -8,7 +8,7 @@ manifest_generate(
   title,
   data_type,
   dataset_id,
-  url = "https://schematic.dnt-dev.sagebase.org/v1/manifest/generate",
+  base_url = "https://schematic.dnt-dev.sagebase.org",
   schema_url =
     "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld",
   oauth = "true",
@@ -22,7 +22,7 @@ manifest_generate(
 
 \item{dataset_id}{Synapse ID of existing manifest}
 
-\item{url}{URL to schematic API endpoint}
+\item{base_url}{URL to schematic API endpoint}
 
 \item{schema_url}{URL to a schema jsonld}
 

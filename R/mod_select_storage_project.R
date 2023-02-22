@@ -29,7 +29,7 @@ mod_select_storage_project_ui <- function(id){
 # Storage Project Selection Module Server
 #'
 #' @noRd 
-mod_select_storage_project_server <- function(id, asset_view, input_token) {
+mod_select_storage_project_server <- function(id, asset_view, input_token, base_url) {
   
   moduleServer( id, function(input, output, session){
     
@@ -38,7 +38,8 @@ mod_select_storage_project_server <- function(id, asset_view, input_token) {
     # API CALL : GET STORAGE PROJECTS #######################################################################
 
     storage_project_list <- storage_projects(asset_view = asset_view,
-                                             input_token = input_token)
+                                             input_token = input_token,
+                                             base_url)
 
     # name list (required for list_to_dataframe)
 

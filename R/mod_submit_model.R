@@ -26,7 +26,8 @@ mod_submit_model_server <- function(id,
                                     dataset_id,
                                     manifest_dir = "./manifest",
                                     input_token,
-                                    schema_url) {
+                                    schema_url,
+                                    base_url) {
   moduleServer( id, function(input, output, session) {
     ns <- session$ns
     
@@ -60,7 +61,8 @@ mod_submit_model_server <- function(id,
                    input_token = input_token,
                    manifest_record_type = "table",
                    url = "https://schematic.dnt-dev.sagebase.org/v1/model/submit",
-                   schema_url = schema_url)
+                   schema_url = schema_url,
+                   base_url = base_url)
       
       waiter::waiter_hide()
     })

@@ -43,7 +43,10 @@ app_server <- function( input, output, session ) {
   # download data flow status manifest
   synapse_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
                                               dataset_id = global_config$manifest_dataset_id,
-                                              input_token = access_token)
+                                              input_token = access_token,
+                                              base_url = global_config$api_base_url)
+  
+  message(synapse_manifest)
   
   manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest,
                                     config = dash_config)
@@ -224,14 +227,16 @@ app_server <- function( input, output, session ) {
   
   select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
                                                               asset_view = global_config$asset_view,
-                                                              input_token = access_token)
+                                                              input_token = access_token,
+                                                              base_url = global_config$api_base_url)
 
   # DATASET SELECTION
   
   dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
                                                     storage_project_df = select_storage_project,
                                                     asset_view = global_config$asset_view,
-                                                    input_token = access_token)
+                                                    input_token = access_token,
+                                                    base_url = global_config$api_base_url)
   
   # UPDATE DATA FLOW STATUS SELECTIONS 
   updated_data_flow_status <- mod_update_data_flow_status_server("update_data_flow_status_1")
@@ -297,6 +302,7 @@ app_server <- function( input, output, session ) {
                           dataset_id = global_config$manifest_dataset_id,
                           manifest_dir = "./manifest",
                           input_token = access_token,
+                          base_url = global_config$api_base_url,
                           schema_url = global_config$schema_url)
 
 }

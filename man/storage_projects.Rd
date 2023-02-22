@@ -7,7 +7,7 @@
 storage_projects(
   asset_view,
   input_token,
-  url = "https://schematic.dnt-dev.sagebase.org/v1/storage/projects"
+  base_url = "https://schematic.dnt-dev.sagebase.org"
 )
 }
 \arguments{
@@ -15,7 +15,7 @@ storage_projects(
 
 \item{input_token}{synapse PAT}
 
-\item{url}{URL to schematic API endpoint}
+\item{base_url}{URL to schematic API endpoint}
 }
 \description{
 Get all storage projects the current user has access to
