@@ -166,12 +166,13 @@ manifest_validate <- function(data_type,
 model_submit <- function(data_type, 
                          asset_view,
                          dataset_id,
+                         json_str,
                          restrict_rules,
-                         file_name,
                          input_token,
                          manifest_record_type = "table",
-                         base_url="https://schematic.dnt-dev.sagebase.org",
-                         schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld") {
+                         base_url = "https://schematic.dnt-dev.sagebase.org",
+                         schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld",
+                         use_schema_label = TRUE) {
   
   # create url
   url <- paste0(base_url, "/v1/model/submit")
@@ -186,20 +187,16 @@ model_submit <- function(data_type,
     `data_type` = data_type,
     `dataset_id` = dataset_id,
     `manifest_record_type` = manifest_record_type,
+    `json_str` = json_str,
     `restrict_rules` = restrict_rules,
     `asset_view` = asset_view,
-    `input_token` = input_token
-  )
-  
-  files = list(
-    `file_name` = httr::upload_file(file_name)
+    `input_token` = input_token,
+    `use_schema_label` = use_schema_label
   )
   
   req <- httr::POST(url = url,
                     httr::add_headers(.headers=headers), 
-                    query = params, 
-                    body = files, 
-                    encode = 'multipart')
+                    query = params)
   
   manifest_id <- httr::content(req)
   manifest_id
