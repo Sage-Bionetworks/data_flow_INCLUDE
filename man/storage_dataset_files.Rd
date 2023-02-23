@@ -10,7 +10,7 @@ storage_dataset_files(
   input_token,
   file_names = list(),
   full_path = FALSE,
-  url = "https://schematic.dnt-dev.sagebase.org/v1/storage/dataset/files"
+  base_url = "https://schematic.dnt-dev.sagebase.org"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ storage_dataset_files(
 
 \item{full_path}{Boolean. If True return the full path as part of this filename; otherwise return just base filename}
 
-\item{url}{URL to schematic API endpoint}
+\item{base_url}{URL to schematic API endpoint}
 }
 \description{
 /storage/dataset/files

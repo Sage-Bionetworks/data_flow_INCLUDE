@@ -46,7 +46,8 @@ mod_dataset_selection_server <- function(id,
                                          storage_project_df,
                                          asset_view,
                                          input_token,
-                                         hidden_datasets = NULL) {
+                                         hidden_datasets = NULL,
+                                         base_url) {
   
   moduleServer( id, function(input, output, session) {
     
@@ -69,7 +70,8 @@ mod_dataset_selection_server <- function(id,
       
       dataset_list <- storage_project_datasets(asset_view = asset_view,
                                                project_id = storage_project_df()$id,
-                                               input_token = input_token)
+                                               input_token = input_token,
+                                               base_url = base_url)
       
       dataset_df <- list_to_dataframe(list = dataset_list,
                                        col_names = c("id", "name"))

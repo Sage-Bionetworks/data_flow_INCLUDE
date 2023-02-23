@@ -8,7 +8,7 @@ manifest_populate(
   data_type,
   title,
   csv_file,
-  url = "https://schematic.dnt-dev.sagebase.org/v1/manifest/populate",
+  base_url = "https://schematic.dnt-dev.sagebase.org/v1/manifest/populate",
   schema_url =
     "https://raw.githubusercontent.com/ncihtan/data-models/main/HTAN.model.jsonld"
 )
@@ -20,7 +20,7 @@ manifest_populate(
 
 \item{csv_file}{Filepath of csv to validate}
 
-\item{url}{URL to schematic API endpoint}
+\item{base_url}{URL to schematic API endpoint}
 
 \item{schema_url}{URL to a schema jsonld}
 }

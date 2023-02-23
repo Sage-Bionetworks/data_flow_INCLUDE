@@ -4,7 +4,7 @@
 \alias{manifest_download_to_df}
 \title{Download a manifest as JSON and parse into a dataframe}
 \usage{
-manifest_download_to_df(asset_view, dataset_id, input_token)
+manifest_download_to_df(asset_view, dataset_id, input_token, base_url)
 }
 \arguments{
 \item{asset_view}{ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)}

@@ -1,3 +1,6 @@
+# oauth client id
 client_id: "ID"
+# oauth secret
 client_secret: "SECRET"
+# app_url
 app_url: http://127.0.0.1:8100
