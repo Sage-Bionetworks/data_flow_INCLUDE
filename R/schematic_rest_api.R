@@ -166,7 +166,7 @@ manifest_validate <- function(data_type,
 model_submit <- function(data_type, 
                          asset_view,
                          dataset_id,
-                         json_str,
+                         file_name,
                          restrict_rules,
                          input_token,
                          manifest_record_type = "table",
@@ -187,16 +187,20 @@ model_submit <- function(data_type,
     `data_type` = data_type,
     `dataset_id` = dataset_id,
     `manifest_record_type` = manifest_record_type,
-    `json_str` = json_str,
     `restrict_rules` = restrict_rules,
     `asset_view` = asset_view,
     `input_token` = input_token,
     `use_schema_label` = use_schema_label
   )
   
+  files = list(
+    `file_name` = httr::upload_file(file_name)
+  )
+  
   req <- httr::POST(url = url,
                     httr::add_headers(.headers=headers), 
-                    query = params)
+                    query = params,
+                    body = files)
   
   manifest_id <- httr::content(req)
   manifest_id
