@@ -295,9 +295,9 @@ app_server <- function( input, output, session ) {
   
   # SUBMIT MODEL TO SYNAPSE
   # make sure to submit using a manifest that has been run through date to string
-  mod_submit_model_server("submit_model_1",
+  mod_submit_model_server(id = "submit_model_1",
                           dfs_manifest = manifest_submit,
-                          data_type = "DataFlow",
+                          data_type = NULL,
                           asset_view = global_config$asset_view,
                           dataset_id = global_config$manifest_dataset_id,
                           manifest_dir = "./manifest",
