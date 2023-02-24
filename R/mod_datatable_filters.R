@@ -68,10 +68,13 @@ mod_datatable_filters_server <- function(id,
     manifest_filtered <- reactive({
       manifest <- manifest()
       
+      # FIXME: For some reason line 75 cause a warning
+      # Problem while computing `..3 = ... | is.na(release_scheduled)`. Input `..3` must be of size 19 or 1, not size 0.
+      # No error seems to be introduced so I will keep this line of code for now
       filtered <- manifest %>%
         dplyr::filter(contributor %in% input$contributor_select,
                       dataset %in% selected_datasets_modified(),
-                      #release_scheduled >= input$release_scheduled_daterange[1] & release_scheduled <= input$release_scheduled_daterange[2] | is.na(release_scheduled),     
+                      release_scheduled >= input$release_scheduled_daterange[1] & release_scheduled <= input$release_scheduled_daterange[2] | is.na(release_scheduled),     
                       data_flow_status %in% input$choose_status_checkbox)
       
       
