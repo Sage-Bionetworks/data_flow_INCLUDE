@@ -71,7 +71,7 @@ mod_datatable_filters_server <- function(id,
       filtered <- manifest %>%
         dplyr::filter(contributor %in% input$contributor_select,
                       dataset %in% selected_datasets_modified(),
-                      release_scheduled > input$release_scheduled_daterange[1] & release_scheduled < input$release_scheduled_daterange[2] || is.na(release_scheduled),     
+                      #release_scheduled >= input$release_scheduled_daterange[1] & release_scheduled <= input$release_scheduled_daterange[2] | is.na(release_scheduled),     
                       data_flow_status %in% input$choose_status_checkbox)
       
       
