@@ -151,14 +151,14 @@ manifest_validate <- function(data_type,
 
 #' schematic rest api to submit metadata
 #' 
-#' @param data_type Type of dataset. Set to None for no validation check.
+#' @param data_type Type of dataset. Set to NULL for no validation check.
 #' @param dataset_id Synapse ID of existing manifest
 #' @param restrict_rules If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.
 #' @param manifest_record_type Manifest storage type. Options: "--", "table" (default), "entity", "both".
-#' @param csv_file Filepath of csv to validate
+#' @param file_name File path of manifest csv
 #' @param input_token Synapse login cookie, PAT, or API key
-#' @param base_url URL to schematic API endpoint
-#' @param schema_url URL to a schema jsonld 
+#' @param base_url Base URL to schematic API endpoint
+#' @param schema_url URL to a schema jsonld
 #' 
 #' @returns TRUE if successful upload or validate errors if not.
 #' @export
@@ -166,12 +166,13 @@ manifest_validate <- function(data_type,
 model_submit <- function(data_type, 
                          asset_view,
                          dataset_id,
-                         restrict_rules,
                          file_name,
+                         restrict_rules,
                          input_token,
                          manifest_record_type = "table",
-                         base_url="https://schematic.dnt-dev.sagebase.org",
-                         schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld") {
+                         base_url = "https://schematic.dnt-dev.sagebase.org",
+                         schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld",
+                         use_schema_label = TRUE) {
   
   # create url
   url <- paste0(base_url, "/v1/model/submit")
@@ -188,7 +189,8 @@ model_submit <- function(data_type,
     `manifest_record_type` = manifest_record_type,
     `restrict_rules` = restrict_rules,
     `asset_view` = asset_view,
-    `input_token` = input_token
+    `input_token` = input_token,
+    `use_schema_label` = use_schema_label
   )
   
   files = list(
@@ -197,9 +199,8 @@ model_submit <- function(data_type,
   
   req <- httr::POST(url = url,
                     httr::add_headers(.headers=headers), 
-                    query = params, 
-                    body = files, 
-                    encode = 'multipart')
+                    query = params,
+                    body = files)
   
   manifest_id <- httr::content(req)
   manifest_id

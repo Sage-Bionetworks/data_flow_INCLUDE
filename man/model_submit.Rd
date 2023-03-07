@@ -8,19 +8,22 @@ model_submit(
   data_type,
   asset_view,
   dataset_id,
-  restrict_rules,
   file_name,
+  restrict_rules,
   input_token,
   manifest_record_type = "table",
   base_url = "https://schematic.dnt-dev.sagebase.org",
   schema_url =
-    "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld"
+    "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld",
+  use_schema_label = TRUE
 )
 }
 \arguments{
-\item{data_type}{Type of dataset. Set to None for no validation check.}
+\item{data_type}{Type of dataset. Set to NULL for no validation check.}
 
 \item{dataset_id}{Synapse ID of existing manifest}
+
+\item{file_name}{File path of manifest csv}
 
 \item{restrict_rules}{If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.}
 
@@ -28,11 +31,9 @@ model_submit(
 
 \item{manifest_record_type}{Manifest storage type. Options: "--", "table" (default), "entity", "both".}
 
-\item{base_url}{URL to schematic API endpoint}
+\item{base_url}{Base URL to schematic API endpoint}
 
 \item{schema_url}{URL to a schema jsonld}
-
-\item{csv_file}{Filepath of csv to validate}
 }
 \value{
 TRUE if successful upload or validate errors if not.
