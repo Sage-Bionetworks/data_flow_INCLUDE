@@ -343,6 +343,7 @@ storage_projects <- function(asset_view,
       ),
       call. = FALSE
     )
+  }
   
   # return a helpful object
   structure(
@@ -352,7 +353,6 @@ storage_projects <- function(asset_view,
     ),
     class = "schematic_api"
   )
-  }
 }
 
 #' /storage/project/manifests
@@ -396,7 +396,7 @@ storage_project_manifests <- function(asset_view,
       ),
       call. = FALSE
     )
-    
+  }
     # return a helpful object
     structure(
       list(
@@ -405,7 +405,6 @@ storage_project_manifests <- function(asset_view,
       ),
       class = "schematic_api"
     )  
-  }
 }
 
 #' /storage/dataset/files
@@ -454,7 +453,8 @@ storage_dataset_files <- function(asset_view,
       ),
       call. = FALSE
     )
-    
+  }
+  
     # return a helpful object
     structure(
       list(
@@ -463,7 +463,6 @@ storage_dataset_files <- function(asset_view,
       ),
       class = "schematic_api"
     )  
-  }  
 }
 
 ## HELPERS  ####################################################################
