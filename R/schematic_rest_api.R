@@ -5,6 +5,10 @@
 # Functions follow best practice convention laid out in httr vingette
 # https://httr.r-lib.org/articles/api-packages.html
 
+# TO DO:
+# - Integrate new functions into code base
+# - Create new tests
+
 ## MANIFEST OPERATIONS #########################################################
 
 #' Download a manifest
@@ -19,7 +23,7 @@
 manifest_download <- function(asset_view,
                               dataset_id,
                               input_token,
-                              base_url="https://schematic.dnt-dev.sagebase.org") {
+                              base_url = "https://schematic-dev.api.sagebionetworks.org") {
   
   # create api url
   url <- paste0(base_url, "/v1/manifest/download")
@@ -90,7 +94,7 @@ model_submit <- function(data_type,
                          file_name,
                          input_token,
                          manifest_record_type = "table",
-                         base_url="https://schematic.dnt-dev.sagebase.org",
+                         base_url = "https://schematic-dev.api.sagebionetworks.org",
                          schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld") {
   
   # create url
@@ -164,7 +168,7 @@ model_submit <- function(data_type,
 storage_project_datasets <- function(asset_view,
                                      project_id,
                                      input_token,
-                                     base_url="https://schematic.dnt-dev.sagebase.org") {
+                                     base_url = "https://schematic-dev.api.sagebionetworks.org") {
   
   # create url
   url <- paste0(base_url, "/v1/storage/project/datasets")
@@ -214,7 +218,7 @@ storage_project_datasets <- function(asset_view,
 
 storage_projects <- function(asset_view,
                              input_token,
-                             base_url="https://schematic.dnt-dev.sagebase.org") {
+                             base_url = "https://schematic-dev.api.sagebionetworks.org") {
   
   # create url
   url <- paste0(base_url, "/v1/storage/projects")
@@ -266,7 +270,7 @@ storage_projects <- function(asset_view,
 storage_project_manifests <- function(asset_view,
                                       project_id,
                                       input_token,
-                                      base_url="https://schematic.dnt-dev.sagebase.org") {
+                                      base_url = "https://schematic-dev.api.sagebionetworks.org") {
   
   # write URL
   url <- paste0(base_url, "/v1/storage/project/manifests")
@@ -322,7 +326,7 @@ storage_dataset_files <- function(asset_view,
                                   input_token,
                                   file_names=list(),
                                   full_path=FALSE, 
-                                  base_url="https://schematic.dnt-dev.sagebase.org") {
+                                  base_url = "https://schematic-dev.api.sagebionetworks.org") {
   
   # create url
   url <- paste0(base_url, "/v1/storage/dataset/files")
