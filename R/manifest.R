@@ -210,3 +210,109 @@ generate_data_flow_manifest_skeleton <- function(storage_project_list,
   
   return(dfs_manifest)
 }
+
+#' Check synapse for updates to data flow status manifest
+#' 
+#' @param asset_view ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)
+#' @param manifest_dataset_id Dataset ID for data flow status manifest to be updated
+#' @param input_token Synapse PAT
+#' @param base_url Base URL of schematic API (Defaults to  AWS version)
+#' 
+#' @export
+
+update_data_flow_manifest <- function(asset_view,
+                                      manifest_dataset_id,
+                                      input_token,
+                                      base_url) {
+  
+  print(paste0("Checking asset view ", asset_view, " for updates"))
+  print(paste0("Getting data flow status manifest"))
+  # get current data flow manifest
+  dfs_manifest <- dataflow::manifest_download_to_df(asset_view = asset_view,
+                                                    dataset_id = manifest_dataset_id,
+                                                    base_url = base_url,
+                                                    input_token = input_token)
+  
+  # check api call
+  if (is.null(dfs_manifest)) {
+    stop(paste0("No data flow status manifest returned for ", asset_view))
+  }
+  
+  
+  # get all manifests for each storage project
+  print("Getting all manifests")
+  synapse_manifests <- dataflow::get_all_manifests(asset_view = asset_view,
+                                                   input_token = input_token,
+                                                   base_url = base_url,
+                                                   verbose = FALSE)
+  
+  print("Comparing data flow status manifest to current manifest list")
+  
+  # compare recent pull of all manifests to data flow manifest
+  missing_datasets_idx <- !synapse_manifests$entityId %in% dfs_manifest$entityId
+  missing_datasets <- synapse_manifests[ missing_datasets_idx,]
+  
+  # if there are missing datasets calculate number of items for each dataset and add in missing information
+  if (nrow(missing_datasets) > 0) {
+    
+    print(paste0(nrow(missing_datasets), " new datasets found. Updating data flow status manifest"))
+    
+    num_items <- calculate_items_per_manifest(get_all_manifests_out = missing_datasets,
+                                              asset_view = asset_view,
+                                              input_token = input_token,
+                                              base_url = base_url)
+    
+    # fill dfs manifest rows for missing datasets
+    # FIXME: Remove hardcoded column names
+    # This function will break if dataflow schema changes
+    # Source column names from schema?
+    missing_datasets$release_scheduled <- rep("Not Applicable", nrow(missing_datasets))
+    missing_datasets$embargo <- rep("Not Applicable", nrow(missing_datasets))
+    missing_datasets$standard_compliance <- rep(FALSE, nrow(missing_datasets))
+    missing_datasets$data_portal <- rep(FALSE, nrow(missing_datasets))
+    missing_datasets$released <- rep(FALSE, nrow(missing_datasets))
+    missing_datasets$num_items <- num_items
+    
+    # remove uuid if present
+    if (any(names(dfs_manifest) == "Uuid")) {
+      uuid_idx <- grep("Uuid", names(dfs_manifest))
+      dfs_manifest <- dfs_manifest[,-uuid_idx]
+    }
+    
+    # tack on missing datasets to end of dfs_status_manifest
+    dfs_manifest <- rbind(dfs_manifest, missing_datasets)
+    
+    # sort dataframe so that contributor is grouped
+    dfs_manifest <- dfs_manifest %>% 
+      dplyr::group_by(contributor) %>% 
+      dplyr::arrange(contributor)
+    
+    # submit to synapse
+    # data_type = NULL until LP can fix model/submit endpoint for large manifests
+    # If no datatype indicated no validation will be done
+    message("submitting manifest to Synapse")
+    
+    # create manifest directory if it doesn't exist yet
+    if (!file.exists("./manifest/")) {
+      dir.create("./manifest/")
+    }
+    
+    # write to csv for submission
+    file_path <- "./manifest/synapse_storage_manifest_dataflow.csv"
+    write.csv(dfs_manifest, file_path, row.names = FALSE)
+    
+    # submit to synapse
+    model_submit(data_type = NULL, 
+                 asset_view = asset_view,
+                 dataset_id = manifest_dataset_id,
+                 file_name = file_path,
+                 restrict_rules = TRUE,
+                 input_token = input_token,
+                 manifest_record_type = "table",
+                 base_url = base_url,
+                 schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld",
+                 use_schema_label = TRUE)
+  } else {
+    print("No updates to manifest required at this time")
+  }
+}
