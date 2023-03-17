@@ -7,6 +7,8 @@ library(dataflow)
 
 # set variables
 base_url <- "https://schematic-dev.api.sagebionetworks.org/"
+asset_view <- Sys.getenv("ASSET_VIEW")
+manifest_dataset_id <- Sys.getenv("MANIFEST_DATASET_ID")
 secrets <- jsonlite::fromJSON(Sys.getenv("SCHEDULED_JOB_SECRETS"))
 input_token <- secrets$pat
 
@@ -18,7 +20,7 @@ tryCatch({
                             base_url = base_url) 
 },
 error=function(e) {
-  message("Update to Fair Demo Data (syn50896957) failed")
+  message(paste0("Update to ", asset_view, " failed"))
   message(e)
 }
 )
