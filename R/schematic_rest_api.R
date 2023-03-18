@@ -171,7 +171,8 @@ model_submit <- function(data_type,
                          input_token,
                          manifest_record_type = "table",
                          base_url="https://schematic.dnt-dev.sagebase.org",
-                         schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld") {
+                         schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld",
+                         use_schema_label = TRUE) {
   
   # create url
   url <- paste0(base_url, "/v1/model/submit")
@@ -188,7 +189,8 @@ model_submit <- function(data_type,
     `manifest_record_type` = manifest_record_type,
     `restrict_rules` = restrict_rules,
     `asset_view` = asset_view,
-    `input_token` = input_token
+    `input_token` = input_token,
+    `use_schema_label` = use_schema_label
   )
   
   files = list(

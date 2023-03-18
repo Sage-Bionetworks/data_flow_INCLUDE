@@ -193,7 +193,7 @@ update_data_flow_manifest <- function(asset_view,
   # if there are missing datasets calculate number of items for each dataset and add in missing information
   if (nrow(missing_datasets) > 0) {
     
-    print(paste0(nrow(missing_datasets), " new datasets found. Updating data flow status manifest"))
+    print(paste0(nrow(missing_datasets), " new dataset(s) found. Updating data flow status manifest"))
     
     num_items <- calculate_items_per_manifest(get_all_manifests_out = missing_datasets,
                                               asset_view = asset_view,
@@ -248,8 +248,7 @@ update_data_flow_manifest <- function(asset_view,
                  input_token = input_token,
                  manifest_record_type = "table",
                  base_url = base_url,
-                 schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld",
-                 use_schema_label = TRUE)
+                 schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld")
   } else {
     print("No updates to manifest required at this time")
   }
