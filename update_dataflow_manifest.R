@@ -14,8 +14,8 @@ input_token <- secrets$pat
 
 # update FAIR demo
 tryCatch({
-  update_data_flow_manifest(asset_view = "syn50896957",
-                            manifest_dataset_id = "syn50900267",
+  update_data_flow_manifest(asset_view = asset_view,
+                            manifest_dataset_id = manifest_dataset_id,
                             input_token = input_token,
                             base_url = base_url) 
 },
