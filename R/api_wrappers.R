@@ -35,9 +35,9 @@ manifest_download_to_df <- function(asset_view,
     return(NULL)
   })
   
-  # if content_df is not NA, modify column names
-  if (!is.null(content_df)) {
-    names(content_df) <- gsub(" ", ".", names(content_df))
+  # FIXME: wonky error handling will be fixed in schematic api function refactor
+  if("status" %in% names(content_df)) {
+    content_df <- NULL
   }
   
   # output df
@@ -131,6 +131,7 @@ calculate_items_per_manifest <- function(get_all_manifests_out,
   
   
   sapply(1:nrow(get_all_manifests_out), function(i) {
+    print(i)
     
     # dataset == "" indicates that there is no manifest
     if (get_all_manifests_out$dataset[i] == "") {
