@@ -15,7 +15,7 @@ RUN R -e "install.packages('httr'); \
 
 # install dcamodules (required for dataflow) and dataflow from github
 RUN R -e "devtools::install_github('Sage-Bionetworks/dcamodules'); \
-  devtools::install_github('Sage-Bionetworks/data_flow', ref = 'pkg-installs')"
+  devtools::install_github('Sage-Bionetworks/data_flow', ref = 'r-pkg', force = TRUE)"
 
 # copy data_flow repo
 COPY . /data_flow/
