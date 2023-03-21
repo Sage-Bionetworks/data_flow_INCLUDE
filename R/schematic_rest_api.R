@@ -77,34 +77,29 @@ manifest_download <- function(asset_view,
 #' @param data_type Type of dataset. Set to None for no validation check.
 #' @param asset_view ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)
 #' @param dataset_id Synapse ID of existing manifest
-#' @param restrict_rules If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.
-#' @param manifest_record_type Manifest storage type. Options: "--", "table" (default), "entity", "both".
 #' @param file_name Filepath of csv to validate
 #' @param input_token Synapse login cookie, PAT, or API key
+#' @param restrict_rules If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.
+#' @param manifest_record_type Manifest storage type. Options: "--", "table" (default), "entity", "both".
 #' @param base_url URL to schematic API endpoint
 #' @param schema_url URL to a schema jsonld 
 #' 
 #' @returns TRUE if successful upload or validate errors if not.
 #' @export
 
-model_submit <- function(data_type, 
+model_submit <- function(data_type = NULL, 
                          asset_view,
                          dataset_id,
-                         restrict_rules,
                          file_name,
                          input_token,
+                         restrict_rules = TRUE,
                          manifest_record_type = "table",
                          base_url = "https://schematic-dev.api.sagebionetworks.org",
-                         schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld") {
+                         schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld",
+                         use_schema_label = TRUE) {
   
   # create url
   url <- paste0(base_url, "/v1/model/submit")
-  
-  # set up headers for httr::get call
-  headers = c(
-    `accept` = 'application/json',
-    `Content-Type` = 'multipart/form-data'
-  )
   
   # set up parameters for httr::get call
   params = list(
@@ -114,7 +109,8 @@ model_submit <- function(data_type,
     `manifest_record_type` = manifest_record_type,
     `restrict_rules` = restrict_rules,
     `asset_view` = asset_view,
-    `input_token` = input_token
+    `input_token` = input_token,
+    `use_schema_label` = use_schema_label
   )
   
   files = list(
@@ -123,22 +119,19 @@ model_submit <- function(data_type,
   
   # POST 
   res <- httr::POST(url = url,
-                    httr::add_headers(.headers=headers), 
                     query = params, 
-                    body = files, 
-                    encode = 'multipart')
+                    body = files)
   
   # parse response for content
   parsed <- httr::content(res)
-
+  
   # if the api call returns an error
   # surface error to user
   if (httr::http_error(res)) {
     stop(
       sprintf(
-        "Schematic API request failed [%s]\n%s", 
-        httr::status_code(res),
-        parsed$detail
+        "Schematic API request failed [%s]", 
+        httr::status_code(res)
       ),
       call. = FALSE
     )
