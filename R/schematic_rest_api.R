@@ -177,7 +177,7 @@ storage_project_datasets <- function(asset_view,
   
   # pull out content from request
   parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
-  
+
   # if the api call returns an error
   # surface error to user
   if (httr::http_error(res)) {
@@ -191,10 +191,14 @@ storage_project_datasets <- function(asset_view,
     )
   }
   
+  # return parsed matrix as dataframe
+  parsed_df <-data.frame(parsed)
+  names(parsed_df) <- c("id", "name")
+  
   # return a helpful object
   structure(
     list(
-      content = parsed,
+      content = parsed_df,
       response = res
     ),
     class = "schematic_api"
