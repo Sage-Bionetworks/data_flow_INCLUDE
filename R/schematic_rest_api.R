@@ -68,7 +68,7 @@ manifest_download <- function(asset_view,
 
 #' schematic rest api to submit metadata
 #' 
-#' @param data_type Type of dataset. Set to None for no validation check.
+#' @param data_type Type of dataset. Set to None for no validation check
 #' @param asset_view ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)
 #' @param dataset_id Synapse ID of existing manifest
 #' @param file_name Filepath of csv to validate
@@ -85,6 +85,7 @@ model_submit <- function(data_type = NULL,
                          asset_view,
                          dataset_id,
                          file_name,
+                         restrict_rules,
                          input_token,
                          restrict_rules = TRUE,
                          manifest_record_type = "table",

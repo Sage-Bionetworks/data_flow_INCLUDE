@@ -9,6 +9,7 @@ model_submit(
   asset_view,
   dataset_id,
   file_name,
+  restrict_rules,
   input_token,
   restrict_rules = TRUE,
   manifest_record_type = "table",
@@ -19,7 +20,7 @@ model_submit(
 )
 }
 \arguments{
-\item{data_type}{Type of dataset. Set to None for no validation check.}
+\item{data_type}{Type of dataset. Set to NULL for no validation check.}
 
 \item{asset_view}{ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)}
 
@@ -33,7 +34,7 @@ model_submit(
 
 \item{manifest_record_type}{Manifest storage type. Options: "--", "table" (default), "entity", "both".}
 
-\item{base_url}{URL to schematic API endpoint}
+\item{base_url}{Base URL to schematic API endpoint}
 
 \item{schema_url}{URL to a schema jsonld}
 }
