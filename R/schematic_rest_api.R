@@ -168,7 +168,7 @@ storage_project_datasets <- function(asset_view,
   res <- httr::GET(url, query = params)
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text")))
 
   # if the api call returns an error
   # surface error to user
@@ -222,7 +222,7 @@ storage_projects <- function(asset_view,
   res <- httr::GET(url, query = params)
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text")))
   
   # if the api call returns an error
   # surface error to user
@@ -279,7 +279,7 @@ storage_project_manifests <- function(asset_view,
   res <- httr::GET(url = url, query = params)
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text")))
   
   # if the api call returns an error
   # surface error to user
