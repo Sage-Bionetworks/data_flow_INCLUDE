@@ -245,10 +245,14 @@ storage_projects <- function(asset_view,
     )
   }
   
+  # return parsed matrix as dataframe
+  parsed_df <-data.frame(parsed)
+  names(parsed_df) <- c("id", "name")
+  
   # return a helpful object
   structure(
     list(
-      content = parsed,
+      content = parsed_df,
       response = res
     ),
     class = "schematic_api"
