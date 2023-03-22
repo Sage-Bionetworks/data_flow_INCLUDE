@@ -5,12 +5,6 @@
 # Functions follow best practice convention laid out in httr vingette
 # https://httr.r-lib.org/articles/api-packages.html
 
-# TO DO:
-# - Integrate new functions into code base
-# - Create new tests
-
-## MANIFEST OPERATIONS #########################################################
-
 #' Download a manifest
 #'
 #' @param asset_view ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)
@@ -146,8 +140,6 @@ model_submit <- function(data_type = NULL,
     class = "schematic_api"
   )
 }
-
-## SYNAPSE STORAGE  ############################################################
 
 #' Gets all datasets in folder under a given storage project that the current user has access to.
 #' 
