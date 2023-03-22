@@ -223,15 +223,15 @@ app_server <- function( input, output, session ) {
   
   # STORAGE PROJECT SELECTION
   
-  select_storage_project <- mod_select_storage_project_server(id = "select_storage_project_1",
-                                                              asset_view = global_config$asset_view,
-                                                              input_token = access_token,
-                                                              base_url = global_config$api_base_url)
+  select_storage_project_out <- mod_select_storage_project_server(id = "select_storage_project_1",
+                                                                  asset_view = global_config$asset_view,
+                                                                  input_token = access_token,
+                                                                  base_url = global_config$api_base_url)
 
   # DATASET SELECTION
   
   dataset_selection <- mod_dataset_selection_server(id = "dataset_selection_1",
-                                                    storage_project_df = select_storage_project,
+                                                    storage_project_df = select_storage_project_out,
                                                     asset_view = global_config$asset_view,
                                                     input_token = access_token,
                                                     base_url = global_config$api_base_url)
