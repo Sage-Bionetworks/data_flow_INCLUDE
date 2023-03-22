@@ -2,17 +2,12 @@
 % Please edit documentation in R/api_wrappers.R
 \name{calculate_items_per_manifest}
 \alias{calculate_items_per_manifest}
-\title{Call `manifest_download` Schematic endpoint for a given set of manifests and count the number of items in each manifest.}
+\title{Call `calculate_items_per_manifest` calculate the number of items per manifest synID in a given dataframe}
 \usage{
-calculate_items_per_manifest(
-  get_all_manifests_out,
-  asset_view,
-  input_token,
-  base_url
-)
+calculate_items_per_manifest(df, asset_view, input_token, base_url)
 }
 \arguments{
-\item{get_all_manifests_out}{output from `get_all_manifests()`}
+\item{df}{A dataframe with `entityId` and `dataset` columns from data flow status manifest}
 
 \item{asset_view}{ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)}
 
@@ -21,5 +16,5 @@ calculate_items_per_manifest(
 \item{base_url}{Base URL of schematic API}
 }
 \description{
-Call `manifest_download` Schematic endpoint for a given set of manifests and count the number of items in each manifest.
+Call `calculate_items_per_manifest` calculate the number of items per manifest synID in a given dataframe
 }
