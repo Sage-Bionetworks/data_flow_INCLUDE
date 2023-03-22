@@ -37,18 +37,9 @@ mod_select_storage_project_server <- function(id, asset_view, input_token, base_
     
     # API CALL : GET STORAGE PROJECTS #######################################################################
 
-    storage_project_list <- storage_projects(asset_view = asset_view,
-                                             input_token = input_token,
-                                             base_url)
-
-    # name list (required for list_to_dataframe)
-
-    # convert to dataframe
-    storage_project_df <- list_to_dataframe(list = storage_project_list,
-                                            col_names = c("id", "name"))
-  
-    # reorder and add to reactive values
-    storage_project_df <- dplyr::select(storage_project_df, name, id)
+    storage_project_obj <- storage_projects(asset_view = asset_view,
+                                            input_token = input_token,
+                                            base_url = base_url)
     
     # DROP DOWN LISTING STORAGE PROJECTS ####################################################################
     
@@ -57,7 +48,7 @@ mod_select_storage_project_server <- function(id, asset_view, input_token, base_
       
        selectInput(inputId = ns("selected_project"),
                    label = NULL,
-                   choices = storage_project_df$name,
+                   choices = storage_project_obj$content[,"name"],
                    selectize = FALSE) # must be false or for some reason cannot reference `input$selected_project`
       
     })
@@ -68,7 +59,8 @@ mod_select_storage_project_server <- function(id, asset_view, input_token, base_
       
       req(input$selected_project)
       
-      storage_project_df[ match(input$selected_project, storage_project_df$name), ]})
+      storage_project_obj$content[ match(input$selected_project, storage_project_obj$content[,"name"]), ]
+      })
     
     # RETURN SELECTED PROJECT  ##############################################################
     

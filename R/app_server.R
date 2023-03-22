@@ -41,12 +41,12 @@ app_server <- function( input, output, session ) {
   dash_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
   
   # download data flow status manifest
-  synapse_manifest <- manifest_download_to_df(asset_view = global_config$asset_view,
-                                              dataset_id = global_config$manifest_dataset_id,
-                                              input_token = access_token,
-                                              base_url = global_config$api_base_url)
+  synapse_manifest <- manifest_download(asset_view = global_config$asset_view,
+                                        dataset_id = global_config$manifest_dataset_id,
+                                        input_token = access_token,
+                                        base_url = global_config$api_base_url)
   
-  manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest,
+  manifest_dfa <- prep_manifest_dfa(manifest = synapse_manifest$content,
                                     config = dash_config)
   
   # PREPARE MANIFEST FOR DASH ###########################################################
