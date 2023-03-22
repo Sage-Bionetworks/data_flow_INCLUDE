@@ -318,68 +318,60 @@ storage_project_manifests <- function(asset_view,
   )  
 }
 
-#' /storage/dataset/files
-#'
-#' @param asset_view synapse ID of master file view.
-#' @param dataset_id synapse ID of a storage dataset.
-#' @param input_token synapse PAT
-#' @param file_names a list of files with particular names (i.e. Sample_A.txt). If you leave it empty, it will return all dataset files under the dataset ID.
-#' @param full_path Boolean. If True return the full path as part of this filename; otherwise return just base filename
-#' @param base_url URL to schematic API endpoint
-#' 
-#' @export
-
-storage_dataset_files <- function(asset_view,
-                                  dataset_id,
-                                  input_token,
-                                  file_names=list(),
-                                  full_path=FALSE, 
-                                  base_url = "https://schematic-dev.api.sagebionetworks.org") {
-  
-  # create url
-  url <- paste0(base_url, "/v1/storage/dataset/files")
-  
-  # set up parameters for httr::get call
-  params <- list(
-    asset_view = asset_view,
-    dataset_id = dataset_id,
-    file_names = file_names,
-    full_path = full_path,
-    input_token = input_token)
-  
-  # GET
-  res <- httr::GET(url, query = params)
-
-  # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
-  
-  # if the api call returns an error
-  # surface error to user
-  if (httr::http_error(res)) {
-    stop(
-      sprintf(
-        "Schematic API request failed [%s]\n%s", 
-        httr::status_code(res),
-        parsed$detail
-      ),
-      call. = FALSE
-    )
-  }
-  
-    # return a helpful object
-    structure(
-      list(
-        content = parsed,
-        response = res
-      ),
-      class = "schematic_api"
-    )  
-}
-
-## HELPERS  ####################################################################
 
 # print method for schematic_api class of functions
 print.schematic_api <- function(x, ...) {
   str(x$content)
   invisible(x)
 }
+
+## ARCHIVE  ####################################################################
+# 
+# THIS FUNCTION IS UNTESTED AND NOT USED ANYMORE
+#
+# storage_dataset_files <- function(asset_view,
+#                                   dataset_id,
+#                                   input_token,
+#                                   file_names=list(),
+#                                   full_path=FALSE, 
+#                                   base_url = "https://schematic-dev.api.sagebionetworks.org") {
+#   
+#   # create url
+#   url <- paste0(base_url, "/v1/storage/dataset/files")
+#   
+#   # set up parameters for httr::get call
+#   params <- list(
+#     asset_view = asset_view,
+#     dataset_id = dataset_id,
+#     file_names = file_names,
+#     full_path = full_path,
+#     input_token = input_token)
+#   
+#   # GET
+#   res <- httr::GET(url, query = params)
+#   
+#   # pull out content from request
+#   parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+#   
+#   # if the api call returns an error
+#   # surface error to user
+#   if (httr::http_error(res)) {
+#     stop(
+#       sprintf(
+#         "Schematic API request failed [%s]\n%s", 
+#         httr::status_code(res),
+#         parsed$detail
+#       ),
+#       call. = FALSE
+#     )
+#   }
+#   
+#   # return a helpful object
+#   structure(
+#     list(
+#       content = parsed,
+#       response = res
+#     ),
+#     class = "schematic_api"
+#   )  
+# }
