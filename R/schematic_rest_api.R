@@ -246,7 +246,7 @@ storage_projects <- function(asset_view,
   }
   
   # return parsed matrix as dataframe
-  parsed_df <-data.frame(parsed)
+  parsed_df <- data.frame(parsed)
   names(parsed_df) <- c("id", "name")
   
   # return a helpful object
@@ -301,14 +301,21 @@ storage_project_manifests <- function(asset_view,
       call. = FALSE
     )
   }
-    # return a helpful object
-    structure(
-      list(
-        content = parsed,
-        response = res
-      ),
-      class = "schematic_api"
-    )  
+  
+  # return parsed matrix as dataframe
+  parsed_df <- data.frame(parsed)
+  names(parsed_df) <- c("dataset_id", "manifest_id", "data_type", "folder_name", "file_name")
+  # drop redundant data type column
+  parsed_df <- parsed_df[,-6]
+  
+  # return a helpful object
+  structure(
+    list(
+      content = parsed_df,
+      response = res
+    ),
+    class = "schematic_api"
+  )  
 }
 
 #' /storage/dataset/files
