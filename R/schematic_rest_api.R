@@ -85,7 +85,6 @@ model_submit <- function(data_type = NULL,
                          asset_view,
                          dataset_id,
                          file_name,
-                         restrict_rules,
                          input_token,
                          restrict_rules = TRUE,
                          manifest_record_type = "table",
@@ -169,7 +168,7 @@ storage_project_datasets <- function(asset_view,
   res <- httr::GET(url, query = params)
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text")))
 
   # if the api call returns an error
   # surface error to user
@@ -223,7 +222,7 @@ storage_projects <- function(asset_view,
   res <- httr::GET(url, query = params)
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text")))
   
   # if the api call returns an error
   # surface error to user
@@ -280,7 +279,7 @@ storage_project_manifests <- function(asset_view,
   res <- httr::GET(url = url, query = params)
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text")))
   
   # if the api call returns an error
   # surface error to user
@@ -297,9 +296,13 @@ storage_project_manifests <- function(asset_view,
   
   # return parsed matrix as dataframe
   parsed_df <- data.frame(parsed)
-  names(parsed_df) <- c("dataset_id", "manifest_id", "data_type", "folder_name", "file_name")
-  # drop redundant data type column
-  parsed_df <- parsed_df[,-6]
+  
+  # if dataframe has content, name columns
+  if (nrow(parsed_df) > 0) {
+    names(parsed_df) <- c("dataset_id", "manifest_id", "data_type", "folder_name", "file_name")
+    # drop redundant data type column
+    parsed_df <- parsed_df[,-6]
+  }
   
   # return a helpful object
   structure(
