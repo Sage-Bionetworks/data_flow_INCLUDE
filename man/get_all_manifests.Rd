@@ -2,7 +2,7 @@
 % Please edit documentation in R/api_wrappers.R
 \name{get_all_manifests}
 \alias{get_all_manifests}
-\title{Call `storage/project/manifests` Schematic endpoint for a given list of storage projects (output from `storage/projects`) and output information as a dataframe}
+\title{Call `storage/project/manifests` Schematic endpoint for a given asset_view}
 \usage{
 get_all_manifests(
   asset_view,
@@ -21,5 +21,5 @@ get_all_manifests(
 \item{verbose}{T/F for console messages}
 }
 \description{
-Call `storage/project/manifests` Schematic endpoint for a given list of storage projects (output from `storage/projects`) and output information as a dataframe
+Call `storage/project/manifests` Schematic endpoint for a given asset_view
 }
