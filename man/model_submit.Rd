@@ -5,29 +5,32 @@
 \title{schematic rest api to submit metadata}
 \usage{
 model_submit(
-  data_type,
+  data_type = NULL,
   asset_view,
   dataset_id,
   file_name,
   restrict_rules,
   input_token,
+  restrict_rules = TRUE,
   manifest_record_type = "table",
-  base_url = "https://schematic.dnt-dev.sagebase.org",
+  base_url = "https://schematic-dev.api.sagebionetworks.org",
   schema_url =
-    "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/dev/inst/data_flow_component.jsonld",
+    "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld",
   use_schema_label = TRUE
 )
 }
 \arguments{
 \item{data_type}{Type of dataset. Set to NULL for no validation check.}
 
+\item{asset_view}{ID of view listing all project data assets. For example, for Synapse this would be the Synapse ID of the fileview listing all data assets for a given project.(i.e. master_fileview in config.yml)}
+
 \item{dataset_id}{Synapse ID of existing manifest}
 
-\item{file_name}{File path of manifest csv}
-
-\item{restrict_rules}{If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.}
+\item{file_name}{Filepath of csv to validate}
 
 \item{input_token}{Synapse login cookie, PAT, or API key}
+
+\item{restrict_rules}{If True, validation suite will only run with in-house validation rule. If False, the Great Expectations suite will be utilized and all rules will be available.}
 
 \item{manifest_record_type}{Manifest storage type. Options: "--", "table" (default), "entity", "both".}
 
