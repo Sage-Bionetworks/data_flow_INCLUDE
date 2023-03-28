@@ -41,7 +41,7 @@ manifest_download <- function(asset_view,
   # }
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text"))) 
   
   # if the api call returns an error
   # surface error to user
