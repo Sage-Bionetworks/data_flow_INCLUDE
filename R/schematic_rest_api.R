@@ -87,7 +87,7 @@ model_submit <- function(data_type = NULL,
                          file_name,
                          input_token,
                          restrict_rules = TRUE,
-                         manifest_record_type = "table",
+                         manifest_record_type = "table_and_file",
                          base_url = "https://schematic-dev.api.sagebionetworks.org",
                          schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld",
                          use_schema_label = TRUE) {

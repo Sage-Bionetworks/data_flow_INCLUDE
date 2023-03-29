@@ -49,7 +49,7 @@ test_that("model_submit successfully returns a schematic_api object", {
                         file_name = testing_manifest_path,
                         input_token = input_token,
                         restrict_rules = TRUE,
-                        manifest_record_type = "table",
+                        manifest_record_type = "table_and_file",
                         base_url = base_url,
                         schema_url = schema_url,
                         use_schema_label = TRUE),

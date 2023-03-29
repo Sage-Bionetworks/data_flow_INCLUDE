@@ -265,7 +265,7 @@ update_data_flow_manifest <- function(asset_view,
                  file_name = file_path,
                  restrict_rules = TRUE,
                  input_token = input_token,
-                 manifest_record_type = "table",
+                 manifest_record_type = "table_and_file",
                  base_url = base_url,
                  schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld")
   } else {
