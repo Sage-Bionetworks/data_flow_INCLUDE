@@ -8,7 +8,7 @@ storage_project_manifests(
   asset_view,
   project_id,
   input_token,
-  base_url = "https://schematic.dnt-dev.sagebase.org"
+  base_url = "https://schematic-dev.api.sagebionetworks.org"
 )
 }
 \arguments{

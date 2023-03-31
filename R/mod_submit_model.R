@@ -31,7 +31,10 @@ mod_submit_model_server <- function(id,
   moduleServer( id, function(input, output, session) {
     ns <- session$ns
     
-    # make sure that manifest folder exists
+    # FIXME: Stop writing csv, use json instead
+    # Blocked due to schematic api limitations
+    
+    # create manifest directory if it doesn't exist yet
     if (!file.exists(manifest_dir)) {
       dir.create(manifest_dir)
     }
@@ -39,28 +42,26 @@ mod_submit_model_server <- function(id,
     # on button click submit model to synapse
     observeEvent(input$submit, {
       
-      waiter::waiter_show(html = div(
-        style="color:#424874;",
-        waiter::spin_3(),
-        h4("Submitting updated manifest to Synapse...")))
-      
-      # write manifest table for upload
+      # write manifest csv
       path <- file.path(manifest_dir, "synapse_storage_manifest_dataflow.csv")
-      
       write.table(dfs_manifest(),
                   path,
                   sep = ",",
                   row.names = FALSE)
       
+      waiter::waiter_show(html = div(
+        style="color:#424874;",
+        waiter::spin_3(),
+        h4("Submitting updated manifest to Synapse...")))
+      
       # submit model to synapse
       model_submit(data_type = data_type,
                    asset_view = asset_view,
                    dataset_id = dataset_id,
-                   restrict_rules = TRUE,
                    file_name = path,
+                   restrict_rules = TRUE,
                    input_token = input_token,
                    manifest_record_type = "table",
-                   url = "https://schematic.dnt-dev.sagebase.org/v1/model/submit",
                    schema_url = schema_url,
                    base_url = base_url)
       
