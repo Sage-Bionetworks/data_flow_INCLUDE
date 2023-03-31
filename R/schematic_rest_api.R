@@ -41,7 +41,7 @@ manifest_download <- function(asset_view,
   # }
   
   # pull out content from request
-  parsed <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  parsed <- suppressMessages(jsonlite::fromJSON(httr::content(res, as = "text"))) 
   
   # if the api call returns an error
   # surface error to user
@@ -87,7 +87,7 @@ model_submit <- function(data_type = NULL,
                          file_name,
                          input_token,
                          restrict_rules = TRUE,
-                         manifest_record_type = "table",
+                         manifest_record_type = "table_and_file",
                          base_url = "https://schematic-dev.api.sagebionetworks.org",
                          schema_url="https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld",
                          use_schema_label = TRUE) {

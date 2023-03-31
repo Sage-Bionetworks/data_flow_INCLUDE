@@ -166,39 +166,58 @@ update_data_flow_manifest <- function(asset_view,
   print(paste0("Checking asset view ", asset_view, " for updates"))
   print(paste0("Getting data flow status manifest"))
   # get current data flow manifest
-  dfs_manifest <- dataflow::manifest_download_to_df(asset_view = asset_view,
-                                                    dataset_id = manifest_dataset_id,
-                                                    base_url = base_url,
-                                                    input_token = input_token)
-  
-  # check api call
-  if (is.null(dfs_manifest)) {
-    stop(paste0("No data flow status manifest returned for ", asset_view))
-  }
-  
+  dfs_manifest <- tryCatch(
+    {
+      manifest_download(asset_view = asset_view,
+                        dataset_id = manifest_dataset_id,
+                        base_url = base_url,
+                        input_token = input_token)
+    },
+    error = function(e) {
+      message("manifest_download failed")
+      message(e)
+    }
+  )
   
   # get all manifests for each storage project
   print("Getting all manifests")
-  synapse_manifests <- dataflow::get_all_manifests(asset_view = asset_view,
-                                                   input_token = input_token,
-                                                   base_url = base_url,
-                                                   verbose = FALSE)
+  synapse_manifests <- tryCatch(
+    {
+      get_all_manifests(asset_view = asset_view,
+                        input_token = input_token,
+                        base_url = base_url,
+                        verbose = FALSE)
+    },
+    error = function(e) {
+      message("get_all_manifests failed")
+      message(e)
+    }
+  )
   
   print("Comparing data flow status manifest to current manifest list")
   
   # compare recent pull of all manifests to data flow manifest
-  missing_datasets_idx <- !synapse_manifests$entityId %in% dfs_manifest$entityId
-  missing_datasets <- synapse_manifests[ missing_datasets_idx,]
+  missing_datasets_idx <- !synapse_manifests$entityId %in% dfs_manifest$content$entityId
+  missing_datasets <- synapse_manifests[missing_datasets_idx,]
   
   # if there are missing datasets calculate number of items for each dataset and add in missing information
   if (nrow(missing_datasets) > 0) {
     
-    print(paste0(nrow(missing_datasets), " new datasets found. Updating data flow status manifest"))
+    print(paste0(nrow(missing_datasets), " new dataset(s) found. Updating data flow status manifest"))
     
-    num_items <- calculate_items_per_manifest(get_all_manifests_out = missing_datasets,
-                                              asset_view = asset_view,
-                                              input_token = input_token,
-                                              base_url = base_url)
+    # calculate number of items in each manifest
+    num_items <- tryCatch(
+      {
+        calculate_items_per_manifest(df = missing_datasets,
+                                     asset_view = asset_view,
+                                     input_token = input_token,
+                                     base_url = base_url)
+      },
+      error = function(e) {
+        message("get_all_manifests failed")
+        message(e)
+      }
+    )
     
     # fill dfs manifest rows for missing datasets
     # FIXME: Remove hardcoded column names
@@ -212,16 +231,16 @@ update_data_flow_manifest <- function(asset_view,
     missing_datasets$num_items <- num_items
     
     # remove uuid if present
-    if (any(names(dfs_manifest) == "Uuid")) {
-      uuid_idx <- grep("Uuid", names(dfs_manifest))
-      dfs_manifest <- dfs_manifest[,-uuid_idx]
+    if (any(names(dfs_manifest$content) == "Uuid")) {
+      uuid_idx <- grep("Uuid", names(dfs_manifest$content))
+      dfs_manifest$content <- dfs_manifest$content[,-uuid_idx]
     }
     
     # tack on missing datasets to end of dfs_status_manifest
-    dfs_manifest <- rbind(dfs_manifest, missing_datasets)
+    updated_dfs_manifest <- rbind(dfs_manifest$content, missing_datasets)
     
     # sort dataframe so that contributor is grouped
-    dfs_manifest <- dfs_manifest %>% 
+    updated_dfs_manifest <- updated_dfs_manifest %>% 
       dplyr::group_by(contributor) %>% 
       dplyr::arrange(contributor)
     
@@ -237,7 +256,7 @@ update_data_flow_manifest <- function(asset_view,
     
     # write to csv for submission
     file_path <- "./manifest/synapse_storage_manifest_dataflow.csv"
-    write.csv(dfs_manifest, file_path, row.names = FALSE)
+    write.csv(updated_dfs_manifest, file_path, row.names = FALSE)
     
     # submit to synapse
     model_submit(data_type = NULL, 
@@ -246,10 +265,9 @@ update_data_flow_manifest <- function(asset_view,
                  file_name = file_path,
                  restrict_rules = TRUE,
                  input_token = input_token,
-                 manifest_record_type = "table",
+                 manifest_record_type = "table_and_file",
                  base_url = base_url,
-                 schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld",
-                 use_schema_label = TRUE)
+                 schema_url = "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld")
   } else {
     print("No updates to manifest required at this time")
   }

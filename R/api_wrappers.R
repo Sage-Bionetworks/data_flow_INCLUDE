@@ -74,10 +74,9 @@ calculate_items_per_manifest <- function(df,
                                          asset_view,
                                          input_token,
                                          base_url) {
-  
-  
+
   sapply(1:nrow(df), function(i) {
-    
+
     # dataset == "" indicates that there is no manifest
     if (df$dataset[i] == "") {
       
