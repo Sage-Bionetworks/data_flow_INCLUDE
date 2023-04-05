@@ -4,6 +4,7 @@
 name: shiny-deploy
 
 on:
+  # on push to branches labeled main and dev* or commits tagged as VYY.MM.n deploy
   push:
     branches:
       - main
@@ -30,37 +31,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y pip python3.8-venv libcurl4-openssl-dev libpng-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libtiff-dev libxml2-dev
-
+        # this action checks out the $GITHUB_WORKSPACE repository so that the workflow can access it
       - uses: actions/checkout@v3
-
+        # this action sets up pandoc
       - uses: r-lib/actions/setup-pandoc@v2
-
-      - name: Create and Activate Python Virtual Environment
-        shell: bash
-        run: |
-          python3 -m venv .venv
-          chmod 755 .venv/bin/activate
-          source .venv/bin/activate
-      
+        # this action activates renv
       - uses: r-lib/actions/setup-renv@v2
-
+        # Write synapse config (not sure if I even need this??)
       - name: Set Configurations
         shell: bash
         run: |
-          # write out configuration files using github secrets
           echo "${{ secrets.SCHEMATIC_SYNAPSE_CONFIG }}" > .synapseConfig
-          echo "${{ secrets.SCHEMATIC_SERVICE_ACCT_CREDS }}" > schematic_service_account_creds.json
-          echo "${{ secrets.SCHEMATIC_CREDS_PATH }}" > credentials.json
-          echo "${{ secrets.SCHEMATIC_TOKEN_PICKLE }}" | base64 -d > token.pickle
-  
-      - name: zip virtual env
-        shell: bash
-        # ShinyApps has a limit of 7000 files, far exceeded by the many Python dependencies
-        # that this app' has.  As a workaround we zip the virtual environment and later
-        # unzip it in 'global.R'
-        run: |
-          zip -rm .venv.zip .venv
-
+        # deploy app using rsconnect
       - name: Authorize and deploy app
         run: |
           install.packages("rsconnect")
@@ -96,7 +78,17 @@ jobs:
              writeLines(config, configFileConn),
              finally=close(configFileConn)
           )
- 
+          # FIXME ADD size parameter
           rsconnect::setAccountInfo(rsConnectUser, rsConnectToken, rsConnectSecret)
-          rsconnect::deployApp(appName = appName)
+          
+          # Get app names. If app exists, configure then deploy. Otherwise
+          # deploy then configure.
+          apps <- rsconnect::applications()$name
+          if (appName %in% apps) {
+            rsconnect::configureApp(appName = appName, size = "xxxlarge", logLevel = "verbose")
+            rsconnect::deployApp(appName = appName)
+          } else {
+            rsconnect::deployApp(appName = appName)
+            rsconnect::configureApp(appName = appName, size = "xxxlarge", logLevel = "verbose")
+          }
         shell: Rscript {0}
