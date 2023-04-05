@@ -8,9 +8,7 @@ manifest_download(
   asset_view,
   dataset_id,
   input_token,
-  as_json,
-  new_manifest_name = NULL,
-  base_url = "https://schematic.dnt-dev.sagebase.org"
+  base_url = "https://schematic-dev.api.sagebionetworks.org"
 )
 }
 \arguments{
@@ -19,10 +17,6 @@ manifest_download(
 \item{dataset_id}{Synapse ID of existing manifest}
 
 \item{input_token}{Synapse login cookie, PAT, or API key.}
-
-\item{as_json}{Synapse login cookie, PAT, or API key.}
-
-\item{new_manifest_name}{Manifest name}
 
 \item{base_url}{URL to schematic API endpoint}
 }

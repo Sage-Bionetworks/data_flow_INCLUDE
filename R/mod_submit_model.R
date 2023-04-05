@@ -31,6 +31,9 @@ mod_submit_model_server <- function(id,
   moduleServer( id, function(input, output, session) {
     ns <- session$ns
     
+    # FIXME: Stop writing csv, use json instead
+    # Blocked due to schematic api limitations
+    
     # create manifest directory if it doesn't exist yet
     if (!file.exists(manifest_dir)) {
       dir.create(manifest_dir)
@@ -58,7 +61,7 @@ mod_submit_model_server <- function(id,
                    file_name = path,
                    restrict_rules = TRUE,
                    input_token = input_token,
-                   manifest_record_type = "table",
+                   manifest_record_type = "table_and_file",
                    schema_url = schema_url,
                    base_url = base_url)
       

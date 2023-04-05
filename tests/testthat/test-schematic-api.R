@@ -2,80 +2,69 @@
 # (https://github.com/Sage-Bionetworks/data_curator/blob/schematic-rest-api/tests/testthat/test_schematic_rest_api.R)
 
 # VARIABLES #############################################################################
-# schematic-main/TestDFA
-asset_view <- "syn23643253"
-storage_project_id <- "syn23643250"
-dataset_id <- "syn41850334"
+# FAIR DEMO DATA PROJECT A
+asset_view <- "syn50896957"
+project_id <- "syn50896931"
+dataset_id <- "syn51219090"
 input_token <- Sys.getenv("SYNAPSE_PAT")
-schema_url <- "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/43fe7b8d1b649ff9debc5501ef62b3cf108f3eec/inst/data_flow_component.jsonld"
+base_url <- Sys.getenv("SCHEMATIC_BASE_URL_AWS")
 testing_manifest_path <- "../../inst/testing/synapse_storage_manifest_dataflow.csv"
+schema_url <- "https://raw.githubusercontent.com/Sage-Bionetworks/data_flow/main/inst/data_flow_component.jsonld"
 
 # TEST API ##############################################################################
 
-test_that("storage_projects returns expected projects", {
-  sp <- storage_projects(asset_view = asset_view, # schematic-main all datasets
-                         input_token = input_token)
+test_that("storage_projects successfully returns a schematic_api object", {
+  sp <- try(storage_projects(asset_view = asset_view,
+                             input_token = input_token),
+            silent = FALSE)
   
-  # if api call to storage_project is successful the storage project `schematic - main` should be present
-  schematic_main_present <- tryCatch({any(grepl("schematic - main", purrr::map_chr(sp, 2)))},
-                                     error = function(e) {
-                                       return(FALSE)
-                                     })
-  
-  expect_true(schematic_main_present)
+  expect_true(class(sp) == "schematic_api")
 })
 
-test_that("storage_dataset_files returns files", {
-  sdf <- storage_dataset_files(asset_view = asset_view,
-                               dataset_id = storage_project_id,
-                               input_token = input_token)
+test_that("storage_project_datasets successfully returns a schematic_api object", {
+  spd <- try(storage_project_datasets(asset_view = asset_view,
+                                      project_id = project_id,
+                                      input_token = input_token,
+                                      base_url = base_url),
+             silent = FALSE)
   
-  # if api call to storage_dataset_files is successful there will be files present
-  files_returned <- tryCatch({length(purrr::map_chr(sdf, 2)) > 0},
-                             error = function(e) {
-                               return(FALSE)
-                             })
-  
-  expect_true(files_returned)
+  expect_true(class(spd) == "schematic_api")
 })
 
-test_that("manifest_download returns expected dataframe from JSON", {
-  md <- manifest_download(input_token = input_token,
-                          asset_view = asset_view,
-                          dataset_id = dataset_id,
-                          as_json = TRUE)
+test_that("manifest_download successfully returns a schematic_api object", {
+  md <- try(manifest_download(input_token = input_token,
+                              asset_view = asset_view,
+                              dataset_id = dataset_id,
+                              base_url = base_url),
+            silent = FALSE)
   
-  md_df <- try(jsonlite::fromJSON(md), silent = TRUE)
+  expect_true(class(md) == "schematic_api")
   
-  expect_true(is.data.frame(md_df))
 })
 
-#FIXME: Model submit relies on schematic config file. If DFA is set to look at HTAN
-#       schematic config must have fileview set to look at HTAN for submission. Until
-#       this issue is resolved cannot test
-
-# test_that("model_submit successfully uploads DataFlow manifest to synapse", {
-#   skip_it()
-#   submit <- model_submit(data_type = "DataFlow", 
-#                          dataset_id = dataset_id,
-#                          input_token = input_token, 
-#                          csv_file = testing_manifest_path,
-#                          restrict_rules = TRUE,
-#                          schema_url = schema_url)
-#   
-#   # check that testing manifest synid is returned (indicates that submission completed)
-#   is_synid <- grepl(manifest_id, submit)
-#   
-#   expect_true(is_synid)
-# })
-
-
-# TEST API WRAPPER ######################################################################
-
-test_that("manifest_download_to_df returns a dataframe with expected columns", {
-  mdf <- manifest_download_to_df(input_token = input_token,
-                                 asset_view = asset_view,
-                                 dataset_id = dataset_id)
+test_that("model_submit successfully returns a schematic_api object", {
+  s <- try(model_submit(data_type = NULL, 
+                        asset_view = asset_view,
+                        dataset_id = dataset_id,
+                        file_name = testing_manifest_path,
+                        input_token = input_token,
+                        restrict_rules = TRUE,
+                        manifest_record_type = "table_and_file",
+                        base_url = base_url,
+                        schema_url = schema_url,
+                        use_schema_label = TRUE),
+           silent = FALSE)
   
-  expect_true(is.data.frame(mdf))
+  expect_true(class(s) == "schematic_api")
+})
+
+test_that("storage_project_manifests successfully returns a schematic_api object", {
+  spm <- try(storage_project_manifests(asset_view,
+                                      project_id,
+                                      input_token,
+                                      base_url),
+            silent = FALSE)
+  
+  expect_true(class(spm) == "schematic_api")
+  
 })
