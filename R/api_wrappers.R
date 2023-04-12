@@ -93,6 +93,7 @@ calculate_items_per_manifest <- function(df,
                             base_url = base_url)
         },
         error=function(e) {
+          message(e)
           return(NULL)
         }
       )
