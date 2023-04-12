@@ -377,8 +377,6 @@ update_manifest_remove_datasets <- function(dataflow_manifest,
 #' @param recalc_num_items TRUE/FALSE if there is an item to be updated, should the manifest 
 #' @param input_token Synapse PAT
 #' @param base_url Base URL of schematic API (Defaults to  AWS version)
-#' 
-#' @export
 
 update_manifest_column <- function(dataflow_manifest, 
                                    get_all_manifests_out, 
