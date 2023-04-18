@@ -120,7 +120,7 @@ generate_data_flow_manifest_skeleton <- function(asset_view,
   # count rows in each manifest listed
   if (calc_num_items) {
     
-    num_items <- calculate_items_per_manifest(get_all_manifests_out = dfs_manifest,
+    num_items <- calculate_items_per_manifest(df = dfs_manifest,
                                               asset_view = asset_view,
                                               input_token = input_token,
                                               base_url = base_url)
@@ -163,8 +163,15 @@ update_data_flow_manifest <- function(asset_view,
                                       input_token,
                                       base_url) {
   
+  # if uuid remove
+  if(any(grepl("Uuid", names(dataflow_manifest)))) {
+    idx <- grep("Uuid", names(dataflow_manifest))
+    dataflow_manifest <- dataflow_manifest[,-idx]
+  }
+  
   print(paste0("Checking asset view ", asset_view, " for updates"))
   print(paste0("Getting data flow status manifest"))
+  
   # get current data flow manifest
   dataflow_manifest_obj <- tryCatch(
     {
@@ -231,11 +238,6 @@ update_data_flow_manifest <- function(asset_view,
                                                       base_url = base_url)
   
   # compare updated dataflow manifest to initial manifest
-  # if uuid remove
-  if(any(grepl("Uuid", names(dataflow_manifest)))) {
-    idx <- grep("Uuid", names(dataflow_manifest))
-    dataflow_manifest <- dataflow_manifest[,-idx]
-  }
   
   changes_made <- !identical(dataflow_manifest, dataflow_manifest_updated)
   
@@ -327,14 +329,13 @@ update_manifest_add_datasets <- function(dataflow_manifest,
     # bind together new dataset rows and data flow manifest
     dataflow_manifest <- rbind(dataflow_manifest, new_datasets)
     
-    
     # rearrange data flow manifest
     dataflow_manifest <- dataflow_manifest %>% 
       dplyr::group_by(contributor) %>% 
       dplyr::arrange(contributor)
   }
   
-  return(dataflow_manifest)
+  return(data.frame(dataflow_manifest))
   
 }
 
@@ -411,5 +412,5 @@ update_manifest_column <- function(dataflow_manifest,
     dplyr::group_by(contributor) %>% 
     dplyr::arrange(contributor)
   
-  return(dataflow_manifest)
+  return(data.frame(dataflow_manifest))
 }
