@@ -163,12 +163,6 @@ update_data_flow_manifest <- function(asset_view,
                                       input_token,
                                       base_url) {
   
-  # if uuid remove
-  if(any(grepl("Uuid", names(dataflow_manifest)))) {
-    idx <- grep("Uuid", names(dataflow_manifest))
-    dataflow_manifest <- dataflow_manifest[,-idx]
-  }
-  
   print(paste0("Checking asset view ", asset_view, " for updates"))
   print(paste0("Getting data flow status manifest"))
   
@@ -187,6 +181,12 @@ update_data_flow_manifest <- function(asset_view,
   )
   
   dataflow_manifest <- dataflow_manifest_obj$content
+  
+  # if uuid remove
+  if(any(grepl("Uuid", names(dataflow_manifest)))) {
+    idx <- grep("Uuid", names(dataflow_manifest))
+    dataflow_manifest <- dataflow_manifest[,-idx]
+  }
   
   # get all manifests for each storage project
   print(paste0("Getting all manifests under asset view ", asset_view, " from Synapse"))
