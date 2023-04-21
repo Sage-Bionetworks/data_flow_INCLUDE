@@ -4,11 +4,12 @@ Version: 0.0.0.9000
 Authors@R: person('L', 'Wolfe', email = 'loren.wolfe@sagebase.org', role = c('cre', 'aut'))
 Description: A data flow package.
 License: What license is it under?
+Depends:
+    dfamodules
 Imports: 
     attempt,
     config (>= 0.3.1),
     dcamodules,
-    dfamodules,
     dplyr,
     DT,
     ggplot2,
