@@ -46,11 +46,17 @@ get_all_manifests <- function(asset_view,
     if (nrow(manifests$content) > 0) {
       
       # pull together in a dataframe
-      return(data.frame(Component = rep("DataFlow", nrow(manifests$content)),
-                        contributor = rep(sp_name, nrow(manifests$content)),
-                        entityId = manifests$content$dataset_id,
-                        dataset_name = manifests$content$folder_name,
-                        dataset = manifests$content$data_type))
+      df <- data.frame(Component = rep("DataFlow", nrow(manifests$content)),
+                       contributor = rep(sp_name, nrow(manifests$content)),
+                       entityId = manifests$content$dataset_id,
+                       dataset_name = manifests$content$folder_name,
+                       dataset = manifests$content$data_type)
+      
+      # update empty cells to "Not Applicable"
+      df[ df == "" ] <- "Not Applicable"
+      
+      return(df)
+      
     } else {
       return(NULL)
     }
@@ -74,11 +80,11 @@ calculate_items_per_manifest <- function(df,
                                          asset_view,
                                          input_token,
                                          base_url) {
-
+  
   sapply(1:nrow(df), function(i) {
 
     # dataset == "" indicates that there is no manifest
-    if (df$dataset[i] == "") {
+    if (df$dataset[i] == "Not Applicable"| df$dataset[i] == "" | is.na(df$dataset[i])) {
       
       manifest_nrow <- "Not Applicable"
     
@@ -93,6 +99,7 @@ calculate_items_per_manifest <- function(df,
                             base_url = base_url)
         },
         error=function(e) {
+          message(e)
           return(NULL)
         }
       )
@@ -100,7 +107,7 @@ calculate_items_per_manifest <- function(df,
       # if no manifest is downloaded, return NA
       # otherwise count rows and return nrow
       manifest_nrow <- ifelse(is.null(manifest$content), "Not Applicable", nrow(manifest$content)) 
-    }
+      }
     
     return(manifest_nrow)
   })
