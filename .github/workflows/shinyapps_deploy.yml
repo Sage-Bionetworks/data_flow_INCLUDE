@@ -30,7 +30,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y pip python3.8-venv libcurl4-openssl-dev libpng-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libtiff-dev libxml2-dev
+          sudo apt-get install -y pip libcurl4-openssl-dev libpng-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libtiff-dev libxml2-dev
         # this action checks out the $GITHUB_WORKSPACE repository so that the workflow can access it
       - uses: actions/checkout@v3
         # this action sets up pandoc
