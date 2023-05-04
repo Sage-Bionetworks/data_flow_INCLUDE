@@ -20,9 +20,10 @@ on:
 jobs:
   shiny-deploy:
     runs-on: ubuntu-latest
+    container: rocker/rstudio:4.1.2
     env:
       # This should not be necessary for installing from public repo's however remotes::install_github() fails without it.
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT:  ${{ github.GITHUB_TOKEN }}
 
     steps:
       - name: Install System Dependencies
@@ -35,11 +36,11 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
       # install dfamodules and golem to fix error in shinydeploy action
       # renv not installing correctly
-      - name: Install R packages
-        run: |
-          install.packages(c("devtools", "golem", "rsconnect"))
-          devtools::install_github("Sage-Bionetworks/dfamodules")
-        shell: Rscript {0}
+      #- name: Install R packages
+      #  run: |
+      #    install.packages(c("devtools", "golem", "rsconnect"))
+      #    devtools::install_github("Sage-Bionetworks/dfamodules")
+      #  shell: Rscript {0}
         # this action activates renv
       - uses: r-lib/actions/setup-renv@v2
         # Write synapse config (not sure if I even need this??)
@@ -50,6 +51,8 @@ jobs:
         # deploy app using rsconnect
       - name: Authorize and deploy app
         run: |
+          renv::restore()
+
           refName <- Sys.getenv("GITHUB_REF_NAME")
           repo <- Sys.getenv("GITHUB_REPOSITORY")
           appName <- strsplit(repo, "/")[[1]][2]
