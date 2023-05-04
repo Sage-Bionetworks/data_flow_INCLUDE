@@ -2036,7 +2036,9 @@
             },
             "sms:displayName": "contributor",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:EntityId",
@@ -2053,7 +2055,9 @@
             },
             "sms:displayName": "entity_id",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:DatasetName",
@@ -2070,7 +2074,9 @@
             },
             "sms:displayName": "dataset_name",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:Dataset",
@@ -2087,7 +2093,9 @@
             },
             "sms:displayName": "dataset",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:NumItems",
@@ -2104,7 +2112,9 @@
             },
             "sms:displayName": "num_items",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "int"
+            ]
         },
         {
             "@id": "bts:ReleaseScheduled",
