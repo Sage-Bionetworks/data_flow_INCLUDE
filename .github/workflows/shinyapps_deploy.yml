@@ -23,7 +23,7 @@ jobs:
     container: rocker/rstudio:4.1.2
     env:
       # This should not be necessary for installing from public repo's however remotes::install_github() fails without it.
-      GITHUB_PAT:  ${{ github.GITHUB_TOKEN }}
+      GITHUB_PAT:  ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Install System Dependencies
@@ -40,7 +40,7 @@ jobs:
       #  run: |
       #    install.packages(c("devtools", "golem", "rsconnect"))
       #    devtools::install_github("Sage-Bionetworks/dfamodules")
-      #  shell: Rscript {0}
+        shell: Rscript {0}
         # this action activates renv
       - uses: r-lib/actions/setup-renv@v2
         # Write synapse config (not sure if I even need this??)
