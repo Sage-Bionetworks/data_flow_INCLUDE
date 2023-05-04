@@ -31,3 +31,6 @@ Suggests:
     renv
 Config/testthat/edition: 3
 Language: en-US
+Remotes: 
+    Sage-Bionetworks/dcamodules,
+    Sage-Bionetworks/dfamodules
