@@ -5,4 +5,4 @@
 pkgload::load_all(export_all = FALSE,helpers = FALSE,attach_testthat = FALSE)
 options( "golem.app.prod" = TRUE)
 dataflow::run_app() # add parameters here (if any)
-source("renv/activate.R)
+source("renv/activate.R")
