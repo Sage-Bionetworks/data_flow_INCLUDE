@@ -34,13 +34,6 @@ jobs:
       - uses: actions/checkout@v3
         # this action sets up pandoc
       - uses: r-lib/actions/setup-pandoc@v2
-      # install dfamodules and golem to fix error in shinydeploy action
-      # renv not installing correctly
-      #- name: Install R packages
-      #  run: |
-      #    install.packages(c("devtools", "golem", "rsconnect"))
-      #    devtools::install_github("Sage-Bionetworks/dfamodules")
-      #  shell: Rscript {0}
         # this action activates renv
       - uses: r-lib/actions/setup-renv@v2
         # Write synapse config (not sure if I even need this??)
@@ -52,6 +45,7 @@ jobs:
       - name: Authorize and deploy app
         run: |
           renv::restore()
+          install.packages("rsconnect")
 
           refName <- Sys.getenv("GITHUB_REF_NAME")
           repo <- Sys.getenv("GITHUB_REPOSITORY")
