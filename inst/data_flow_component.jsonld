@@ -2173,7 +2173,9 @@
             ],
             "sms:displayName": "standard_compliance",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:DataPortal",
@@ -2198,7 +2200,9 @@
             ],
             "sms:displayName": "data_portal",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:Released",
@@ -2223,7 +2227,9 @@
             ],
             "sms:displayName": "released",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:Component",
