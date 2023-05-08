@@ -2131,7 +2131,9 @@
             },
             "sms:displayName": "release_scheduled",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "date"
+            ]
         },
         {
             "@id": "bts:Embargo",
@@ -2148,7 +2150,9 @@
             },
             "sms:displayName": "embargo",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "date"
+            ]
         },
         {
             "@id": "bts:StandardCompliance",
