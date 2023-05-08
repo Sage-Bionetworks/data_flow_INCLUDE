@@ -2001,7 +2001,7 @@
                     "@id": "bts:Dataset"
                 },
                 {
-                    "@id": "bts:NumberofItems"
+                    "@id": "bts:NumItems"
                 },
                 {
                     "@id": "bts:ReleaseScheduled"
@@ -2245,23 +2245,6 @@
                 "@id": "http://schema.biothings.io"
             },
             "sms:displayName": "Component",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:NumberofItems",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "NumberofItems",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:DataFlow"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "Number of Items",
             "sms:required": "sms:false",
             "sms:validationRules": []
         },
