@@ -41,10 +41,10 @@ app_server <- function( input, output, session ) {
   dash_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
   
   # download data flow status manifest
-  synapse_manifest <- dfamodules::manifest_download(asset_view = global_config$asset_view,
-                                                    dataset_id = global_config$manifest_dataset_id,
-                                                    input_token = access_token,
-                                                    base_url = global_config$api_base_url)
+  synapse_manifest <- dfamodules::dataset_manifest_download(asset_view = global_config$asset_view,
+                                                            dataset_id = global_config$manifest_dataset_id,
+                                                            access_token = access_token,
+                                                            base_url = global_config$api_base_url)
   
   manifest_dfa <- dfamodules::prep_manifest_dfa(manifest = synapse_manifest$content,
                                                 config = dash_config)
@@ -225,7 +225,7 @@ app_server <- function( input, output, session ) {
   
   select_storage_project_out <- dfamodules::mod_select_storage_project_server(id = "select_storage_project_1",
                                                                               asset_view = global_config$asset_view,
-                                                                              input_token = access_token,
+                                                                              access_token = access_token,
                                                                               base_url = global_config$api_base_url)
   
   # DATASET SELECTION
@@ -233,7 +233,7 @@ app_server <- function( input, output, session ) {
   dataset_selection <- dfamodules::mod_dataset_selection_server(id = "dataset_selection_1",
                                                                 storage_project_df = select_storage_project_out,
                                                                 asset_view = global_config$asset_view,
-                                                                input_token = access_token,
+                                                                access_token = access_token,
                                                                 base_url = global_config$api_base_url)
   
   # UPDATE DATA FLOW STATUS SELECTIONS 
@@ -299,7 +299,7 @@ app_server <- function( input, output, session ) {
                                       asset_view = global_config$asset_view,
                                       dataset_id = global_config$manifest_dataset_id,
                                       manifest_dir = "./manifest",
-                                      input_token = access_token,
+                                      access_token = access_token,
                                       base_url = global_config$api_base_url,
                                       schema_url = global_config$schema_url)
   
