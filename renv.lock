@@ -5,6 +5,10 @@
       {
         "Name": "CRAN",
         "URL": "https://cran.rstudio.com"
+      },
+      {
+        "Name": "SAGE",
+        "URL": "http://ran.synapse.org"
       }
     ]
   },
@@ -454,13 +458,13 @@
       "Package": "dcamodules",
       "Version": "0.1.0",
       "Source": "GitHub",
-      "Remotes": "Sage-Bionetworks/sagethemes",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "dcamodules",
       "RemoteUsername": "Sage-Bionetworks",
-      "RemoteRef": "HEAD",
+      "RemoteRepo": "dcamodules",
+      "RemoteRef": "main",
       "RemoteSha": "1e14dcfbdaa2913eeeacc12acaac1c8264bac1f7",
+      "Remotes": "Sage-Bionetworks/sagethemes",
       "Requirements": [
         "base64enc",
         "colourpicker",
@@ -474,7 +478,7 @@
         "shinydashboard",
         "waiter"
       ],
-      "Hash": "c27efc5d7a84072f43c242d6ffd13964"
+      "Hash": "613cdfc41c99661f9d1afe2acf4c067b"
     },
     "desc": {
       "Package": "desc",
@@ -526,14 +530,14 @@
     },
     "dfamodules": {
       "Package": "dfamodules",
-      "Version": "0.0.0.9001",
+      "Version": "0.0.0.9002",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "Sage-Bionetworks",
       "RemoteRepo": "dfamodules",
       "RemoteRef": "main",
-      "RemoteSha": "97d73f09831c53e1d384fe9b202ed8b32b690397",
+      "RemoteSha": "2441a1870dcb09a26fcc619c9806c17f97993754",
       "Requirements": [
         "DT",
         "dplyr",
@@ -550,7 +554,7 @@
         "shinyjs",
         "waiter"
       ],
-      "Hash": "aa74d8b9e9a4c21a64673102c9f43eff"
+      "Hash": "b6b72de8c0e35c363724520742e5d51b"
     },
     "diffobj": {
       "Package": "diffobj",
