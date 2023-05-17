@@ -20,17 +20,16 @@ on:
 jobs:
   shiny-deploy:
     runs-on: ubuntu-latest
-    # This image seems to be based on rocker/r-ver which in turn is based on debian
     container: rocker/rstudio:4.1.2
     env:
       # This should not be necessary for installing from public repo's however remotes::install_github() fails without it.
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT:  ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y pip python3.8-venv libcurl4-openssl-dev libpng-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libtiff-dev libxml2-dev
+          sudo apt-get install -y pip libcurl4-openssl-dev libpng-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libtiff-dev libxml2-dev
         # this action checks out the $GITHUB_WORKSPACE repository so that the workflow can access it
       - uses: actions/checkout@v3
         # this action sets up pandoc
@@ -45,7 +44,9 @@ jobs:
         # deploy app using rsconnect
       - name: Authorize and deploy app
         run: |
+          renv::restore()
           install.packages("rsconnect")
+
           refName <- Sys.getenv("GITHUB_REF_NAME")
           repo <- Sys.getenv("GITHUB_REPOSITORY")
           appName <- strsplit(repo, "/")[[1]][2]

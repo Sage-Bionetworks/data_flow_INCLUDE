@@ -1,5 +1,3 @@
-source("renv/activate.R")
-
 .First <- function() {
   options(
     repos = c(
@@ -8,3 +6,5 @@ source("renv/activate.R")
     )
   )
 }
+
+source("renv/activate.R")
