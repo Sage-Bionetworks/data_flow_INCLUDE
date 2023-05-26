@@ -43,6 +43,7 @@ app_server <- function( input, output, session ) {
   # generate dashboard configuration from dataFlow schema
   dash_config <- dfamodules::generate_dashboard_config(schema_url = global_config$schema_url,
                                                       display_names = list(contributor = "Contributor",
+                                                                           entityId = "Synapse ID",
                                                                            dataset = "Data Type",
                                                                            dataset_name = "Dataset Folder Name",
                                                                            num_items = "Number of Items in Manifest",
