@@ -464,9 +464,9 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "Sage-Bionetworks",
       "RemoteRepo": "dfamodules",
-      "RemoteRef": "FDS-229-dfa-auto-generate-datatable-dashboard-config-json",
-      "RemoteSha": "ea8bbe1f738835e6e3d278ae739cc298c70212e2",
-      "Hash": "5ce78458b2d1dbe13c5fac127321ab16",
+      "RemoteRef": "dev-schema-changes",
+      "RemoteSha": "9252914357e8d6e0af0e37406da667b5e65cb45c",
+      "Hash": "c29467a037c2dd581a4972fe99ae3544",
       "Requirements": [
         "DT",
         "dplyr",
