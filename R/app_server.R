@@ -10,6 +10,7 @@ app_server <- function( input, output, session ) {
   # Your application server logic
   options(shiny.reactlog = TRUE)
   
+
   # AUTHENTICATION
   params <- parseQueryString(isolate(session$clientData$url_search))
   if (!has_auth_code(params)) {
@@ -35,18 +36,37 @@ app_server <- function( input, output, session ) {
   
   session$userData$access_token <- access_token
   # DEV STUFF ###########################################################################
-  
+
   # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
-  dash_config <- jsonlite::read_json("inst/datatable_dashboard_config.json")
+  
+  # generate dashboard configuration from dataFlow schema
+  dash_config <- dfamodules::generate_dashboard_config(schema_url = global_config$schema_url,
+                                                      display_names = list(contributor = "Contributor",
+                                                                           entityId = "Synapse ID",
+                                                                           dataset = "Data Type",
+                                                                           dataset_name = "Dataset Folder Name",
+                                                                           num_items = "Number of Items in Manifest",
+                                                                           release_scheduled = "Release Date",
+                                                                           embargo = "Embargo",
+                                                                           standard_compliance = "QC Checks",
+                                                                           released = "Released",
+                                                                           data_portal = "Data Portal",
+                                                                           Component = NA),
+                                                      icon = TRUE,
+                                                      na_replace = list(num_items = "No Manifest",
+                                                                        release_scheduled = "Not Scheduled",
+                                                                        embargo = "No Embargo",
+                                                                        dataset = "No Manifest"),
+                                                      base_url = global_config$api_base_url)
   
   # download data flow status manifest
-  synapse_manifest <- dfamodules::dataset_manifest_download(asset_view = global_config$asset_view,
+  manifest_obj <- dfamodules::dataset_manifest_download(asset_view = global_config$asset_view,
                                                             dataset_id = global_config$manifest_dataset_id,
                                                             access_token = access_token,
                                                             base_url = global_config$api_base_url)
   
-  manifest_dfa <- dfamodules::prep_manifest_dfa(manifest = synapse_manifest$content,
+  manifest_dfa <- dfamodules::prep_manifest_dfa(manifest = manifest_obj$content,
                                                 config = dash_config)
   
   # PREPARE MANIFEST FOR DASH ###########################################################
@@ -121,7 +141,7 @@ app_server <- function( input, output, session ) {
   
   dfamodules::mod_datatable_dashboard_server("dashboard_1",
                                              filtered_manifest,
-                                             jsonlite::read_json("inst/datatable_dashboard_config.json"))
+                                             dash_config)
   
   # DATASET DASH VIZ : DISTRIBUTIONS ####################################################
   
