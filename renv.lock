@@ -421,8 +421,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "Sage-Bionetworks",
       "RemoteRepo": "dfamodules",
-      "RemoteRef": "dev-schema-changes",
-      "RemoteSha": "9252914357e8d6e0af0e37406da667b5e65cb45c",
+      "RemoteRef": "main",
+      "RemoteSha": "f752696c312c55213847b6f355e8e71a1a5ab33f",
       "Requirements": [
         "DT",
         "dplyr",
@@ -439,7 +439,7 @@
         "shinyjs",
         "waiter"
       ],
-      "Hash": "c29467a037c2dd581a4972fe99ae3544"
+      "Hash": "c731727e2e4c768b015ffe9eb465f2aa"
     },
     "diffobj": {
       "Package": "diffobj",
