@@ -40,8 +40,6 @@ app_server <- function( input, output, session ) {
   # read in configs
   global_config <- jsonlite::read_json("inst/global.json")
   
-  print(global_config)
-  
   # generate dashboard configuration from dataFlow schema
   dash_config <- dfamodules::generate_dashboard_config(schema_url = global_config$schema_url,
                                                        display_names = list(contributor = "Contributor",
