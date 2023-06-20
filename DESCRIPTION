@@ -1,6 +1,6 @@
 Package: dataflow
 Title: Data Flow App Demo
-Version: 0.0.0.9000
+Version: 23.06.1
 Authors@R: person('L', 'Wolfe', email = 'loren.wolfe@sagebase.org', role = c('cre', 'aut'))
 Description: A data flow package.
 License: MIT + file LICENSE
