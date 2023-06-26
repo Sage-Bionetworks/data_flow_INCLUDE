@@ -1,35 +1,36 @@
 Package: dataflow
-Title: Data Flow
+Title: Data Flow App Demo
 Version: 0.0.0.9000
 Authors@R: person('L', 'Wolfe', email = 'loren.wolfe@sagebase.org', role = c('cre', 'aut'))
 Description: A data flow package.
-License: What license is it under?
+License: MIT + file LICENSE
 Imports: 
     attempt,
-    config (>= 0.3.1),
+    config,
     dcamodules,
+    dfamodules,
     dplyr,
     DT,
-    ggplot2,
     glue,
-    golem (>= 0.3.1),
+    golem,
     htmltools,
-    lubridate,
+    jsonlite,
     magrittr,
     pkgload,
     processx,
-    projectlive.modules,
-    reticulate,
-    shiny (>= 1.7.1),
-    shinydashboard,
-    shinydashboardPlus,
-    shinyjs,
-    waiter
+    shiny,
+    shinyjs
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Suggests: 
     spelling,
-    testthat (>= 3.0.0)
+    testthat,
+    devtools,
+    usethis,
+    renv
 Config/testthat/edition: 3
 Language: en-US
+Remotes: 
+    Sage-Bionetworks/dcamodules,
+    Sage-Bionetworks/dfamodules
