@@ -1995,13 +1995,16 @@
                     "@id": "bts:Contributor"
                 },
                 {
+                    "@id": "bts:EntityId"
+                },
+                {
                     "@id": "bts:DatasetName"
                 },
                 {
                     "@id": "bts:Dataset"
                 },
                 {
-                    "@id": "bts:NumberofItems"
+                    "@id": "bts:NumItems"
                 },
                 {
                     "@id": "bts:ReleaseScheduled"
@@ -2036,7 +2039,9 @@
             },
             "sms:displayName": "contributor",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:EntityId",
@@ -2052,9 +2057,10 @@
                 "@id": "http://schema.biothings.io"
             },
             "sms:displayName": "entityId",
-
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:DatasetName",
@@ -2071,13 +2077,15 @@
             },
             "sms:displayName": "dataset_name",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
-            "@id": "bts:DatasetType",
+            "@id": "bts:Dataset",
             "@type": "rdfs:Class",
             "rdfs:comment": "Type of dataset",
-            "rdfs:label": "DatasetType",
+            "rdfs:label": "Dataset",
             "rdfs:subClassOf": [
                 {
                     "@id": "bts:DataProperty"
@@ -2086,9 +2094,11 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:displayName": "dataset_type",
+            "sms:displayName": "dataset",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:NumItems",
@@ -2105,7 +2115,9 @@
             },
             "sms:displayName": "num_items",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "int"
+            ]
         },
         {
             "@id": "bts:ReleaseScheduled",
@@ -2122,7 +2134,9 @@
             },
             "sms:displayName": "release_scheduled",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "date"
+            ]
         },
         {
             "@id": "bts:Embargo",
@@ -2139,7 +2153,9 @@
             },
             "sms:displayName": "embargo",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "date"
+            ]
         },
         {
             "@id": "bts:StandardCompliance",
@@ -2164,7 +2180,9 @@
             ],
             "sms:displayName": "standard_compliance",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:DataPortal",
@@ -2189,7 +2207,9 @@
             ],
             "sms:displayName": "data_portal",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:Released",
@@ -2214,7 +2234,9 @@
             ],
             "sms:displayName": "released",
             "sms:required": "sms:true",
-            "sms:validationRules": []
+            "sms:validationRules": [
+                "str"
+            ]
         },
         {
             "@id": "bts:Component",
@@ -2230,40 +2252,6 @@
                 "@id": "http://schema.biothings.io"
             },
             "sms:displayName": "Component",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:Dataset",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "Dataset",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:DataFlow"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "Dataset",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:NumberofItems",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "NumberofItems",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:DataFlow"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "Number of Items",
             "sms:required": "sms:false",
             "sms:validationRules": []
         },
